@@ -1,0 +1,43 @@
+name: Build Psych Extended Online
+
+on: workflow_dispatch
+
+jobs:
+  Build:
+    name: ${{ matrix.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Android-NORMAL
+            os: ubuntu-latest
+            setupCommand: sh ./setup/unix.sh
+            buildArgs: "android -ONLY_ARMV7"
+            artifactName: androidBuild-Armv7
+            artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
+            doCache: "YES"
+            
+          - name: Windows-NORMAL
+            os: windows-latest
+            setupCommand: .\"setup/windows.bat"
+            buildArgs: "windows -D officialBuild -final"
+            artifactName: windowsBuild-x86_64
+            artifactPath: export\release\windows\bin\*
+            doCache: "YES"
+            
+          - name: iOS-NORMAL
+            os: macos-15
+            setupCommand: sh ./setup/unix.sh
+            buildArgs: "ios -final -nosign -D officialBuild"
+            artifactName: iOSBuild
+            artifactPath: "export/release/ios/build/Release-iphoneos/*.ipa"
+            doCache: "YES"
+    uses: ./.github/workflows/build.yml
+    with:
+        name: ${{ matrix.name }}
+        os: ${{ matrix.os }}
+        setupCommand: ${{ matrix.setupCommand }}
+        buildArgs: ${{ matrix.buildArgs }}
+        artifactName: ${{ matrix.artifactName }}
+        artifactPath: ${{ matrix.artifactPath }}
+        doCache: ${{ matrix.doCache }}

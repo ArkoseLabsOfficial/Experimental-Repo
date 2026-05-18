@@ -1,0 +1,40 @@
+<!DOCTYPE lacie-engine-dialog>
+<dialogues>
+    <dialog id="start">
+        <entry leftChar="lacie/blank2" name="Lacie" text="You're back!" if="chat" />
+        
+        <entry leftChar="lacie/blank3" name="Lacie" text="test_intro" hasSelection="true">
+            <selections>
+                <item id="var_test" text="opt_var_test" selectionConfirmed="path_var_test" if="has_item" />
+                <item id="chat" text="opt_chat" selectionConfirmed="path_chat" />
+                <item id="leave" text="opt_leave" selectionConfirmed="path_leave" />
+                <item id="bruh" text="Do You Speak English?" selectionConfirmed="path_kurdish" />
+            </selections>
+        </entry>
+    </dialog>
+
+    <dialog id="path_var_test">
+        <entry leftChar="lacie/blank7" rightChar="aoi/annoyed" name="Lacie" text="res_var_success" return="start" />
+    </dialog>
+
+    <dialog id="path_kurdish">
+        <entry leftChar="lacie/lacie_blank5" name="Lacie" text="Do you speak English?" />
+        <entry leftChar="lacie/lacie_blank4" rightChar="aoi/coy" name="Aoi" text="Yes." />
+        <entry leftChar="lacie/shadow5" rightChar="aoi/coy" name="Lacie" text="Heeeh, Eeee..." />
+        <entry leftChar="lacie/sigh" rightChar="aoi/coy" name="Lacie" text="Ben no speak english." />
+        <entry leftChar="lacie/hide2" rightChar="aoi/coy" name="Lacie" text="Ahaa..., Bu speak english." />
+        <entry leftChar="lacie/reflective4" rightChar="aoi/coy" name="Lacie" text="Okay?" />
+        <entry leftChar="lacie/reflective5" rightChar="aoi/crazy" name="Aoi" text="Okay." />
+        <entry leftChar="lacie/sigh" rightChar="aoi/melt2" name="Lacie" text="Heeehh..." />
+        <entry leftChar="lacie/thinking3" rightChar="aoi/melt2" name="Lacie" text="Usta her gün bana 10 kelime ingilizce öğretsen ben bu işi çözerim." return="start"/>
+    </dialog>
+
+    <dialog id="path_chat">
+        <entry leftChar="lacie/blank2" name="Kukla" text="res_chat_1" />
+        <entry leftChar="lacie_smile" name="Lacie" text="res_chat_2" return="start" />
+    </dialog>
+
+    <dialog id="path_leave">
+        <entry leftChar="lacie_neutral" name="Lacie" text="res_leave" setFlag="has_left_room" closeTheBox="true" />
+    </dialog>
+</dialogues>

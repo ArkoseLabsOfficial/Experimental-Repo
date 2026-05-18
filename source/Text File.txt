@@ -1,0 +1,8 @@
+ui still broken when you do zoom in zoom out in real time, fix it.
+anims tab doesnt work, fix it.
+in the properties, room tab shouldnt be resetted.
+scaling the object not updates the scale of the object in real time, fix it.
+scaling the object without placing is brokes the ghost cursor position, fix it.
+make editor add `_1, _2` to name automatically if any object in the room has same name.
+
+make sure everything is working.

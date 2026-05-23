@@ -31,7 +31,6 @@ class PauseSubState extends FlxSubState
 
         super.create();
 
-        // 1. Darken the background (UIUtil.CreateDarkenerOverlay)
         var pauseBG = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xAA000000);
         pauseBG.scrollFactor.set(0, 0);
         add(pauseBG);
@@ -62,9 +61,6 @@ class PauseSubState extends FlxSubState
         chapterText.alignment = CENTER;
         add(chapterText);
 
-        // ==========================================
-        // PORTED LOGIC: Create InfoBox (Bottom-Right)
-        // ==========================================
         var infoBoxWidth:Float = 210;
         var infoBoxHeight:Float = 70;
 
@@ -76,11 +72,10 @@ class PauseSubState extends FlxSubState
         infoBox.scale.set(1.3, 1.3);
 
         // Ported text labels attached dynamically inside InfoBox
-        var controlsText = new FlxText(infoBoxX - 135, infoBoxY + (infoBoxHeight / 2) - 30, 400, "[Z] Seç   [X] Geri", 32);
+        var controlsText = new FlxText(infoBoxX - 135, infoBoxY + (infoBoxHeight / 2) - 30, 400, Language.GetCaption("system.menu.tip"), 24);
         controlsText.alignment = CENTER;
         controlsText.font = "assets/fonts/AlegreyaSC-Regular.ttf"; // Keeping the project UI aesthetic uniform
         add(controlsText);
-        // ==========================================
 
         updateHighlight();
     }
@@ -89,26 +84,30 @@ class PauseSubState extends FlxSubState
     {
         super.update(elapsed);
 
-        if (FlxG.keys.justPressed.UP)
+        if (Controls.UP_P)
         {
+            FlxG.sound.play("assets/sfx/ui_navigation.ogg");
             selectedIndex--;
             if (selectedIndex < 0) selectedIndex = menuItems.length - 1;
             updateHighlight();
         }
-        else if (FlxG.keys.justPressed.DOWN)
+        else if (Controls.DOWN_P)
         {
+            FlxG.sound.play("assets/sfx/ui_navigation.ogg");
             selectedIndex++;
             if (selectedIndex >= menuItems.length) selectedIndex = 0;
             updateHighlight();
         }
 
-        if (FlxG.keys.justPressed.Z || FlxG.keys.justPressed.ENTER)
+        if (Controls.ACCEPT_P)
         {
+            FlxG.sound.play("assets/sfx/ui_start.ogg");
             selectCurrentItem();
         }
 
-        if (FlxG.keys.justPressed.X || FlxG.keys.justPressed.ESCAPE)
+        if (Controls.CANCEL_P)
         {
+            FlxG.sound.play("assets/sfx/ui_navigation2.ogg");
             close();
         }
     }
@@ -132,19 +131,15 @@ class PauseSubState extends FlxSubState
             case 0:
                 openSubState(new InventorySubState());
             case 1:
-                ItemManager.addItem("iron_sword");
-                ItemManager.addItem("potion_health");
-                ItemManager.addItem("1");
-                ItemManager.addItem("2");
-                ItemManager.addItem("3");
-                ItemManager.addItem("4");
+                openSubState(new ObjectivesMenuSubstate());
                 //openSubState(new ObjectivesSubState());
             case 2:
-                openSubState(new SaveLoadSubState(true));
+                openSubState(new SettingsScreenBase("main", true));                
             case 3:
                 openSubState(new SaveLoadSubState(false));
             case 4:
-                close();
+                //openSubState(new SaveLoadSubState(true));
+                FlxG.switchState(new MainMenuState());
         }
     }
 

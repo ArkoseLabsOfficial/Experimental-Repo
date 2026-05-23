@@ -8,6 +8,7 @@ import flixel.FlxG;
 import flixel.util.FlxColor;
 import flixel.text.FlxText;
 import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.FlxSprite;
 
 /**
  * Basic class used for useful UI utilities. -KralOyuncu
@@ -47,5 +48,36 @@ class UIUtil {
             sliceRect
         );
         return frame;
+    }
+
+    /**
+     * Creates an entry sprite that combines a 9-slice background with content.
+     * @param frameImage Asset for the background
+     * @param content A FlxSprite or group to display on top
+     * @param Width, Height Target size
+     * @param margins The [left, top, right, bottom] padding from the Godot .tscn file
+     */
+    public static function create9SliceOptionSprite(
+        frameImage:String, 
+        X:Float, 
+        Y:Float, 
+        Width:Float, 
+        Height:Float, 
+        m:Array<Int>
+    ) {
+        var sliceRect = [
+            m[0], 
+            m[1], 
+            300 - (m[0] + m[2]), 
+            300 - (m[1] + m[3])
+        ];
+
+        return new FlxUI9SliceSprite(
+            X, 
+            Y, 
+            frameImage, 
+            new Rectangle(0, 0, Width, Height), 
+            sliceRect
+        );
     }
 }

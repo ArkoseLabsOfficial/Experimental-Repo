@@ -2,6 +2,10 @@ package backend;
 
 import haxe.Json;
 import openfl.utils.Assets;
+import flixel.util.typeLimit.OneOfTwo;
+#if sys
+import sys.FileSystem;
+#end
 
 class Language {
     public static var currentLanguage:String = "English";
@@ -19,7 +23,7 @@ class Language {
         var file = Assets.getText(path);
         var json:Dynamic = Json.parse(file);
         
-        // 1. Parse standard captions
+        // Standard Captions
         if (Reflect.hasField(json, "captions")) {
             var caps = Reflect.field(json, "captions");
             for (field in Reflect.fields(caps)) {
@@ -27,7 +31,7 @@ class Language {
             }
         }
         
-        // 2. Parse nested storyCaptions
+        // Story Captions
         if (Reflect.hasField(json, "storyCaptions")) {
             var storyCaps = Reflect.field(json, "storyCaptions");
             for (room in Reflect.fields(storyCaps)) {
@@ -47,13 +51,40 @@ class Language {
         if (dictionary.exists(key)) {
             return dictionary.get(key);
         }
-        // Fallback: If text isn't in JSON, just display the raw key string so you can see what's missing
         return key; 
+    }
+
+    public static function GetStoryCaption(key:String):Array<OneOfTwo<String, Bool>> {
+        if (dictionary.exists(RoomManager.currentRoomName + "." + key)) {
+            return [dictionary.get(RoomManager.currentRoomName + "." + key), true];
+        }
+        return [key, false]; 
     }
 
     public static function getAsset(standardPath:String):String {
         var localizedPath = localePath + currentLanguage + "/" + standardPath.split("assets/")[1];
         if (Assets.exists(localizedPath)) return localizedPath;
         return standardPath;
+    }
+
+    public static var officialLanguages:Array<String> = ["English"]; 
+    
+    public static function getUnofficialLanguages():Array<String> {
+        var unofficial:Array<String> = [];
+        
+        #if sys
+        var langPath = "assets/languages/";
+        if (FileSystem.exists(langPath)) {
+            var files = FileSystem.readDirectory(langPath);
+            for (file in files) {
+                var langCode = file.split(".")[0];
+                if (!officialLanguages.contains(langCode)) {
+                    unofficial.push(langCode);
+                }
+            }
+        }
+        #end
+        
+        return unofficial;
     }
 }

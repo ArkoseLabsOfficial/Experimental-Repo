@@ -2,7 +2,7 @@
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="Lacie Engine" file="LacieEngine" main="Main" packageName="com.arkoselabs.lacieengine" package="com.arkoselabs.lacieengine" company="ArkoseLabs" version="0.1.0" />
+	<app title="Lily Engine" file="LilyEngine" main="Main" packageName="com.arkoselabs.lilyengine" package="com.arkoselabs.lilyengine" company="ArkoseLabs" version="0.1.0" />
 	<app if="mobile" title='Psych Extended Online' />
 
 	<!--Switch Export with Unique ApplicationID and Icon-->
@@ -49,12 +49,19 @@
 	<assets path='assets'/>
 	<assets path='resources'/>
 
+	<!-- _______________________________ Defines _______________________________ -->
+
+	<!-- Comment this out to disable abstract support in hscript. !-->
+	<haxedef name="HSCRIPT_ABSTRACT_SUPPORT" unless="STRIPPED_COMPILE" />
 
 	<!-- _______________________________ Libraries ______________________________ -->
 
 	<haxelib name="flixel" />
 	<haxelib name="flixel-addons" />
     <haxelib name="flixel-ui" />
+	<haxelib name="hscript-iris" />
+	<haxedef name="openflPos" />
+	<haxedef name="hscriptPos" />
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
 

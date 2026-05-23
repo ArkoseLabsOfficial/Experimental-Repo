@@ -1,4 +1,4 @@
-name: Build Psych Extended Online
+name: Build Lacie Engine
 
 on: workflow_dispatch
 
@@ -9,23 +9,23 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: Android-NORMAL
+          - name: Android
             os: ubuntu-latest
             setupCommand: sh ./setup/unix.sh
             buildArgs: "android -ONLY_ARMV7"
-            artifactName: androidBuild-Armv7
+            artifactName: AndroidBuild-Armv7
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
             doCache: "YES"
             
-          - name: Windows-NORMAL
+          - name: Windows
             os: windows-latest
             setupCommand: .\"setup/windows.bat"
             buildArgs: "windows -D officialBuild -final"
-            artifactName: windowsBuild-x86_64
+            artifactName: WindowsBuild
             artifactPath: export\release\windows\bin\*
             doCache: "YES"
             
-          - name: iOS-NORMAL
+          - name: iOS
             os: macos-15
             setupCommand: sh ./setup/unix.sh
             buildArgs: "ios -final -nosign -D officialBuild"

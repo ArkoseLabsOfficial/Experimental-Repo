@@ -10,8 +10,7 @@ enum CharacterState { Standing; Walking; Running; Sneaking; Idle; }
 class CharacterEntity extends WorldObject {
     public var currentFacing:FacingDirection = DOWN;
     public var currentState:CharacterState = Standing;
-    
-    // Pure Mathematical Hitbox
+
     public var colWidth:Float = 24;
     public var colHeight:Float = 12;
     public var colOffsetX:Float = 0;
@@ -25,9 +24,8 @@ class CharacterEntity extends WorldObject {
 
     public function new(x:Float, y:Float, z:Int, name:String) {
         super(x, y, z, name);
-        moves = false; // Disable internal Flixel physics
-        
-        // Pre-fill history so followers spawn exactly on target
+        moves = false;
+
         for (i in 0...MAX_HISTORY) {
             positionHistory.push(FlxPoint.get(x, y));
         }
@@ -37,11 +35,9 @@ class CharacterEntity extends WorldObject {
         super.loadEntity(folder, spriteName);
         
         updateHitbox(); 
-        
-        // Push visual graphic up so X/Y coordinate represents the feet
+
         offset.set(width / 2, height);
         
-        // Center math box over feet
         colOffsetX = -(colWidth / 2);
         colOffsetY = -colHeight;
 
@@ -112,7 +108,6 @@ class CharacterEntity extends WorldObject {
     }
 
     override public function getCollisionBox():FlxRect {
-        // Returns the pure mathematical coordinates instead of the visual sprite size
         return FlxRect.get(x + colOffsetX, y + colOffsetY, colWidth, colHeight);
     }
 

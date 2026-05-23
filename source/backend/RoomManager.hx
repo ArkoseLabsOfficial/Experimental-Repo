@@ -40,6 +40,7 @@ typedef SortData = {
 
 class RoomManager extends FlxTypedGroup<FlxSprite> {
     public static var instance:RoomManager;
+    public static var currentRoomName:String;
     
     public var entities:Map<String, WorldObject>;
     public var characters:Map<String, CharacterEntity>;
@@ -55,6 +56,8 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
 
     public var sortMap:Map<FlxSprite, SortData>;
 
+    public var scripts:ScriptHandler;
+
     public function new() {
         super();
         instance = this;
@@ -66,6 +69,8 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
         spawnPoints = new Map();
         roomEvents = [];
         sortMap = new Map();
+
+        scripts = new ScriptHandler();
     }
 
     public function loadRoom(filePath:String) {
@@ -80,11 +85,41 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
         } else {
             loadRoomFromString(rawData); 
         }
+
+        var autoScriptPath = filePath.substr(0, filePath.lastIndexOf(".")) + ".hx";
+        if (openfl.utils.Assets.exists(autoScriptPath)) {
+            scripts.loadScript(autoScriptPath);
+        }
+
+        injectScriptVariables();
+        if (scripts != null) scripts.call("create");
     }
 
-    // ==========================================
-    // --- TSCN TO XML EXPORTER UTILITY ---
-    // ==========================================
+    /**
+     * Loops through all instantiated entities and characters and injects them
+     * into the ScriptHandler using their `xmlName`.
+     */
+    public function injectScriptVariables():Void {
+        if (scripts == null) return;
+        
+        scripts.setGlobal("room", this);
+        scripts.setGlobal("player", activePlayer);
+        scripts.setGlobal("cutscenePlayer", activeCutscenePlayer);
+        
+        for (key => val in entities) {
+            scripts.setGlobal(key, val);
+        }
+        for (key => val in characters) {
+            if (!entities.exists(key)) scripts.setGlobal(key, val);
+        }
+    }
+
+    // A helper function to easily fire a script event from outside (e.g., player interacted with NPC)
+    public function fireEvent<T:CancellableEvent>(eventName:String, eventClass:Class<T>, ?setup:T->Void):T {
+        if (scripts == null) return null;
+        return scripts.fireEvent(eventName, eventClass, setup);
+    }
+
     public function convertTSCN(filePath:String):String {
         if (!openfl.utils.Assets.exists(filePath)) {
             flixel.FlxG.log.warn("Cannot convert. File not found: " + filePath);
@@ -231,10 +266,6 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
         return xml.toString();
     }
 
-
-    // ==========================================
-    // --- NATIVE GODOT .TSCN PARSER ---
-    // ==========================================
     public function loadRoomFromTSCN(rawTSCN:String) {
         if (rawTSCN == null || rawTSCN == "") return;
         sortMap.clear();
@@ -388,8 +419,7 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
                         }
                         tile.immovable = true; 
                         addEntity(tile);
-                        
-                        // FIX: Add tiles to sort map so they actually sort by Z!
+
                         sortMap.set(tile, {sortY: calcSortY, treeIndex: node.treeIndex, z: z, isDynamic: false});
                     }
                     i += 3;
@@ -440,7 +470,7 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
         sortMap.set(activePlayer, {sortY: 0, treeIndex: 999999, z: 10, isDynamic: true});
     }
 
-    // HELPER: Calculate recursive absolute positioning for Godot children
+    // Calculate recursive absolute positioning for Godot children
     function getAbsolutePosition(fullPath:String, db:Map<String, GodotNode>):{x:Float, y:Float} {
         var node = db.get(fullPath);
         if (node == null) return {x:0, y:0};
@@ -459,7 +489,7 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
         return {x:px, y:py};
     }
 
-    // HELPER: Forces children to adopt their parent's Y-Sort layer identically
+    // Forces children to adopt their parent's Y-Sort layer identically
     function getSortY(fullPath:String, db:Map<String, GodotNode>):Float {
         var node = db.get(fullPath);
         if (node == null) return 0.0;
@@ -471,7 +501,7 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
         return getSortY(node.parentPath, db);
     }
 
-    // HELPER: Safe Node Attribute Extractor
+    // Safe Node Attribute Extractor
     function extractGodotAttr(line:String, attr:String):String {
         var search = attr + '="';
         var idx = line.indexOf(search);
@@ -532,9 +562,6 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
         return map;
     }
 
-    // ==========================================
-    // --- CLASSIC XML PARSER ---
-    // ==========================================
     public function loadRoomFromString(rawXML:String) {
         if (rawXML == null || rawXML == "") return;
         rawXML = StringTools.replace(rawXML, "<!DOCTYPE lacie-engine-room>", "");
@@ -544,11 +571,18 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
         sortMap.clear();
         var xml = new Access(parsed);
         var baseFolder = xml.has.folder ? xml.att.folder : "";
+        currentRoomName = xml.has.name ? xml.att.name : "placeholder";
         if (xml.hasNode.camera && xml.node.camera.has.zoom) {
             roomZoom = Std.parseFloat(xml.node.camera.att.zoom);
         }
 
         var objContainer = xml.hasNode.objects ? xml.node.objects : xml;
+
+        if (xml.hasNode.scripts) {
+            for (scriptNode in xml.node.scripts.nodes.script) {
+                if (scriptNode.has.path) scripts.loadScript("assets/data/" + scriptNode.att.path + ".hx");
+            }
+        }
 
         // TILEMAP PARSER RESTORED FOR XML
         if (objContainer.hasNode.tilemap) {
@@ -793,12 +827,23 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
         }
 
         if (firstAnim != null) obj.animation.play(firstAnim);
+        
+        if (node.hasNode.script) {
+            for (scriptNode in node.nodes.script) {
+                if (scriptNode.has.path) {
+                    // Load script and attach to the RoomManager's ScriptHandler
+                    var objScript = scripts.loadScript("assets/data/" + scriptNode.att.path + ".hx");
+                    
+                    // Inject THIS specific object into the script as "this" or "obj"
+                    objScript.set("this", obj);
+                    objScript.set("obj", obj);
+                }
+            }
+        }
     }
 
-    // ==========================================
-    // --- ULTIMATE Y-SORT FIX ---
-    // ==========================================
     override public function update(elapsed:Float) {
+        if (scripts != null) scripts.call("update", [elapsed]);
         super.update(elapsed);
         if (activeCutscenePlayer != null && activePlayer != null) {
             activePlayer.visible = false;
@@ -810,8 +855,7 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
         sort(function(order:Int, obj1:FlxSprite, obj2:FlxSprite):Int {
             var d1 = sortMap.get(obj1);
             var d2 = sortMap.get(obj2);
-            
-            // Smarter fallback: Read actual object Z if it missed the sort map
+
             var z1 = (d1 != null) ? d1.z : (Std.isOfType(obj1, WorldObject) ? cast(obj1, WorldObject).z : 10);
             var z2 = (d2 != null) ? d2.z : (Std.isOfType(obj2, WorldObject) ? cast(obj2, WorldObject).z : 10);
             
@@ -832,5 +876,17 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
             
             return FlxSort.byY(order, obj1, obj2);
         });
+        if (scripts != null) scripts.call("postUpdate", [elapsed]);
+    }
+
+    override public function destroy() {
+        if (scripts != null) {
+            scripts.destroy();
+            scripts = null;
+        }
+        EventManager.reset(); 
+        currentRoomName = null;
+        
+        super.destroy();
     }
 }

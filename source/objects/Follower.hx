@@ -15,8 +15,6 @@ class Follower extends CharacterEntity {
             
             velocity.x = (targetPos.x - x) / elapsed;
             velocity.y = (targetPos.y - y) / elapsed;
-            
-            // Snap mathematically
             x = targetPos.x;
             y = targetPos.y;
         } else {

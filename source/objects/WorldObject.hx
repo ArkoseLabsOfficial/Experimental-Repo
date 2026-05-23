@@ -11,7 +11,7 @@ class WorldObject extends FlxSprite {
     public var interactable:Bool = false;
     public var dialogPath:String = "";
     
-    // --- NEW: Auto-collisions are on by default! ---
+    // Auto Collision Feature, can be disabled if you want.
     public var solidCollision:Bool = true;
 
     public function new(x:Float, y:Float, zIndex:Int, name:String) {
@@ -46,8 +46,7 @@ class WorldObject extends FlxSprite {
         animation.addByPrefix(animName, prefix, fps, loop);
     }
 
-    // --- NEW: Allows the Player to ask ANY object for its collision bounds ---
     public function getCollisionBox():FlxRect {
-        return FlxRect.get(x, y, width, height); // Uses Flixel's native bottom-25% offset hitbox
+        return FlxRect.get(x, y, width, height);
     }
 }

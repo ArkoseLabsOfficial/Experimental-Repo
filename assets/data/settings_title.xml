@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu>
+    <submenu name="system.settings.game" label="Game">
+        <setting id="skip_enabled" type="bool" label="system.settings.game.skip" />
+        <setting id="objective_notifications" type="bool" label="system.settings.game.notifications" />
+        <setting id="show_skip_on_death" type="bool" label="system.settings.game.skip_death" />
+        <back label="system.common.back" />
+    </submenu>
+    <submenu name="system.settings.audio" label="Audio">
+        <setting id="volume_master" type="decimal" label="system.settings.audio.master" min="0" max="1" step="0.1" />
+        <setting id="volume_bgm" type="decimal" label="system.settings.audio.bgm" min="0" max="1" step="0.1" />
+        <setting id="mute_audio" type="bool" label="system.settings.audio.mute" />
+        <back label="system.common.back" />
+    </submenu>
+    <submenu name="system.settings.video" label="Video">
+        <setting id="fullscreen" type="bool" label="system.settings.video.fullscreen" />
+        <setting id="fps_limit" type="int" label="system.settings.video.fps" />
+        <back label="system.common.back" />
+    </submenu>
+</menu>

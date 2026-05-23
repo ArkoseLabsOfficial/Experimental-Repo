@@ -34,7 +34,7 @@ class InventorySubState extends FlxSubState {
         FlxG.cameras.add(camInventory, false);
         this.cameras = [camInventory];
         camInventory.scroll.set(-230, 230);
-        trace(ItemManager.inventory);
+        //trace(ItemManager.inventory);
 
         // Center calculation
         var separation = 6; // HBoxContainer SetSeparation(2) * 3
@@ -42,12 +42,12 @@ class InventorySubState extends FlxSubState {
         var startX = (FlxG.width - totalWidth) / 2;
         var startY = (FlxG.height - MAIN_PANEL_H) / 2;
 
-        // --- Build Inventory Frame (Left) ---
+        // Inventory Frame (Left)
         // Title: system.menu.inventory, Divider: divider_md
         var invFrame = new TitledMenuFrame(startX, startY, MAIN_PANEL_W, MAIN_PANEL_H, "Eşyalar", "assets/img/ui/divider_md.png", "");
         add(invFrame);
 
-        // --- Build Description Frame (Right) ---
+        // Description Frame (Right)
         // Divider: divider_sm, Decor: menu_bg_decor
         var descX = startX + MAIN_PANEL_W + separation;
         descFrame = new TitledMenuFrame(descX, startY, DESC_PANEL_W, DESC_PANEL_H, "", "assets/img/ui/divider_sm.png", "assets/img/ui/menu_bg_decor.png");
@@ -57,14 +57,14 @@ class InventorySubState extends FlxSubState {
         descText = new FlxText(descX + 45, startY + 130, DESC_PANEL_W - 90, "", 24);
         add(descText);
 
-        // --- Load Inventory Data ---
+        // Load Inventory Data
         var ownedItemIDs = [];
         for (id in ItemManager.inventory.keys()) ownedItemIDs.push(id);
         
         var rawCount = ownedItemIDs.length;
         var totalSlots = Std.int(Math.max(15, 5 * Math.ceil(rawCount / 5.0)));
 
-        // --- Build Entry Grid ---
+        // Entry Grid
         var gridStartX = startX + 75; // ContentMarginLeft = 25 * 3
         var gridStartY = startY + 120; // ContentMarginTop + TitleSpace
         var iconSize = 120; // 40f * 3
@@ -93,17 +93,17 @@ class InventorySubState extends FlxSubState {
     override public function update(elapsed:Float) {
         super.update(elapsed);
 
-        if (FlxG.keys.justPressed.UP) moveSelection(-maxCols, false);
-        if (FlxG.keys.justPressed.DOWN) moveSelection(maxCols, false);
-        if (FlxG.keys.justPressed.LEFT) moveSelection(-1, true);
-        if (FlxG.keys.justPressed.RIGHT) moveSelection(1, true);
+        if (Controls.UP_P) moveSelection(-maxCols, false);
+        if (Controls.DOWN_P) moveSelection(maxCols, false);
+        if (Controls.LEFT_P) moveSelection(-1, true);
+        if (Controls.RIGHT_P) moveSelection(1, true);
         
-        if (FlxG.keys.justPressed.X || FlxG.keys.justPressed.ESCAPE) {
+        if (Controls.CANCEL_P) {
             FlxG.sound.play("assets/sfx/ui_navigation2.ogg");
             close();
         }
 
-        if (FlxG.keys.justPressed.Z || FlxG.keys.justPressed.ENTER) {
+        if (Controls.ACCEPT_P) {
             var activeEntry = entries[curSelected];
             if (!activeEntry.isEmpty) {
                 FlxG.sound.play("assets/sfx/ui_start.ogg");
@@ -150,16 +150,13 @@ class InventorySubState extends FlxSubState {
 
             if (!activeEntry.isEmpty) {
                 var itemData = ItemManager.items.get(activeEntry.itemId);
-                descFrame.setTitle(itemData.name); // Automatically un-hides title and divider
-                descText.text = itemData.desc;
+                descFrame.setTitle(Language.GetCaption(itemData.name)); // Automatically un-hides title and divider
+                descText.text = Language.GetCaption(itemData.desc);
             }
         }
     }
 }
 
-// ==============================================================================
-// ENTRY SPRITE LOGIC (Scaled 3x)
-// ==============================================================================
 class InventoryMenuEntry extends FlxSpriteGroup {
     static inline var ICON_SIZE:Int = 120; // 40f * 3
     

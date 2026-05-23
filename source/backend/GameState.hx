@@ -2,7 +2,7 @@ package backend;
 
 class GameState {
     // This map holds EVERYTHING that needs to be saved/loaded.
-    // It tracks logic variables, picked items, and dialogue choices.
+    // It tracks logic variables and dialogue choices.
     public static var fallbackPlayer:String = "sprite/common/character/lacie/lacie";
     public static var flags:Map<String, Bool> = [
         "has_item" => true,

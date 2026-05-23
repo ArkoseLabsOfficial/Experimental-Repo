@@ -38,6 +38,13 @@
       "dir": null,
       "ref": null,
       "url": "https://github.com/AlafandyPorting/hxcpp-0.7.3"
+    },
+    {
+      "name": "hscript-iris",
+      "type":"git",
+      "dir": null,
+      "ref": null,
+      "url": "https://github.com/NovaFlare-Engine-Concentration/hscript-iris-improved"
     }
   ]
 }

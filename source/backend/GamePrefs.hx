@@ -3,46 +3,90 @@ package backend;
 import flixel.FlxG;
 
 class GamePrefs {
-    public static var volume:Float = 1.0;
-    public static var fullscreen:Bool = false;
-    public static var resolution:String = "1920x1080";
-    public static var language:String = "Türkçe";
+    public static var language:String = "English";
+
+    // Dynamic map for all XML-supported options
+    public static var options:Map<String, Dynamic> = new Map();
     
-    public static var keybinds:Map<String, Array<String>> = [
-        "UP" => ["UP", "W"], "DOWN" => ["DOWN", "S"],
-        "LEFT" => ["LEFT", "A"], "RIGHT" => ["RIGHT", "D"],
-        "ACCEPT" => ["Z", "ENTER", "SPACE"], "CANCEL" => ["X", "ESCAPE"],
-        "RUN" => ["SHIFT"], "SPECIAL" => ["C"], "MENU" => ["X", "ESCAPE"]
-    ];
+    // Keybinds are stored as [KeyboardBind, GamepadBind]
+    public static var keybinds:Map<String, Array<String>> = new Map();
+
+    public static var currentObjectives(get, set):Array<String>;
+    private static function get_currentObjectives() return FlxG.save.data.currentObjectives;
+    private static function set_currentObjectives(v) return FlxG.save.data.currentObjectives = v;
+
+    public static var completedObjectives(get, set):Array<String>;
+    private static function get_completedObjectives() return FlxG.save.data.completedObjectives;
+    private static function set_completedObjectives(v) return FlxG.save.data.completedObjectives = v;
+
+    public static var failedObjectives(get, set):Array<String>;
+    private static function get_failedObjectives() return FlxG.save.data.failedObjectives;
+    private static function set_failedObjectives(v) return FlxG.save.data.failedObjectives = v;
 
     public static function loadSettings():Void {
         FlxG.save.bind("PaperLilyPrefs");
 
-        if (FlxG.save.data.volume != null) volume = FlxG.save.data.volume;
-        if (FlxG.save.data.fullscreen != null) fullscreen = FlxG.save.data.fullscreen;
-        if (FlxG.save.data.resolution != null) resolution = FlxG.save.data.resolution;
-        if (FlxG.save.data.language != null) language = FlxG.save.data.language;
-        
-        if (FlxG.save.data.keybinds != null) {
-            var savedBinds:Dynamic = FlxG.save.data.keybinds;
-            for (action in keybinds.keys()) {
-                if (Reflect.hasField(savedBinds, action)) {
-                    keybinds.set(action, Reflect.field(savedBinds, action));
-                }
+        // Load generic options
+        if (FlxG.save.data.options != null) {
+            var savedOptions:Map<String, Dynamic> = FlxG.save.data.options;
+            for (key in savedOptions.keys()) {
+                options.set(key, savedOptions.get(key));
             }
         }
+
+        // Load keybinds
+        var actions = ["UP", "DOWN", "LEFT", "RIGHT", "ACCEPT", "CANCEL", "RUN", "SPECIAL"];
+        var savedBinds:Dynamic = FlxG.save.data.keybinds;
+        
+        for (action in actions) {
+            var defaultBinds = getDefaultBinds(action);
+            if (savedBinds != null && Reflect.hasField(savedBinds, action)) {
+                var loadedBinds:Array<String> = Reflect.field(savedBinds, action);
+                // Ensure it always has exactly 2 elements (KB, GP)
+                if (loadedBinds.length < 2) loadedBinds.push("NONE");
+                keybinds.set(action, loadedBinds);
+            } else {
+                keybinds.set(action, defaultBinds);
+            }
+        }
+
+        if (FlxG.save.data.currentObjectives == null) FlxG.save.data.currentObjectives = [];
+        if (FlxG.save.data.completedObjectives == null) FlxG.save.data.completedObjectives = [];
+        if (FlxG.save.data.failedObjectives == null) FlxG.save.data.failedObjectives = [];
     }
 
     public static function saveSettings():Void {
-        FlxG.save.data.volume = volume;
-        FlxG.save.data.fullscreen = fullscreen;
-        FlxG.save.data.resolution = resolution;
-        FlxG.save.data.language = language;
+        FlxG.save.data.options = options;
         
         var bindsObj:Dynamic = {};
         for (key in keybinds.keys()) Reflect.setField(bindsObj, key, keybinds.get(key));
         FlxG.save.data.keybinds = bindsObj;
 
         FlxG.save.flush();
+    }
+
+    // Easy accessors for the rest of your game
+    public static function getOption(variable:String, defaultValue:Dynamic = null):Dynamic {
+        if (options.exists(variable)) return options.get(variable);
+        return defaultValue;
+    }
+
+    public static function setOption(variable:String, value:Dynamic):Void {
+        options.set(variable, value);
+    }
+
+    static function getDefaultBinds(action:String):Array<String> {
+        // [Keyboard, Gamepad]
+        return switch(action) {
+            case "UP": ["UP", "DPAD_UP"];
+            case "DOWN": ["DOWN", "DPAD_DOWN"];
+            case "LEFT": ["LEFT", "DPAD_LEFT"];
+            case "RIGHT": ["RIGHT", "DPAD_RIGHT"];
+            case "ACCEPT": ["Z", "A"];
+            case "CANCEL": ["X", "B"];
+            case "RUN": ["SHIFT", "X"];
+            case "SPECIAL": ["C", "Y"];
+            default: ["NONE", "NONE"];
+        }
     }
 }

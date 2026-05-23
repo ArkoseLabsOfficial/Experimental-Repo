@@ -12,8 +12,7 @@ typedef SaveSlotData = {
     var playtime:Float; 
     var party:Array<String>;
     var image:String;
-    
-    // Exact Map Tracking
+
     var roomPath:String;
     var playerX:Float;
     var playerY:Float;
@@ -27,7 +26,7 @@ typedef SaveSlotData = {
 class SaveManager {
     public static var chapterName:String = "Chapter 1";
     
-    // --- ACTIVE GAME STATE ---
+    // Active Game State
     public static var currentLocation:String = "Living Room";
     public static var currentLocationImage:String = "assets/img/ui/save/ch1_home_day.png";
     public static var currentRoomPath:String = "assets/data/rooms/bathroom.xml";

@@ -92,6 +92,7 @@ class DialogueManager extends FlxSubState {
         var charName = entry.has.name ? entry.att.name : "";
         var textKey = entry.has.text ? entry.att.text : "";
         var localizedText = Language.GetCaption(textKey);
+        if (Language.GetStoryCaption(textKey)[1] == true) localizedText = Language.GetStoryCaption(textKey)[0];
 
         var leftPath = "";
         if (entry.has.leftChar && entry.att.leftChar != "none") {
@@ -144,7 +145,10 @@ class DialogueManager extends FlxSubState {
                 if (item.has.unless) canShow = !evaluateLogic(item.att.unless);
                 
                 if (canShow) {
-                    options.push(Language.GetCaption(item.att.text));
+                    var textKey = item.has.text ? item.att.text : "";
+                    var localizedText = Language.GetCaption(textKey);
+                    if (Language.GetStoryCaption(textKey)[1] == true) localizedText = Language.GetStoryCaption(textKey)[0];
+                    options.push(localizedText);
                     validItems.push(item);
                 }
             }
@@ -152,8 +156,7 @@ class DialogueManager extends FlxSubState {
 
         selectionMenu.show(options, function(choiceIndex:Int) {
             var chosenItem = validItems[choiceIndex];
-            
-            // --- ID SAVING ---
+
             // Saves the item's ID as true in GameState
             if (chosenItem.has.id) GameState.setFlag(chosenItem.att.id, true);
             
@@ -164,12 +167,10 @@ class DialogueManager extends FlxSubState {
         });
     }
 
-    // --- NEW SET FLAG PARSER ---
-    // Parses strings like "has_room_key = true" or "is_tired = false"
     function applySetFlag(flagStr:String):Void {
         var parts = flagStr.split("=");
         var key = StringTools.trim(parts[0]);
-        var val = true; // Default to true if no "=" is present
+        var val = true;
         
         if (parts.length > 1) {
             var valStr = StringTools.trim(parts[1]).toLowerCase();

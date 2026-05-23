@@ -21,7 +21,6 @@ class ItemData {
 
 class ItemManager {
     public static var items:Map<String, ItemData> = new Map();
-    // Maps Item ID -> Amount Owned
     public static var inventory:Map<String, Int> = new Map(); 
 
     public static function loadItems() {
@@ -31,18 +30,14 @@ class ItemManager {
         var rawXML = Assets.getText(path);
         rawXML = StringTools.replace(rawXML, "<!DOCTYPE lacie-engine-item>", "");
         
-        // Target the actual root element inside the document
         var parsedXml = Xml.parse(rawXML).firstElement();
         if (parsedXml == null) return;
         
         var xml = new Access(parsedXml);
         
-        // Correctly checks if the root tag CONTAINS an <items> child, or is itself the collection
         var iter = (xml.name == "items") ? xml.nodes.item : (xml.hasNode.items ? xml.node.items.nodes.item : xml.nodes.item);
         
         for (node in iter) {
-            // SEPARATED ID AND NAME: 
-            // Expects 'id="..."' attribute now. Falls back to 'name' if 'id' is missing.
             var id = node.has.id ? node.att.id : (node.has.name ? node.att.name : "");
             
             if (id == "") {
@@ -50,11 +45,9 @@ class ItemManager {
                 continue;
             }
 
-            trace("Loaded Item ID: " + id);
-            
             items.set(id, new ItemData(
                 id,
-                node.has.name ? node.att.name : id, // Fallback to ID if UI name is empty
+                node.has.name ? node.att.name : id, 
                 node.has.desc ? node.att.desc : "",
                 node.has.sprite ? node.att.sprite : "ui/item_icon_bg_empty",
                 node.has.script ? node.att.script : ""
@@ -67,11 +60,8 @@ class ItemManager {
     }
 
     public static function addItem(id:String, amount:Int = 1) {
-        trace(id);
         if (items.exists(id)) {
-            trace(id);
             var cur = getOwnedAmount(id);
-            trace(cur + amount);
             inventory.set(id, cur + amount);
         }
     }
@@ -84,9 +74,23 @@ class ItemManager {
         }
     }
 
-    // --- HSCRIPT SUPPORT ---
     public static function runItemScript(scriptPath:String) {
         if (scriptPath == "") return;
         var fullPath = "assets/data/" + scriptPath + ".hx";
+        
+        if (!Assets.exists(fullPath)) {
+            flixel.FlxG.log.warn("Item Script not found at: " + fullPath);
+            return;
+        }
+
+        if (RoomManager.instance != null && RoomManager.instance.scripts != null) {
+            var itemScript = RoomManager.instance.scripts.loadScript(fullPath);
+            RoomManager.instance.injectScriptVariables();
+            itemScript.call("onUse");
+        } else {
+            var tempScript = new GameScript(fullPath);
+            tempScript.call("onUse");
+            tempScript.destroy();
+        }
     }
 }

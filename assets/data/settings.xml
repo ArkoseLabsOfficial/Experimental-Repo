@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<settings>
+    <menu id="main">
+        <category label="system.settings.game.language" target="language" />
+        <category label="system.settings.game.gameplay" target="menu_gameplay" />
+        <category label="system.settings.game.graphics" target="menu_graphics" />
+        <category label="system.settings.game.controls" target="menu_controls" />
+    </menu>
+
+    <menu id="menu_gameplay">
+        <option type="bool" label="system.settings.game.gameplay.autosave" variable="autoSave" />
+        <option type="array" label="system.settings.game.gameplay.difficulty" variable="difficulty" values="Easy,Normal,Hard" />
+    </menu>
+
+    <menu id="menu_graphics">
+        <option type="int" label="system.settings.game.graphics.fpscap" variable="fps" min="30" max="240" step="10" />
+        <option type="float" label="system.settings.game.graphics.renderscale" variable="renderScale" min="0.5" max="2.0" step="0.1" />
+        <option type="percent" label="system.settings.game.graphics.uiopacity" variable="uiOpacity" min="0" max="100" step="10" />
+    </menu>
+
+    <menu id="menu_controls">
+        <option type="keybind" label="system.settings.game.controls.move_up" variable="UP" />
+        <option type="keybind" label="system.settings.game.controls.move_down" variable="DOWN" />
+        <option type="keybind" label="system.settings.game.controls.move_left" variable="LEFT" />
+        <option type="keybind" label="system.settings.game.controls.move_right" variable="RIGHT" />
+        <option type="keybind" label="system.settings.game.controls.accept" variable="ACCEPT" />
+        <option type="keybind" label="system.settings.game.controls.cancel" variable="CANCEL" />
+        <option type="keybind" label="system.settings.game.controls.run" variable="RUN" />
+        <option type="keybind" label="system.settings.game.controls.special" variable="SPECIAL" />
+    </menu>
+</settings>

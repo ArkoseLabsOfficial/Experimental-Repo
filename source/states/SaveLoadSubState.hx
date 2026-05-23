@@ -24,10 +24,12 @@ class SaveLoadSubState extends FlxSubState {
     var curSelected:Int = 0;
     var currentPage:Int = 0; 
     var isPaginating:Bool = false;
+    var fromMain:Bool = false;
 
-    public function new(isSavingMode:Bool = true) {
+    public function new(isSavingMode:Bool = true, fromMain:Bool = false) {
         super();
         this.isSavingMode = isSavingMode;
+        this.fromMain = fromMain;
     }
 
     override public function create() {
@@ -36,12 +38,18 @@ class SaveLoadSubState extends FlxSubState {
         camPause.bgColor = FlxColor.TRANSPARENT;
         FlxG.cameras.add(camPause, false);
         this.cameras = [camPause];
-        camPause.scroll.set(-230, 230);
+        if (!fromMain) camPause.scroll.set(-230, 230);
+
+        if (fromMain) {
+            var pauseBG = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xAA000000);
+            pauseBG.scrollFactor.set(0, 0);
+            add(pauseBG);
+        }
 
         var startX = (FlxG.width - MAIN_PANEL_W) / 2;
         var startY = (FlxG.height - MAIN_PANEL_H) / 2;
 
-        var titleTxt = isSavingMode ? "Oyunu Kaydet" : "Oyun Yükle";
+        var titleTxt = Language.GetCaption(isSavingMode ? "system.menu.savegame" : "system.menu.loadgame");
         var frame = new TitledMenuFrame(startX, startY, MAIN_PANEL_W, MAIN_PANEL_H, titleTxt, "assets/img/ui/divider_lg.png");
         add(frame);
 
@@ -77,7 +85,6 @@ class SaveLoadSubState extends FlxSubState {
         highlightSelection();
     }
 
-    // --- CRASH FIX: Safe Sound Wrapper ---
     function safePlaySound(path:String) {
         if (Assets.exists(path)) {
             FlxG.sound.play(path);
@@ -91,18 +98,18 @@ class SaveLoadSubState extends FlxSubState {
 
         if (isPaginating) return;
 
-        if (FlxG.keys.justPressed.UP) moveSelection(-1);
-        if (FlxG.keys.justPressed.DOWN) moveSelection(1);
+        if (Controls.UP_P) moveSelection(-1);
+        if (Controls.DOWN_P) moveSelection(1);
         
-        if (FlxG.keys.justPressed.LEFT) paginate(-1);
-        if (FlxG.keys.justPressed.RIGHT) paginate(1);
+        if (Controls.LEFT_P) paginate(-1);
+        if (Controls.RIGHT_P) paginate(1);
         
-        if (FlxG.keys.justPressed.X || FlxG.keys.justPressed.ESCAPE) {
+        if (Controls.CANCEL_P) {
             safePlaySound("assets/sfx/ui_navigation2.ogg");
             close();
         }
 
-        if (FlxG.keys.justPressed.Z || FlxG.keys.justPressed.ENTER) {
+        if (Controls.ACCEPT_P) {
             var selectedInfo = entries[curSelected].info;
             
             if (isSavingMode) {
@@ -113,7 +120,6 @@ class SaveLoadSubState extends FlxSubState {
                 if (!selectedInfo.isEmpty) {
                     safePlaySound("assets/sfx/ui_start.ogg");
                     if (SaveManager.loadGame(selectedInfo.slotNum)) {
-                        // FIX: Passes the saved room explicitly into the new PlayState!
                         FlxG.switchState(new PlayState(true, SaveManager.currentRoomPath)); 
                     }
                 } else {
@@ -164,9 +170,6 @@ class SaveLoadSubState extends FlxSubState {
     }
 }
 
-// ==============================================================================
-// 1080p SLOT ENTRY LOGIC (3x SCALE)
-// ==============================================================================
 class SaveLoadSlotEntry extends FlxSpriteGroup {
     static inline var SLOT_W:Int = 1095; 
     static inline var SLOT_H:Int = 114;  
@@ -189,7 +192,7 @@ class SaveLoadSlotEntry extends FlxSpriteGroup {
             if (Assets.exists("assets/img/ui/save_slot_empty.png")) bg.loadGraphic("assets/img/ui/save_slot_empty.png");
             else bg.makeGraphic(SLOT_W, SLOT_H, 0xFF2A0D1B);
             
-            var lbl = new FlxText(0, 40, SLOT_W, "Dosya " + info.slotNum, 36);
+            var lbl = new FlxText(0, 40, SLOT_W, Language.GetCaption("system.menu.file") + " " + info.slotNum, 36);
             lbl.alignment = CENTER;
             add(lbl);
             

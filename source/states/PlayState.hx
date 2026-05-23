@@ -11,8 +11,10 @@ class PlayState extends FlxState {
     var room:RoomManager;
     var isFromLoad:Bool;
     var roomPath:String;
+    public static var instance:PlayState;
+    public var objectives:ObjectiveManager;
 
-    // Added roomPath to the constructor with a default fallback
+    // NOTE: change current one to new(roomPath, fromLoad);
     public function new(?fromLoad:Bool = false, roomPath:String = "assets/data/rooms/bathroom.xml") {
         super();
         this.isFromLoad = fromLoad;
@@ -21,24 +23,24 @@ class PlayState extends FlxState {
 
     override public function create():Void {
         super.create();
+        instance = this;
+        objectives = new ObjectiveManager();
 
         room = new RoomManager();
-        
-        // 1. Load the specific room requested by the constructor
+
         room.loadRoom(this.roomPath);
         add(room);
-        add(room.solids); // Add invisible blocks so checkCollision finds them
+        add(room.solids);
 
-        // 2. Ensure the SaveManager knows exactly what room we are in
+        room.scripts.setParentForAll(this);
+
         SaveManager.currentRoomPath = this.roomPath;
 
         if (room.activePlayer != null) {
-            // 3. ENFORCE SAVED POSITION IF LOADING!
             if (isFromLoad) {
                 room.activePlayer.x = SaveManager.playerX;
                 room.activePlayer.y = SaveManager.playerY;
             } else {
-                // If starting fresh, lock in the initial spawn point
                 SaveManager.playerX = room.activePlayer.x;
                 SaveManager.playerY = room.activePlayer.y;
             }
@@ -50,8 +52,7 @@ class PlayState extends FlxState {
 
     override public function update(elapsed:Float):Void {
         super.update(elapsed);
-        
-        // Tick Playtime & Keep SaveManager's coordinates constantly updated
+
         SaveManager.currentPlaytime += elapsed;
         if (room.activePlayer != null) {
             SaveManager.playerX = room.activePlayer.x;

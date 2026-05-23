@@ -1,0 +1,30 @@
+{
+  "Objectives": [
+    {
+      "Id": "tutorial_start",
+      "Name": "welcomegame",
+      "Description": "welcomegame",
+      "Hidden": false,
+      "OnComplete": ["collect_key"],
+      "Children": [
+        {
+          "Id": "move_character",
+          "Name": "welcomemove",
+          "Description": "welcomemove"
+        },
+        {
+          "Id": "jump_platform",
+          "Name": "welcomejump",
+          "Description": "welcomejump"
+        }
+      ]
+    },
+    {
+      "Id": "collect_key",
+      "Name": "Find the Rusty Key",
+      "Description": "Search the room for the key to the cellar.",
+      "Hidden": false,
+      "OnComplete": ["open_cellar"]
+    }
+  ]
+}

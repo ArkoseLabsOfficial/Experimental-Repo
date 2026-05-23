@@ -3,18 +3,18 @@
     <dialog id="start">
         <entry leftChar="lacie/blank2" name="Lacie" text="You're back!" if="chat" />
         
-        <entry leftChar="lacie/blank3" name="Lacie" text="test_intro" hasSelection="true">
+        <entry leftChar="lacie/blank3" name="Lacie" text="dialogs.intro" hasSelection="true">
             <selections>
-                <item id="var_test" text="opt_var_test" selectionConfirmed="path_var_test" if="has_item" />
-                <item id="chat" text="opt_chat" selectionConfirmed="path_chat" />
-                <item id="leave" text="opt_leave" selectionConfirmed="path_leave" />
+                <item id="var_test" text="dialogs.selection.variables" selectionConfirmed="path_var_test" if="has_item" />
+                <item id="chat" text="dialogs.selection.chat" selectionConfirmed="path_chat" />
+                <item id="leave" text="dialogs.selection.leave" selectionConfirmed="path_leave" />
                 <item id="bruh" text="Do You Speak English?" selectionConfirmed="path_kurdish" />
             </selections>
         </entry>
     </dialog>
 
     <dialog id="path_var_test">
-        <entry leftChar="lacie/blank7" rightChar="aoi/annoyed" name="Lacie" text="res_var_success" return="start" />
+        <entry leftChar="lacie/blank7" rightChar="aoi/annoyed" name="Lacie" text="dialogs.variables.success" return="start" />
     </dialog>
 
     <dialog id="path_kurdish">
@@ -30,11 +30,11 @@
     </dialog>
 
     <dialog id="path_chat">
-        <entry leftChar="lacie/blank2" name="Kukla" text="res_chat_1" />
-        <entry leftChar="lacie_smile" name="Lacie" text="res_chat_2" return="start" />
+        <entry leftChar="lacie/blank2" name="Kukla" text="dialogs.chat.1" />
+        <entry leftChar="lacie_smile" name="Lacie" text="dialogs.chat.2" return="start" />
     </dialog>
 
     <dialog id="path_leave">
-        <entry leftChar="lacie_neutral" name="Lacie" text="res_leave" setFlag="has_left_room" closeTheBox="true" />
+        <entry leftChar="lacie_neutral" name="Lacie" text="dialogs.leave" setFlag="has_left_room" closeTheBox="true" />
     </dialog>
 </dialogues>

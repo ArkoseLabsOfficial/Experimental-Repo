@@ -15,7 +15,7 @@ class Player extends CharacterEntity {
         updateHitbox(); 
         offset.set(width / 2, height); // Visual anchor to feet
         
-        // Mathematical Player Hitbox (Scaled to match visual)
+        // Player Hitbox
         colWidth = 24;
         colHeight = 16;
         colOffsetX = -(colWidth / 2);
@@ -23,8 +23,7 @@ class Player extends CharacterEntity {
         
         hitboxGraphic.makeGraphic(Std.int(colWidth), Std.int(colHeight), flixel.util.FlxColor.TRANSPARENT);
         flixel.util.FlxSpriteUtil.drawRect(hitboxGraphic, 0, 0, colWidth, colHeight, flixel.util.FlxColor.TRANSPARENT, {thickness: 2, color: flixel.util.FlxColor.RED});
-        
-        // Turn this to false to hide the red collision box in-game
+
         showHitbox = true; 
     }
 
@@ -57,7 +56,7 @@ class Player extends CharacterEntity {
         
         if (backend.RoomManager.instance != null) {
             
-            // 1. Check Invisible Solid Editor Blocks
+            // Check Invisible Solid Editor Blocks
             for (solid in backend.RoomManager.instance.solids) {
                 var sBox = FlxRect.get(solid.x, solid.y, solid.width, solid.height);
                 if (pBox.overlaps(sBox)) {
@@ -68,7 +67,7 @@ class Player extends CharacterEntity {
                 sBox.put();
             }
 
-            // 2. Check Auto-Collision World Objects & NPCs
+            // Check Auto-Collision World Objects & NPCs
             if (!hit) {
                 for (entity in backend.RoomManager.instance.entities) {
                     // Ignore ourselves, and check if the object has collision enabled

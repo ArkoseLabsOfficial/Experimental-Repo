@@ -12,15 +12,15 @@ jobs:
           - name: Android
             os: ubuntu-latest
             setupCommand: sh ./setup/unix.sh
-            buildArgs: "android -ONLY_ARMV7"
-            artifactName: AndroidBuild-Armv7
+            buildArgs: "android -final -release"
+            artifactName: AndroidBuil
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
             doCache: "YES"
             
           - name: Windows
             os: windows-latest
             setupCommand: .\"setup/windows.bat"
-            buildArgs: "windows -D officialBuild -final"
+            buildArgs: "windows -release -final"
             artifactName: WindowsBuild
             artifactPath: export\release\windows\bin\*
             doCache: "YES"
@@ -28,7 +28,7 @@ jobs:
           - name: iOS
             os: macos-15
             setupCommand: sh ./setup/unix.sh
-            buildArgs: "ios -final -nosign -D officialBuild"
+            buildArgs: "ios -final -nosign -release"
             artifactName: iOSBuild
             artifactPath: "export/release/ios/build/Release-iphoneos/*.ipa"
             doCache: "YES"

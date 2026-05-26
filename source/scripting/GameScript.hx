@@ -1,11 +1,6 @@
 package scripting;
 
 import flixel.FlxG;
-#if sys
-import sys.FileSystem;
-import sys.io.File;
-#end
-import openfl.utils.Assets;
 
 import crowplexus.hscript.Expr;
 import crowplexus.hscript.Parser;
@@ -72,7 +67,7 @@ class GameScript implements ISharedScript {
         #if sys
         if (FileSystem.exists(path)) code = File.getContent(path);
         #end
-        if (code == "" && Assets.exists(path)) code = Assets.getText(path);
+        if (code == "" && FileSystem.exists(path)) code = File.getContent(path);
         return code;
     }
 
@@ -98,10 +93,9 @@ class GameScript implements ISharedScript {
         // Dynamic loading if not found
         var potentialPaths:Array<String> = [
             cleanName + ".hx",
-            "assets/" + cleanName + ".hx",
-            "assets/data/" + cleanName + ".hx",
-            "assets/data/scripts/" + cleanName + ".hx",
-            "assets/scripts/" + cleanName + ".hx"
+            "data/" + cleanName + ".hx",
+            "data/scripts/" + cleanName + ".hx",
+            "scripts/" + cleanName + ".hx"
         ];
 
         for (p in potentialPaths) {
@@ -119,10 +113,7 @@ class GameScript implements ISharedScript {
     }
 
     private function fileExists(filePath:String):Bool {
-        #if sys
-        if (sys.FileSystem.exists(filePath)) return true;
-        #end
-        return openfl.utils.Assets.exists(filePath);
+        return FileSystem.exists(filePath);
     }
 
     public function call(funcName:String, ?args:Array<Dynamic>):Dynamic {

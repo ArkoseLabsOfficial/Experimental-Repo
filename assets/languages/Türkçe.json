@@ -14,7 +14,7 @@
     "system.settings.game.controls.accept": "Kabul",
     "system.settings.game.controls.cancel": "Reddet",
     "system.settings.game.controls.run": "Koş",
-    "system.settings.game.controls.special": "ÖZel",
+    "system.settings.game.controls.menu": "Menü",
     
     "system.settings.game.graphics.fpscap": "FPS Sınırı",
     "system.settings.game.graphics.renderscale": "Render Boyutu",

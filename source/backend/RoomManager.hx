@@ -57,8 +57,9 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
     public var sortMap:Map<FlxSprite, SortData>;
 
     public var scripts:ScriptHandler;
+    public var mainState:Dynamic = null;
 
-    public function new() {
+    public function new(?mainState:Dynamic) {
         super();
         instance = this;
         
@@ -71,14 +72,15 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
         sortMap = new Map();
 
         scripts = new ScriptHandler();
+        this.mainState = mainState;
     }
 
     public function loadRoom(filePath:String) {
-        if (!openfl.utils.Assets.exists(filePath)) {
+        if (!FileSystem.exists(filePath)) {
             flixel.FlxG.log.warn("Room file not found: " + filePath);
             return;
         }
-        var rawData = openfl.utils.Assets.getText(filePath);
+        var rawData = File.getContent(filePath);
         
         if (StringTools.endsWith(filePath, ".tscn")) {
             loadRoomFromTSCN(rawData);
@@ -87,7 +89,7 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
         }
 
         var autoScriptPath = filePath.substr(0, filePath.lastIndexOf(".")) + ".hx";
-        if (openfl.utils.Assets.exists(autoScriptPath)) {
+        if (FileSystem.exists(autoScriptPath)) {
             scripts.loadScript(autoScriptPath);
         }
 
@@ -101,7 +103,6 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
      */
     public function injectScriptVariables():Void {
         if (scripts == null) return;
-        
         scripts.setGlobal("room", this);
         scripts.setGlobal("player", activePlayer);
         scripts.setGlobal("cutscenePlayer", activeCutscenePlayer);
@@ -121,11 +122,11 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
     }
 
     public function convertTSCN(filePath:String):String {
-        if (!openfl.utils.Assets.exists(filePath)) {
+        if (!FileSystem.exists(filePath)) {
             flixel.FlxG.log.warn("Cannot convert. File not found: " + filePath);
             return "";
         }
-        var rawTSCN = openfl.utils.Assets.getText(filePath);
+        var rawTSCN = File.getContent(filePath);
         var lines = rawTSCN.split("\n");
         var extResources = new Map<Int, String>();
         
@@ -402,7 +403,7 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
                     var tileInfo = tresData.get(id);
                     if (tileInfo != null && tileInfo.path != "") {
                         var tile = new WorldObject(absPos.x + (tx * cSize.x), absPos.y + (ty * cSize.y), z, "tile_" + tx + "_" + ty);
-                        if (openfl.utils.Assets.exists(tileInfo.path)) {
+                        if (FileSystem.exists(tileInfo.path)) {
                             var graph = flixel.FlxG.bitmap.add(tileInfo.path);
                             var sheetColumns = Std.int(graph.width / cSize.x);
                             tile.loadGraphic(tileInfo.path, true, Std.int(cSize.x), Std.int(cSize.y));
@@ -526,9 +527,9 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
 
     function parseTresTileSet(tresPath:String):Map<Int, TresTile> {
         var map = new Map<Int, TresTile>();
-        if (!openfl.utils.Assets.exists(tresPath)) return map;
+        if (!FileSystem.exists(tresPath)) return map;
         
-        var raw = openfl.utils.Assets.getText(tresPath);
+        var raw = File.getContent(tresPath);
         var lines = raw.split("\n");
 
         var extRes = new Map<Int, String>();
@@ -580,7 +581,7 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
 
         if (xml.hasNode.scripts) {
             for (scriptNode in xml.node.scripts.nodes.script) {
-                if (scriptNode.has.path) scripts.loadScript("assets/data/" + scriptNode.att.path + ".hx");
+                if (scriptNode.has.path) scripts.loadScript("data/" + scriptNode.att.path + ".hx");
             }
         }
 
@@ -614,7 +615,7 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
                     if (tileInfo != null && tileInfo.path != "") {
                         var tile = new WorldObject(tx * size, ty * size, z, "tile_" + tx + "_" + ty);
                         
-                        if (openfl.utils.Assets.exists(tileInfo.path)) {
+                        if (FileSystem.exists(tileInfo.path)) {
                             var graph = flixel.FlxG.bitmap.add(tileInfo.path);
                             var sheetColumns = Std.int(graph.width / size);
                             
@@ -832,7 +833,7 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
             for (scriptNode in node.nodes.script) {
                 if (scriptNode.has.path) {
                     // Load script and attach to the RoomManager's ScriptHandler
-                    var objScript = scripts.loadScript("assets/data/" + scriptNode.att.path + ".hx");
+                    var objScript = scripts.loadScript("data/" + scriptNode.att.path + ".hx");
                     
                     // Inject THIS specific object into the script as "this" or "obj"
                     objScript.set("this", obj);

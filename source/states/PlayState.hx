@@ -7,7 +7,7 @@ import backend.RoomManager;
 import backend.SaveManager;
 import states.PauseSubState;
 
-class PlayState extends FlxState {
+class PlayState extends StateBackend {
     var room:RoomManager;
     var isFromLoad:Bool;
     var roomPath:String;
@@ -23,10 +23,12 @@ class PlayState extends FlxState {
 
     override public function create():Void {
         super.create();
+        mobile.controls.addMobilePad("FULL", "A_B_C");
+        mobile.controls.addMobilePadCamera();
         instance = this;
         objectives = new ObjectiveManager();
 
-        room = new RoomManager();
+        room = new RoomManager(this);
 
         room.loadRoom(this.roomPath);
         add(room);
@@ -59,7 +61,7 @@ class PlayState extends FlxState {
             SaveManager.playerY = room.activePlayer.y;
         }
 
-        if (FlxG.keys.justPressed.ESCAPE) openSubState(new PauseSubState());
+        if (Controls.MENU_P) openSubState(new PauseSubState());
         
         if (room.activePlayer != null && Controls.ACCEPT_P) {
             var box:FlxRect = room.activePlayer.getInteractionBox();

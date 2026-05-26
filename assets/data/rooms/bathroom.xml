@@ -2,7 +2,7 @@
 <room name="bathroom" folder="">
     <camera zoom="1.0" />
     <scripts>
-        <script path="scripts/common/room_setup" />
+        <script path="scripts/room_setup" />
         <script path="scripts/ch1/bedroom_event" />
     </scripts>
 

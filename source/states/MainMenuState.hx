@@ -9,11 +9,8 @@ import backend.GamePrefs;
 import backend.Language;
 import backend.Controls;
 import lime.system.System;
-
+import backend.UIUtil;
 import flixel.addons.ui.FlxUI9SliceSprite;
-import flixel.graphics.FlxGraphic;
-import openfl.geom.Matrix;
-import openfl.geom.Rectangle;
 
 typedef MenuOption = {
     var transKey:String;
@@ -21,24 +18,18 @@ typedef MenuOption = {
     var action:Int->Void;
 }
 
-class MainMenuState extends FlxState {
+class MainMenuState extends StateBackend {
     var bg:FlxSprite;
     var titleLogo:FlxSprite;
-    
-    // Bottom-Right Info Texts
     var extraInfoText:FlxText;
     var versionInfoText:FlxText;
-    
-    // Menu HUD Variables
     var bgBox:FlxUI9SliceSprite;
-    var overlayBox:FlxUI9SliceSprite; // Added the overlay texture
+    var overlayBox:FlxUI9SliceSprite;
     var selector:FlxSprite;
     var itemGroup:FlxSpriteGroup; 
     var menuItems:Array<MenuOption> = []; 
-    
     var selectedIndex:Int = 0;
     var layoutSpacing:Float = 50; 
-
     var hasSaveFile:Bool = false;
 
     override public function create():Void {
@@ -92,21 +83,19 @@ class MainMenuState extends FlxState {
         var dynamicHeight:Float = (menuDefinitions.length * layoutSpacing) + 60;
         var fixedWidth:Float = 400; 
 
-        bgBox = create9SliceSprite("assets/img/ui/frame_default_bg.png", 1300, 561, fixedWidth, dynamicHeight, 1.0);
-        overlayBox = create9SliceSprite("assets/img/ui/frame_menu_2b.png", 1300, 561, fixedWidth, dynamicHeight, 1.0);
+        bgBox = UIUtil.create9SliceSprite("assets/img/ui/frame_default_bg.png", 1300, 561, fixedWidth, dynamicHeight, 1.0);
+        overlayBox = UIUtil.create9SliceSprite("assets/img/ui/frame_menu_2b.png", 1300, 561, fixedWidth, dynamicHeight, 1.0);
 
         selector = new FlxSprite().makeGraphic(Std.int(bgBox.width - 80), 38, 0x66FFFFFF);
-
         itemGroup = new FlxSpriteGroup();
 
         add(bgBox);
         add(selector);
         add(itemGroup);
-        add(overlayBox); // Overlay drawn on top
+        add(overlayBox);
         
         var layoutY:Float = bgBox.y + 40; 
 
-        // Generate and store the text items
         for (def in menuDefinitions) {
             var txt = new FlxText(bgBox.x, layoutY, bgBox.width, Language.GetCaption(def.transKey), 20);
             txt.alignment = "center";
@@ -123,30 +112,28 @@ class MainMenuState extends FlxState {
 
         changeSelection(0);
         Language.onLanguageUpdate.push(refreshText);
+        mobile.controls.addMobilePad("UP_DOWN", "MAIN_MENU");
+        mobile.controls.addMobilePadCamera();
     }
 
     override public function update(elapsed:Float):Void {
         super.update(elapsed);
-        
-        // Disable background menu input when Options Substate is open
         if (subState != null) return; 
 
         if (Controls.UP_P) {
-            FlxG.sound.play("assets/sfx/ui_navigation.ogg");
+            UIUtil.playNavSound();
             changeSelection(-1);
         }
         if (Controls.DOWN_P) {
-            FlxG.sound.play("assets/sfx/ui_navigation.ogg");
+            UIUtil.playNavSound();
             changeSelection(1);
         }
         if (menuItems.length > 0) {
             var currentOpt = menuItems[selectedIndex];
             if (Controls.ACCEPT_P) {
-                FlxG.sound.play("assets/sfx/ui_start.ogg");
+                UIUtil.playConfirmSound();
                 currentOpt.action(0);
             }
-            else if (Controls.LEFT_P) currentOpt.action(-1);
-            else if (Controls.RIGHT_P) currentOpt.action(1);
         }
     }
 
@@ -169,7 +156,6 @@ class MainMenuState extends FlxState {
         titleLogo.loadGraphic(Language.getAsset("assets/img/ui/title_logo_paperlily.png"));
         titleLogo.scale.set(0.8, 0.8); 
         titleLogo.updateHitbox();
-
         extraInfoText.text = Language.GetCaption("system.menu.translator.credit");
     }
 
@@ -177,22 +163,5 @@ class MainMenuState extends FlxState {
         Language.onLanguageUpdate.remove(refreshText);
         Language.onLanguageUpdate.remove(updateLocalizedImages);
         super.destroy();
-    }
-
-    private function create9SliceSprite(frameImage:String, X:Float, Y:Float, Width:Float, Height:Float, scaleFactor:Float):FlxUI9SliceSprite {
-        var originalGraphic = FlxGraphic.fromAssetKey(frameImage);
-        var newWidth:Int = Std.int(originalGraphic.width * scaleFactor);
-        var newHeight:Int = Std.int(originalGraphic.height * scaleFactor);
-        var matrix = new Matrix();
-        matrix.scale(scaleFactor, scaleFactor);
-        var scaledBmd = new openfl.display.BitmapData(newWidth, newHeight, true, 0x00000000);
-        scaledBmd.draw(originalGraphic.bitmap, matrix, null, null, null, true);
-        var finalGraphic = FlxGraphic.fromBitmapData(scaledBmd);
-        
-        var cutX:Int = Std.int(finalGraphic.width / 3);
-        var cutY:Int = Std.int(finalGraphic.height / 3);
-        var sliceRect:Array<Int> = [ cutX, cutY, Std.int(finalGraphic.width - cutX), Std.int(finalGraphic.height - cutY) ];
-        
-        return new FlxUI9SliceSprite(X, Y, finalGraphic, new Rectangle(0, 0, Width, Height), sliceRect);
     }
 }

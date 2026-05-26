@@ -11,7 +11,6 @@ import backend.UIUtil;
 class DialogSelection extends FlxTypedGroup<FlxSprite> {
     var bgBoxBorder:FlxUI9SliceSprite;
     var selector:FlxSprite;
-    
     var options:Array<String>;
     var optionTexts:Array<FlxText> = [];
     var selectedIndex:Int = 0;
@@ -19,15 +18,13 @@ class DialogSelection extends FlxTypedGroup<FlxSprite> {
     public var activeMenu:Bool = false;
     public var onSelect:Int->Void;
 
-    // Layout configuration
     var optionSpacing:Float = 35;
     var boxPaddingX:Float = 60;
 
     public function new() {
         super();
         
-        selector = new FlxSprite().makeGraphic(1, 1, 0xFFFFFFFF); 
-        selector.alpha = 0.4;
+        selector = UIUtil.createHighlightBox(0, 0, 1, 1, 0.4);
         selector.scrollFactor.set(0, 0);
         
         visible = false;
@@ -50,10 +47,9 @@ class DialogSelection extends FlxTypedGroup<FlxSprite> {
             bgBoxBorder.destroy();
         }
         
-        // Calculate dynamic width using the scaled 0.5x trick to prevent blur
         var maxTextWidth:Float = 200; 
         for (opt in options) {
-            var tempText = new FlxText(0, 0, 0, opt, 40);
+            var tempText = UIUtil.createText(0, 0, 0, opt, 40);
             tempText.scale.set(0.5, 0.5);
             tempText.updateHitbox();
             
@@ -64,7 +60,7 @@ class DialogSelection extends FlxTypedGroup<FlxSprite> {
         var boxWidth = maxTextWidth + boxPaddingX; 
         var boxHeight = 40 + (options.length * optionSpacing);
         
-        bgBoxBorder = UIUtil.create9SliceOptionSprite("assets/img/ui/frame_menu.png", 0, 0, boxWidth, boxHeight, [20, 20, 20, 20]);
+        bgBoxBorder = UIUtil.create9SliceSprite("assets/img/ui/frame_menu.png", 0, 0, boxWidth, boxHeight, 1.0);
         bgBoxBorder.scrollFactor.set(0, 0); 
         bgBoxBorder.screenCenter();
 
@@ -77,14 +73,10 @@ class DialogSelection extends FlxTypedGroup<FlxSprite> {
         var layoutY = bgBoxBorder.y + 20;
 
         for (i in 0...options.length) {
-            var txt = new FlxText(0, layoutY, 0, options[i], 40);
-            
-            // Apply the anti-blur trick
+            var txt = UIUtil.createText(0, layoutY, 0, options[i], 40);
             txt.scale.set(0.5, 0.5);
             txt.updateHitbox();
-            
             txt.x = bgBoxBorder.x + ((bgBoxBorder.width - txt.width) / 2);
-            
             txt.scrollFactor.set(0, 0);
             txt.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5); 
             
@@ -106,10 +98,17 @@ class DialogSelection extends FlxTypedGroup<FlxSprite> {
 
         if (!activeMenu) return;
 
-        if (Controls.UP_P) changeSelection(-1);
-        if (Controls.DOWN_P) changeSelection(1);
+        if (Controls.UP_P) {
+            UIUtil.playNavSound();
+            changeSelection(-1);
+        }
+        if (Controls.DOWN_P) {
+            UIUtil.playNavSound();
+            changeSelection(1);
+        }
         
         if (Controls.ACCEPT_P) {
+            UIUtil.playConfirmSound();
             visible = false;
             activeMenu = false;
             if (onSelect != null) onSelect(selectedIndex);

@@ -12,7 +12,7 @@ import openfl.utils.Assets;
 import backend.SaveManager;
 import ui.TitledMenuFrame;
 
-class SaveLoadSubState extends FlxSubState {
+class SaveLoadSubState extends SubStateBackend {
     public var isSavingMode:Bool;
     
     static inline var MAIN_PANEL_W:Int = 1452; 
@@ -66,6 +66,9 @@ class SaveLoadSubState extends FlxSubState {
         add(slotGroup);
 
         buildPage();
+
+        mobile.controls.addMobilePad("FULL", "A_B");
+        mobile.controls.addMobilePadCamera();
     }
 
     function buildPage() {

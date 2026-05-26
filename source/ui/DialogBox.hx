@@ -5,6 +5,7 @@ import flixel.FlxSprite;
 import flixel.text.FlxText;
 import flixel.addons.text.FlxTypeText;
 import flixel.FlxG;
+import backend.UIUtil;
 
 class DialogBox extends FlxSpriteGroup {
     var bg:FlxSprite;
@@ -37,7 +38,7 @@ class DialogBox extends FlxSpriteGroup {
         portraitRight.scrollFactor.set(0, 0);
         add(portraitRight);
 
-        nameText = new FlxText(bg.x + 120, bg.y + 45, 400, "", 36);
+        nameText = UIUtil.createText(bg.x + 120, bg.y + 45, 400, "", 36, LEFT);
         nameText.scrollFactor.set(0, 0);
         add(nameText);
 
@@ -48,6 +49,7 @@ class DialogBox extends FlxSpriteGroup {
         add(nameSeperator);
 
         bodyText = new FlxTypeText(bg.x + 120, bg.y + 105, Std.int(bg.width - 160), "", 33);
+        bodyText.font = "assets/fonts/AlegreyaSC-Regular.ttf"; 
         bodyText.delay = 0.03;
         bodyText.eraseDelay = 0;
         bodyText.showCursor = false;

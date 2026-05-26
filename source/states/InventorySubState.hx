@@ -8,11 +8,11 @@ import flixel.util.FlxColor;
 import flixel.group.FlxSpriteGroup;
 import openfl.utils.Assets;
 import backend.ItemManager;
+import backend.UIUtil;
 import ui.TitledMenuFrame;
 import flixel.FlxCamera;
 
-class InventorySubState extends FlxSubState {
-    // Exact 3x Godot Dimensions (Vector2(300, 200) & Vector2(182, 200))
+class InventorySubState extends SubStateBackend {
     static inline var MAIN_PANEL_W:Int = 900;
     static inline var MAIN_PANEL_H:Int = 600;
     static inline var DESC_PANEL_W:Int = 546;
@@ -22,7 +22,6 @@ class InventorySubState extends FlxSubState {
     var curSelected:Int = 0;
     var maxCols:Int = 5;
 
-    // UI Elements
     var descFrame:TitledMenuFrame;
     var descText:FlxText;
     var camInventory:FlxCamera;
@@ -34,41 +33,32 @@ class InventorySubState extends FlxSubState {
         FlxG.cameras.add(camInventory, false);
         this.cameras = [camInventory];
         camInventory.scroll.set(-230, 230);
-        //trace(ItemManager.inventory);
 
-        // Center calculation
-        var separation = 6; // HBoxContainer SetSeparation(2) * 3
+        var separation = 6; 
         var totalWidth = MAIN_PANEL_W + separation + DESC_PANEL_W;
         var startX = (FlxG.width - totalWidth) / 2;
         var startY = (FlxG.height - MAIN_PANEL_H) / 2;
 
-        // Inventory Frame (Left)
-        // Title: system.menu.inventory, Divider: divider_md
         var invFrame = new TitledMenuFrame(startX, startY, MAIN_PANEL_W, MAIN_PANEL_H, "Eşyalar", "assets/img/ui/divider_md.png", "");
         add(invFrame);
 
-        // Description Frame (Right)
-        // Divider: divider_sm, Decor: menu_bg_decor
         var descX = startX + MAIN_PANEL_W + separation;
         descFrame = new TitledMenuFrame(descX, startY, DESC_PANEL_W, DESC_PANEL_H, "", "assets/img/ui/divider_sm.png", "assets/img/ui/menu_bg_decor.png");
         add(descFrame);
 
-        // Content Margin Top scaled for text
-        descText = new FlxText(descX + 45, startY + 130, DESC_PANEL_W - 90, "", 24);
+        descText = UIUtil.createText(descX + 45, startY + 130, DESC_PANEL_W - 90, "", 24, LEFT);
         add(descText);
 
-        // Load Inventory Data
         var ownedItemIDs = [];
         for (id in ItemManager.inventory.keys()) ownedItemIDs.push(id);
         
         var rawCount = ownedItemIDs.length;
         var totalSlots = Std.int(Math.max(15, 5 * Math.ceil(rawCount / 5.0)));
 
-        // Entry Grid
-        var gridStartX = startX + 75; // ContentMarginLeft = 25 * 3
-        var gridStartY = startY + 120; // ContentMarginTop + TitleSpace
-        var iconSize = 120; // 40f * 3
-        var gap = 30; // 10,10 * 3
+        var gridStartX = startX + 75; 
+        var gridStartY = startY + 120; 
+        var iconSize = 120; 
+        var gap = 30; 
         var stride = iconSize + gap;
 
         for (i in 0...totalSlots) {
@@ -88,6 +78,9 @@ class InventorySubState extends FlxSubState {
         }
 
         highlightSelection();
+
+        mobile.controls.addMobilePad("FULL", "A_B");
+        mobile.controls.addMobilePadCamera();
     }
 
     override public function update(elapsed:Float) {
@@ -99,31 +92,29 @@ class InventorySubState extends FlxSubState {
         if (Controls.RIGHT_P) moveSelection(1, true);
         
         if (Controls.CANCEL_P) {
-            FlxG.sound.play("assets/sfx/ui_navigation2.ogg");
+            UIUtil.playNavSound(true);
             close();
         }
 
         if (Controls.ACCEPT_P) {
             var activeEntry = entries[curSelected];
             if (!activeEntry.isEmpty) {
-                FlxG.sound.play("assets/sfx/ui_start.ogg");
+                UIUtil.playConfirmSound();
                 var itemData = ItemManager.items.get(activeEntry.itemId);
                 
                 if (itemData != null && itemData.scriptPath != "") {
                     ItemManager.runItemScript(itemData.scriptPath);
-                    trace("item selected and script runned");
                     ItemManager.removeItem(activeEntry.itemId, 1);
                 }
                 close();
             } else {
-                FlxG.sound.play("assets/sfx/ui_bad.ogg");
+                UIUtil.playErrorSound();
             }
         }
     }
 
     function moveSelection(change:Int, isHorizontal:Bool) {
-        FlxG.sound.play("assets/sfx/ui_navigation.ogg");
-        
+        UIUtil.playNavSound();
         if (isHorizontal) {
             var oldCol = curSelected % maxCols;
             curSelected += change;
@@ -134,13 +125,11 @@ class InventorySubState extends FlxSubState {
             if (curSelected < 0) curSelected += entries.length;
             if (curSelected >= entries.length) curSelected %= maxCols;
         }
-        
         highlightSelection();
     }
 
     function highlightSelection() {
         for (entry in entries) entry.deselect();
-        
         descFrame.setTitle("");
         descText.text = "";
 
@@ -150,7 +139,7 @@ class InventorySubState extends FlxSubState {
 
             if (!activeEntry.isEmpty) {
                 var itemData = ItemManager.items.get(activeEntry.itemId);
-                descFrame.setTitle(Language.GetCaption(itemData.name)); // Automatically un-hides title and divider
+                descFrame.setTitle(Language.GetCaption(itemData.name)); 
                 descText.text = Language.GetCaption(itemData.desc);
             }
         }
@@ -158,12 +147,10 @@ class InventorySubState extends FlxSubState {
 }
 
 class InventoryMenuEntry extends FlxSpriteGroup {
-    static inline var ICON_SIZE:Int = 120; // 40f * 3
-    
+    static inline var ICON_SIZE:Int = 120; 
     var bgTextureRect:FlxSprite;
     var itemIcon:FlxSprite;
     var nQtyLabel:FlxText;
-    
     public var itemId:String;
     public var amount:Int;
     public var isEmpty:Bool;
@@ -206,10 +193,8 @@ class InventoryMenuEntry extends FlxSpriteGroup {
         var tex = isEmpty ? "assets/img/ui/item_icon_bg_empty_selected.png" : "assets/img/ui/item_icon_bg_selected.png";
         if (Assets.exists(tex)) bgTextureRect.loadGraphic(tex);
         else bgTextureRect.makeGraphic(ICON_SIZE, ICON_SIZE, 0xFFFF0000); 
-        
         bgTextureRect.setGraphicSize(ICON_SIZE, ICON_SIZE);
         bgTextureRect.updateHitbox();
-
         if (nQtyLabel != null) {
             nQtyLabel.color = 0xFFBD274D;
             nQtyLabel.borderColor = FlxColor.WHITE;
@@ -220,10 +205,8 @@ class InventoryMenuEntry extends FlxSpriteGroup {
         var tex = isEmpty ? "assets/img/ui/item_icon_bg_empty.png" : "assets/img/ui/item_icon_bg.png";
         if (Assets.exists(tex)) bgTextureRect.loadGraphic(tex);
         else bgTextureRect.makeGraphic(ICON_SIZE, ICON_SIZE, 0xFF444444); 
-        
         bgTextureRect.setGraphicSize(ICON_SIZE, ICON_SIZE);
         bgTextureRect.updateHitbox();
-
         if (nQtyLabel != null) {
             nQtyLabel.color = FlxColor.WHITE;
             nQtyLabel.borderColor = 0xFFBD274D;

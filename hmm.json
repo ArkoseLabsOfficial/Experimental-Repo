@@ -45,6 +45,13 @@
       "dir": null,
       "ref": null,
       "url": "https://github.com/NovaFlare-Engine-Concentration/hscript-iris-improved"
+    },
+    {
+      "name": "mobile-controls",
+      "type":"git",
+      "dir": null,
+      "ref": null,
+      "url": "https://github.com/ArkoseLabsOfficial/mobile-controls-dev"
     }
   ]
 }

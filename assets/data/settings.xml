@@ -26,6 +26,6 @@
         <option type="keybind" label="system.settings.game.controls.accept" variable="ACCEPT" />
         <option type="keybind" label="system.settings.game.controls.cancel" variable="CANCEL" />
         <option type="keybind" label="system.settings.game.controls.run" variable="RUN" />
-        <option type="keybind" label="system.settings.game.controls.special" variable="SPECIAL" />
+        <option type="keybind" label="system.settings.game.controls.menu" variable="MENU" />
     </menu>
 </settings>

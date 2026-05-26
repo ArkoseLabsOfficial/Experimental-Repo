@@ -14,7 +14,7 @@
     "system.settings.game.controls.accept": "Accept",
     "system.settings.game.controls.cancel": "Cancel",
     "system.settings.game.controls.run": "Run",
-    "system.settings.game.controls.special": "Special",
+    "system.settings.game.controls.menu": "Menu",
     
     "system.settings.game.graphics.fpscap": "FPS Cap",
     "system.settings.game.graphics.renderscale": "Render Scale",

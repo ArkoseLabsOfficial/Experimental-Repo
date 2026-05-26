@@ -60,7 +60,7 @@ class DialogSelection extends FlxTypedGroup<FlxSprite> {
         var boxWidth = maxTextWidth + boxPaddingX; 
         var boxHeight = 40 + (options.length * optionSpacing);
         
-        bgBoxBorder = UIUtil.create9SliceSprite("assets/img/ui/frame_menu.png", 0, 0, boxWidth, boxHeight, 1.0);
+        bgBoxBorder = UIUtil.create9SliceSprite(LilyAssets.image("img/ui/frame_menu"), 0, 0, boxWidth, boxHeight, 1.0);
         bgBoxBorder.scrollFactor.set(0, 0); 
         bgBoxBorder.screenCenter();
 

@@ -6,7 +6,6 @@ import flixel.FlxSubState;
 import flixel.group.FlxSpriteGroup;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
-import openfl.utils.Assets;
 import backend.Language;
 import backend.UIUtil;
 import ui.TitledMenuFrame;
@@ -83,7 +82,7 @@ class SimpleVerticalMenu extends FlxSpriteGroup {
         } else if (Controls.ACCEPT_P) {
             entries[selection].accept();
         } else if (Controls.CANCEL_P) {
-            UIUtil.playNavSound(true);
+            UIUtil.playCancelSound();
             entries[selection].cancel();
         }
     }
@@ -220,7 +219,7 @@ class LanguageMenu extends SubStateBackend {
 
         var px = (FlxG.width - frameWidth) / 2;
         var py = (FlxG.height - frameHeight) / 2;
-        frame = new TitledMenuFrame(px, py, frameWidth, frameHeight, Language.GetCaption("system.settings.game.language.select"), "assets/img/ui/divider_md.png");
+        frame = new TitledMenuFrame(px, py, frameWidth, frameHeight, Language.GetCaption("system.settings.game.language.select"), LilyAssets.image("img/ui/divider_md"));
         add(frame);
 
         var startupMenu = new StartupLanguageMenu(false, null, this);
@@ -232,7 +231,7 @@ class LanguageMenu extends SubStateBackend {
         var infoBoxX:Float = FlxG.width - infoBoxWidth;
         var infoBoxY:Float = FlxG.height - infoBoxHeight;
 
-        var infoBox = UIUtil.createInfoBox("assets/img/ui/frame_infobox.png", infoBoxX - 35, infoBoxY - 10, infoBoxWidth, infoBoxHeight, 0.66);
+        var infoBox = UIUtil.createInfoBox(LilyAssets.image("img/ui/frame_infobox"), infoBoxX - 35, infoBoxY - 10, infoBoxWidth, infoBoxHeight, 0.66);
         add(infoBox);
 
         var controlsText = UIUtil.createText(infoBoxX - 135, infoBoxY + (infoBoxHeight / 2) - 30, 400, "[Z] Seç   [X] Geri", 32);

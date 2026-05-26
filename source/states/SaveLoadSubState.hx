@@ -8,7 +8,6 @@ import flixel.util.FlxColor;
 import flixel.group.FlxSpriteGroup;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
-import openfl.utils.Assets;
 import backend.SaveManager;
 import ui.TitledMenuFrame;
 
@@ -50,15 +49,15 @@ class SaveLoadSubState extends SubStateBackend {
         var startY = (FlxG.height - MAIN_PANEL_H) / 2;
 
         var titleTxt = Language.GetCaption(isSavingMode ? "system.menu.savegame" : "system.menu.loadgame");
-        var frame = new TitledMenuFrame(startX, startY, MAIN_PANEL_W, MAIN_PANEL_H, titleTxt, "assets/img/ui/divider_lg.png");
+        var frame = new TitledMenuFrame(startX, startY, MAIN_PANEL_W, MAIN_PANEL_H, titleTxt, LilyAssets.image("img/ui/divider_lg"));
         add(frame);
 
         var arrowY = startY + (MAIN_PANEL_H / 2) - 30;
-        var arrowL = new FlxSprite(startX - 60, arrowY).loadGraphic("assets/img/ui/arrow_up.png");
+        var arrowL = new FlxSprite(startX - 60, arrowY).loadGraphic(LilyAssets.image("img/ui/arrow_up"));
         arrowL.angle = -90;
         add(arrowL);
 
-        var arrowR = new FlxSprite(startX + MAIN_PANEL_W + 20, arrowY).loadGraphic("assets/img/ui/arrow_up.png");
+        var arrowR = new FlxSprite(startX + MAIN_PANEL_W + 20, arrowY).loadGraphic(LilyAssets.image("img/ui/arrow_up"));
         arrowR.angle = 90;
         add(arrowR);
 
@@ -88,14 +87,6 @@ class SaveLoadSubState extends SubStateBackend {
         highlightSelection();
     }
 
-    function safePlaySound(path:String) {
-        if (Assets.exists(path)) {
-            FlxG.sound.play(path);
-        } else {
-            FlxG.log.warn("Missing sound file: " + path);
-        }
-    }
-
     override public function update(elapsed:Float) {
         super.update(elapsed);
 
@@ -108,7 +99,7 @@ class SaveLoadSubState extends SubStateBackend {
         if (Controls.RIGHT_P) paginate(1);
         
         if (Controls.CANCEL_P) {
-            safePlaySound("assets/sfx/ui_navigation2.ogg");
+            UIUtil.playCancelSound();
             close();
         }
 
@@ -116,24 +107,24 @@ class SaveLoadSubState extends SubStateBackend {
             var selectedInfo = entries[curSelected].info;
             
             if (isSavingMode) {
-                safePlaySound("assets/sfx/ui_start.ogg");
+                UIUtil.playConfirmSound();
                 SaveManager.saveGame(selectedInfo.slotNum);
                 buildPage(); 
             } else {
                 if (!selectedInfo.isEmpty) {
-                    safePlaySound("assets/sfx/ui_start.ogg");
+                    UIUtil.playConfirmSound();
                     if (SaveManager.loadGame(selectedInfo.slotNum)) {
                         FlxG.switchState(new PlayState(true, SaveManager.currentRoomPath)); 
                     }
                 } else {
-                    safePlaySound("assets/sfx/ui_bad.ogg"); 
+                    UIUtil.playErrorSound();
                 }
             }
         }
     }
 
     function moveSelection(change:Int) {
-        safePlaySound("assets/sfx/ui_navigation.ogg");
+        UIUtil.playNavSound();
         curSelected += change;
         if (curSelected < 0) curSelected = entries.length - 1;
         if (curSelected >= entries.length) curSelected = 0;
@@ -149,7 +140,7 @@ class SaveLoadSubState extends SubStateBackend {
 
     function paginate(dir:Int) {
         isPaginating = true;
-        safePlaySound("assets/sfx/ui_navigation.ogg");
+        UIUtil.playNavSound();
 
         currentPage += dir;
         if (currentPage > 9) currentPage = 0;
@@ -192,19 +183,17 @@ class SaveLoadSlotEntry extends FlxSpriteGroup {
         add(bg);
 
         if (info.isEmpty) {
-            if (Assets.exists("assets/img/ui/save_slot_empty.png")) bg.loadGraphic("assets/img/ui/save_slot_empty.png");
-            else bg.makeGraphic(SLOT_W, SLOT_H, 0xFF2A0D1B);
+            bg.loadGraphic(LilyAssets.image("img/ui/save_slot_empty"));
             
             var lbl = new FlxText(0, 40, SLOT_W, Language.GetCaption("system.menu.file") + " " + info.slotNum, 36);
             lbl.alignment = CENTER;
             add(lbl);
             
         } else {
-            if (Assets.exists("assets/img/ui/save_slot.png")) bg.loadGraphic("assets/img/ui/save_slot.png");
-            else bg.makeGraphic(SLOT_W, SLOT_H, 0xFF441829);
+            bg.loadGraphic(LilyAssets.image("img/ui/save_slot"));
 
             decor = new FlxSprite(12, 12);
-            if (Assets.exists("assets/img/ui/save_decor.png")) decor.loadGraphic("assets/img/ui/save_decor.png");
+            if (LilyAssets.fileExists("img/ui/save_decor.png")) decor.loadGraphic(LilyAssets.image("img/ui/save_decor"));
             add(decor);
 
             slotNumTxt = new FlxText(15, 5, 100, Std.string(info.slotNum), 30);
@@ -218,16 +207,15 @@ class SaveLoadSlotEntry extends FlxSpriteGroup {
             add(timeTxt);
 
             var locImg = new FlxSprite(870, 6);
-            var locPath = info.image != "" ? info.image : "assets/img/ui/save/unknown.png";
-            if (Assets.exists(locPath)) locImg.loadGraphic(locPath);
-            else locImg.makeGraphic(150, 90, 0xFF14080E);
+            var locPath = info.image != "" ? info.image : "img/ui/save/unknown";
+            locImg.loadGraphic(LilyAssets.image(locPath));
             add(locImg);
 
             var chrOffset = 600;
             for (i in 0...info.party.length) {
                 var portrait = new FlxSprite(chrOffset + (i * 80), 10);
-                var pPath = "assets/img/ui/chr_face/" + info.party[i] + ".png";
-                if (Assets.exists(pPath)) portrait.loadGraphic(pPath);
+                var pPath = "img/ui/chr_face/" + info.party[i];
+                if (LilyAssets.fileExists(pPath + ".png")) portrait.loadGraphic(LilyAssets.image(pPath));
                 
                 portrait.setGraphicSize(80, 80);
                 portrait.updateHitbox();
@@ -241,9 +229,8 @@ class SaveLoadSlotEntry extends FlxSpriteGroup {
     }
 
     public function select() {
-        var tex = info.isEmpty ? "assets/img/ui/save_slot_empty_selected.png" : "assets/img/ui/save_slot_selected.png";
-        if (Assets.exists(tex)) bg.loadGraphic(tex);
-        else bg.makeGraphic(SLOT_W, SLOT_H, 0xFF882244); 
+        var tex = info.isEmpty ? "img/ui/save_slot_empty_selected" : "img/ui/save_slot_selected";
+        bg.loadGraphic(LilyAssets.image(tex));
         bg.setGraphicSize(SLOT_W, SLOT_H);
         bg.updateHitbox();
 
@@ -254,9 +241,8 @@ class SaveLoadSlotEntry extends FlxSpriteGroup {
     }
 
     public function deselect() {
-        var tex = info.isEmpty ? "assets/img/ui/save_slot_empty.png" : "assets/img/ui/save_slot.png";
-        if (Assets.exists(tex)) bg.loadGraphic(tex);
-        else bg.makeGraphic(SLOT_W, SLOT_H, info.isEmpty ? 0xFF2A0D1B : 0xFF441829);
+        var tex = info.isEmpty ? "img/ui/save_slot_empty" : "img/ui/save_slot";
+        bg.loadGraphic(LilyAssets.image(tex));
         bg.setGraphicSize(SLOT_W, SLOT_H);
         bg.updateHitbox();
 

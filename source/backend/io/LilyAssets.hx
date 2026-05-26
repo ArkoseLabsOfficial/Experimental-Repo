@@ -19,13 +19,10 @@ class LilyAssets
     public static var NAVIGATE:String = "sfx/ui_navigation";
 
     public static final IMAGE_EXT:String = "png";
-    #if FEATURE_VIDEOS
-    public static final VIDEO_EXT:String = "mp4";
-    #end
     public static final SOUND_EXTS:Array<String> = ['ogg', 'opus', 'mp3', 'flac', 'wav'];
     public static var LOADOLD:Bool = false;
 
-    // Simplified exclusions for cache clearing
+    // Simplified exclusions for cache clearifeatng
     public static final dumpExclusions:Array<String> = [
         'images/ui/cursor.$IMAGE_EXT',
         'images/ui/cursorCross.$IMAGE_EXT'
@@ -107,19 +104,7 @@ class LilyAssets
         return file; // Fallback
     }
 
-    inline public static function txt(key:String):String return getPath('data/$key.txt');
-    inline public static function xml(key:String):String return getPath('data/$key.xml');
-    inline public static function json(key:String):String return getPath('data/$key.json');
-    inline public static function shaderFragment(key:String):String return getPath('shaders/$key.frag');
-    inline public static function shaderVertex(key:String):String return getPath('shaders/$key.vert');
-    inline public static function lua(key:String):String return getPath('$key.lua');
-    inline public static function luau(key:String):String return getPath('$key.luau');
-
-    #if FEATURE_VIDEOS
-    inline public static function video(key:String):String return getPath('videos/$key.$VIDEO_EXT');
-    #end
-
-    inline public static function font(key:String):String return getPath('fonts/$key');
+    inline public static function font(key:String):String return getPath('$key');
 
     public static function fileExists(key:String):Bool
     {
@@ -215,9 +200,10 @@ class LilyAssets
         for (ext in SOUND_EXTS)
         {
             var gottenPath:String = '$key.$ext';
-            if (path != null) gottenPath = '$path/$gottenPath';
+            if (path != null) gottenPath = (path != '' && path != null) ? '$path/' + gottenPath : gottenPath;
             
             var resolvedPath = getPath(gottenPath);
+            trace(resolvedPath);
 
             if (!currentTrackedSounds.exists(gottenPath))
             {
@@ -250,7 +236,7 @@ class LilyAssets
     public static function getSparrowAtlas(key:String):FlxAtlasFrames
     {
         var imageLoaded:FlxGraphic = image(key);
-        var xmlPath:String = getPath('images/$key.xml');
+        var xmlPath:String = getPath('$key.xml');
         return FlxAtlasFrames.fromSparrow(imageLoaded, File.getContent(xmlPath));
     }
 

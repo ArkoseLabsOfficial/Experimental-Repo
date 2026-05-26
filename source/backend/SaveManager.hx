@@ -28,8 +28,8 @@ class SaveManager {
     
     // Active Game State
     public static var currentLocation:String = "Living Room";
-    public static var currentLocationImage:String = "assets/img/ui/save/ch1_home_day.png";
-    public static var currentRoomPath:String = "assets/data/rooms/bathroom.xml";
+    public static var currentLocationImage:String = "img/ui/save/ch1_home_day";
+    public static var currentRoomPath:String = "data/rooms/bathroom.xml";
     
     public static var currentPlaytime:Float = 0;
     public static var currentParty:Array<String> = ["lacie"];
@@ -49,9 +49,9 @@ class SaveManager {
                 location: save.data.location,
                 playtime: save.data.playtime != null ? save.data.playtime : 0,
                 party: save.data.party != null ? save.data.party : [],
-                image: save.data.image != null ? save.data.image : "assets/img/ui/save/unknown.png",
+                image: save.data.image != null ? save.data.image : "img/ui/save/unknown",
                 
-                roomPath: save.data.roomPath != null ? save.data.roomPath : "assets/data/rooms/bathroom.xml",
+                roomPath: save.data.roomPath != null ? save.data.roomPath : "data/rooms/bathroom.xml",
                 playerX: save.data.playerX != null ? save.data.playerX : 0,
                 playerY: save.data.playerY != null ? save.data.playerY : 0,
                 inventory: save.data.inventory != null ? save.data.inventory : [],

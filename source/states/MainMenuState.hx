@@ -43,7 +43,7 @@ class MainMenuState extends StateBackend {
         ItemManager.loadItems(); 
         Language.loadLanguage(Language.currentLanguage);
 
-        bg = new FlxSprite(0, 0).loadGraphic("assets/img/cg/ch1/paperlily_title.png");
+        bg = new FlxSprite(0, 0).loadGraphic(LilyAssets.image("img/cg/ch1/paperlily_title"));
         bg.setGraphicSize(1920, 1080);
         bg.updateHitbox();
         add(bg);
@@ -63,7 +63,7 @@ class MainMenuState extends StateBackend {
         updateLocalizedImages();
 
         var menuDefinitions = [
-            { transKey: "system.menu.newgame", action: function(d:Int) { FlxG.switchState(new PlayState("assets/data/rooms/bathroom.xml")); } },
+            { transKey: "system.menu.newgame", action: function(d:Int) { FlxG.switchState(new PlayState("data/rooms/bathroom.xml")); } },
             { transKey: "system.menu.debugroom", action: function(d:Int) { FlxG.switchState(new RoomEditorState()); } },
             { transKey: "system.menu.settings", action: function(d:Int) { if (d == 0) openSubState(new states.options.SettingsScreenBase()); } },
             { transKey: "system.menu.website.translator", action: function(d:Int) {} },
@@ -72,7 +72,7 @@ class MainMenuState extends StateBackend {
         if (hasSaveFile) {
             menuDefinitions = [
                 { transKey: "system.menu.loadgame", action: function(d:Int) { if (d == 0) openSubState(new SaveLoadSubState(false, true)); } },
-                { transKey: "system.menu.newgame", action: function(d:Int) { FlxG.switchState(new PlayState("assets/data/rooms/bathroom.xml")); } },
+                { transKey: "system.menu.newgame", action: function(d:Int) { FlxG.switchState(new PlayState("data/rooms/bathroom.xml")); } },
                 { transKey: "system.menu.debugroom", action: function(d:Int) { FlxG.switchState(new RoomEditorState()); } },
                 { transKey: "system.menu.settings", action: function(d:Int) { if (d == 0) openSubState(new states.options.SettingsScreenBase()); } },
                 { transKey: "system.menu.website.translator", action: function(d:Int) {} },
@@ -83,8 +83,8 @@ class MainMenuState extends StateBackend {
         var dynamicHeight:Float = (menuDefinitions.length * layoutSpacing) + 60;
         var fixedWidth:Float = 400; 
 
-        bgBox = UIUtil.create9SliceSprite("assets/img/ui/frame_default_bg.png", 1300, 561, fixedWidth, dynamicHeight, 1.0);
-        overlayBox = UIUtil.create9SliceSprite("assets/img/ui/frame_menu_2b.png", 1300, 561, fixedWidth, dynamicHeight, 1.0);
+        bgBox = UIUtil.create9SliceSprite(LilyAssets.image("img/ui/frame_default_bg"), 1300, 561, fixedWidth, dynamicHeight, 1.0);
+        overlayBox = UIUtil.create9SliceSprite(LilyAssets.image("img/ui/frame_menu_2b"), 1300, 561, fixedWidth, dynamicHeight, 1.0);
 
         selector = new FlxSprite().makeGraphic(Std.int(bgBox.width - 80), 38, 0x66FFFFFF);
         itemGroup = new FlxSpriteGroup();
@@ -153,7 +153,7 @@ class MainMenuState extends StateBackend {
     }
 
     function updateLocalizedImages():Void {
-        titleLogo.loadGraphic(Language.getAsset("assets/img/ui/title_logo_paperlily.png"));
+        titleLogo.loadGraphic(LilyAssets.image("img/ui/title_logo_paperlily"));
         titleLogo.scale.set(0.8, 0.8); 
         titleLogo.updateHitbox();
         extraInfoText.text = Language.GetCaption("system.menu.translator.credit");

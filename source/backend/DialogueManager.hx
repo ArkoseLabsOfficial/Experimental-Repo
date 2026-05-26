@@ -23,7 +23,7 @@ class DialogueManager extends FlxSubState {
         super(0x00000000); 
         onCompleteCallback = onComplete;
         
-        var rawXML = openfl.utils.Assets.getText(xmlPath);
+        var rawXML = LilyAssets.getTextFromFile(xmlPath);
         rawXML = StringTools.replace(rawXML, "<!DOCTYPE lacie-engine-dialog>", ""); 
         xmlData = new Access(Xml.parse(rawXML).firstElement());
         
@@ -97,15 +97,13 @@ class DialogueManager extends FlxSubState {
         var leftPath = "";
         if (entry.has.leftChar && entry.att.leftChar != "none") {
             var baseChar = entry.att.leftChar.split("_")[0];
-            leftPath = "assets/img/bust/" + entry.att.leftChar + ".png";
-            if (!openfl.utils.Assets.exists(leftPath)) leftPath = "assets/img/bust/" + entry.att.leftChar + ".png";
+            leftPath = "img/bust/" + entry.att.leftChar;
         }
 
         var rightPath = "";
         if (entry.has.rightChar && entry.att.rightChar != "none") {
             var baseChar = entry.att.rightChar.split("_")[0];
-            rightPath = "assets/img/bust/" + entry.att.rightChar + ".png";
-            if (!openfl.utils.Assets.exists(rightPath)) rightPath = "assets/img/bust/" + entry.att.rightChar + ".png";
+            rightPath = "img/bust/" + entry.att.rightChar;
         }
 
         dialogBox.show(charName, localizedText, leftPath, rightPath);

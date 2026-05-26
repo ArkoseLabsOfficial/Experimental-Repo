@@ -32,9 +32,9 @@ class PauseSubState extends SubStateBackend {
         pauseBG.scrollFactor.set(0, 0);
         add(pauseBG);
 
-        add(UIUtil.createPanel("assets/img/ui/frame_menu_2.png", 10, 10, 450, 600, 0.66));
-        add(UIUtil.createPanel("assets/img/ui/frame_menu_2b.png", 10, 615, 450, 135, 0.66));
-        add(UIUtil.createPanel("assets/img/ui/frame_menu_2b.png", 10, 755, 450, 240, 0.66));
+        add(UIUtil.createPanel(LilyAssets.image("img/ui/frame_menu_2"), 10, 10, 450, 600, 0.66));
+        add(UIUtil.createPanel(LilyAssets.image("img/ui/frame_menu_2b"), 10, 615, 450, 135, 0.66));
+        add(UIUtil.createPanel(LilyAssets.image("img/ui/frame_menu_2b"), 10, 755, 450, 240, 0.66));
         
         highlightBox = UIUtil.createHighlightBox(115, 0, 240, 36);
         add(highlightBox);
@@ -55,7 +55,7 @@ class PauseSubState extends SubStateBackend {
         var infoBoxX:Float = FlxG.width - infoBoxWidth;
         var infoBoxY:Float = FlxG.height - infoBoxHeight;
 
-        var infoBox = UIUtil.createInfoBox("assets/img/ui/frame_infobox.png", infoBoxX - 35, infoBoxY - 10, infoBoxWidth, infoBoxHeight, 0.66);
+        var infoBox = UIUtil.createInfoBox(LilyAssets.image("img/ui/frame_infobox"), infoBoxX - 35, infoBoxY - 10, infoBoxWidth, infoBoxHeight, 0.66);
         add(infoBox);
 
         var controlsText = UIUtil.createText(infoBoxX - 135, infoBoxY + (infoBoxHeight / 2) - 30, 400, Language.GetCaption("system.menu.tip"), 24);
@@ -88,7 +88,7 @@ class PauseSubState extends SubStateBackend {
         }
 
         if (Controls.CANCEL_P) {
-            UIUtil.playNavSound(true);
+            UIUtil.playCancelSound();
             close();
         }
     }

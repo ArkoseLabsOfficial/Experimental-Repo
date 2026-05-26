@@ -6,7 +6,6 @@ import flixel.FlxSprite;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.FlxCamera;
-import openfl.utils.Assets;
 import backend.Language;
 import backend.Controls;
 import backend.Objective;
@@ -43,11 +42,11 @@ class ObjectivesMenuSubstate extends SubStateBackend {
         var startX = (FlxG.width - totalWidth) / 2 + 10;
         var startY = (FlxG.height - MAIN_PANEL_H) / 2;
 
-        var mainFrame = new TitledMenuFrame(startX, startY, MAIN_PANEL_W, MAIN_PANEL_H, Language.GetCaption("system.menu.objectives"), "assets/img/ui/divider_md.png", "");
+        var mainFrame = new TitledMenuFrame(startX, startY, MAIN_PANEL_W, MAIN_PANEL_H, Language.GetCaption("system.menu.objectives"), LilyAssets.image("img/ui/divider_md"), "");
         add(mainFrame);
 
         var descX = startX + MAIN_PANEL_W + separationRight;
-        descFrame = new TitledMenuFrame(descX, startY, DESC_PANEL_W, DESC_PANEL_H, "", "assets/img/ui/divider_sm.png", "assets/img/ui/menu_bg_decor.png");
+        descFrame = new TitledMenuFrame(descX, startY, DESC_PANEL_W, DESC_PANEL_H, "", LilyAssets.image("img/ui/divider_sm"), "img/ui/menu_bg_decor");
         add(descFrame);
 
         descText = UIUtil.createText(descX + 30, startY + 140, DESC_PANEL_W - 60, "", 28, LEFT);
@@ -87,7 +86,7 @@ class ObjectivesMenuSubstate extends SubStateBackend {
         }
 
         if (Controls.CANCEL_P) {
-            UIUtil.playNavSound(true);
+            UIUtil.playCancelSound();
             close();
         }
     }

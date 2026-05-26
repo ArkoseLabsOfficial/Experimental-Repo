@@ -64,10 +64,7 @@ class GameScript implements ISharedScript {
 
     private function loadCode(path:String):String {
         var code:String = "";
-        #if sys
-        if (FileSystem.exists(path)) code = File.getContent(path);
-        #end
-        if (code == "" && FileSystem.exists(path)) code = File.getContent(path);
+        if (code == "" && LilyAssets.fileExists(path)) code = LilyAssets.getTextFromFile(path);
         return code;
     }
 
@@ -113,7 +110,7 @@ class GameScript implements ISharedScript {
     }
 
     private function fileExists(filePath:String):Bool {
-        return FileSystem.exists(filePath);
+        return LilyAssets.fileExists(filePath);
     }
 
     public function call(funcName:String, ?args:Array<Dynamic>):Dynamic {

@@ -21,7 +21,7 @@ class DialogBox extends FlxSpriteGroup {
     public function new() {
         super();
 
-        bg = new FlxSprite(0, 0).loadGraphic("assets/img/ui/frame_dialogue.png");
+        bg = new FlxSprite(0, 0).loadGraphic(LilyAssets.image("img/ui/frame_dialogue"));
         bg.screenCenter(X);
         bg.y = FlxG.height - bg.height - 20; 
         bg.scrollFactor.set(0, 0);
@@ -43,13 +43,13 @@ class DialogBox extends FlxSpriteGroup {
         add(nameText);
 
         nameSeperator = new FlxSprite(bg.x + 100, bg.y + 80);
-        nameSeperator.loadGraphic("assets/img/ui/dialogue_name_separator_2.png");
+        nameSeperator.loadGraphic(LilyAssets.image("img/ui/dialogue_name_separator_2"));
         nameSeperator.scale.set(1.025, 1.025);
         nameSeperator.scrollFactor.set(0, 0);
         add(nameSeperator);
 
         bodyText = new FlxTypeText(bg.x + 120, bg.y + 105, Std.int(bg.width - 160), "", 33);
-        bodyText.font = "assets/fonts/AlegreyaSC-Regular.ttf"; 
+        bodyText.font = LilyAssets.font("fonts/AlegreyaSC-Regular.ttf"); 
         bodyText.delay = 0.03;
         bodyText.eraseDelay = 0;
         bodyText.showCursor = false;
@@ -62,7 +62,7 @@ class DialogBox extends FlxSpriteGroup {
         add(bodyText);
 
         continueIcon = new FlxSprite(bg.x + bg.width - 200, bg.y + bg.height - 125);
-        continueIcon.loadGraphic("assets/img/ui/continue_indicator.png", true, 95, 95);
+        continueIcon.loadGraphic(LilyAssets.image("img/ui/continue_indicator"), true, 95, 95);
         continueIcon.animation.add("blink", [0, 1, 2, 1], 6, true);
         continueIcon.scrollFactor.set(0, 0);
         add(continueIcon);
@@ -77,13 +77,13 @@ class DialogBox extends FlxSpriteGroup {
         nameText.text = name;
         
         if (leftPath != "") {
-            portraitLeft.loadGraphic(leftPath);
+            portraitLeft.loadGraphic(LilyAssets.image(leftPath));
             portraitLeft.updateHitbox();
             portraitLeft.visible = true;
         } else portraitLeft.visible = false;
 
         if (rightPath != "") {
-            portraitRight.loadGraphic(rightPath);
+            portraitRight.loadGraphic(LilyAssets.image(rightPath));
             portraitRight.updateHitbox();
             portraitRight.visible = true;
         } else portraitRight.visible = false;

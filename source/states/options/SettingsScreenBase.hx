@@ -78,10 +78,10 @@ class SettingsScreenBase extends SubStateBackend {
             totalWeight = 1452;
         }
         
-        bg = UIUtil.create9SliceSprite("assets/img/ui/frame_default_bg.png", 0, 0, totalWeight, totalHeight + (70 * uiScale), 1);
+        bg = UIUtil.create9SliceSprite(LilyAssets.image("img/ui/frame_default_bg"), 0, 0, totalWeight, totalHeight + (70 * uiScale), 1);
         bg.screenCenter();
 
-        overlay = UIUtil.create9SliceSprite("assets/img/ui/frame_menu_2.png", 0, 0, totalWeight, totalHeight + (70 * uiScale), 0.66);
+        overlay = UIUtil.create9SliceSprite(LilyAssets.image("img/ui/frame_menu_2"), 0, 0, totalWeight, totalHeight + (70 * uiScale), 0.66);
         overlay.screenCenter();
 
         itemGroup = new FlxSpriteGroup();
@@ -191,7 +191,7 @@ class SettingsScreenBase extends SubStateBackend {
             acceptSelection();
         }
         if (Controls.CANCEL_P) {
-            UIUtil.playNavSound(true);
+            UIUtil.playCancelSound();
             close();
         }
 
@@ -420,7 +420,7 @@ class SettingsScreenBase extends SubStateBackend {
     }
 
     function parseXML(menuId:String):Void {
-        var xmlString = openfl.Assets.getText("assets/data/settings.xml");
+        var xmlString = LilyAssets.getTextFromFile("data/settings.xml");
         var xml = new Access(Xml.parse(xmlString).firstElement());
         for (menuNode in xml.nodes.menu) {
             if (menuNode.att.id == menuId) {

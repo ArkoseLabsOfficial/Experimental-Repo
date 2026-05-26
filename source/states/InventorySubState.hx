@@ -1,12 +1,10 @@
 package states;
 
-import flixel.FlxSubState;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.group.FlxSpriteGroup;
-import openfl.utils.Assets;
 import backend.ItemManager;
 import backend.UIUtil;
 import ui.TitledMenuFrame;
@@ -39,11 +37,11 @@ class InventorySubState extends SubStateBackend {
         var startX = (FlxG.width - totalWidth) / 2;
         var startY = (FlxG.height - MAIN_PANEL_H) / 2;
 
-        var invFrame = new TitledMenuFrame(startX, startY, MAIN_PANEL_W, MAIN_PANEL_H, "Eşyalar", "assets/img/ui/divider_md.png", "");
+        var invFrame = new TitledMenuFrame(startX, startY, MAIN_PANEL_W, MAIN_PANEL_H, "Eşyalar", LilyAssets.image("img/ui/divider_md"), "");
         add(invFrame);
 
         var descX = startX + MAIN_PANEL_W + separation;
-        descFrame = new TitledMenuFrame(descX, startY, DESC_PANEL_W, DESC_PANEL_H, "", "assets/img/ui/divider_sm.png", "assets/img/ui/menu_bg_decor.png");
+        descFrame = new TitledMenuFrame(descX, startY, DESC_PANEL_W, DESC_PANEL_H, "", LilyAssets.image("img/ui/divider_sm"), "img/ui/menu_bg_decor");
         add(descFrame);
 
         descText = UIUtil.createText(descX + 45, startY + 130, DESC_PANEL_W - 90, "", 24, LEFT);
@@ -92,7 +90,7 @@ class InventorySubState extends SubStateBackend {
         if (Controls.RIGHT_P) moveSelection(1, true);
         
         if (Controls.CANCEL_P) {
-            UIUtil.playNavSound(true);
+            UIUtil.playCancelSound();
             close();
         }
 
@@ -167,9 +165,9 @@ class InventoryMenuEntry extends FlxSpriteGroup {
         if (!isEmpty) {
             var itemData = ItemManager.items.get(id);
             itemIcon = new FlxSprite(0, 0);
-            var iconPath = "assets/" + (itemData != null ? itemData.iconPath : id) + ".png";
+            var iconPath = (itemData != null ? itemData.iconPath : id);
             
-            if (Assets.exists(iconPath)) itemIcon.loadGraphic(iconPath);
+            if (LilyAssets.fileExists(iconPath + ".png")) itemIcon.loadGraphic(LilyAssets.image(iconPath));
             else itemIcon.makeGraphic(ICON_SIZE, ICON_SIZE, FlxColor.TRANSPARENT); 
             
             itemIcon.setGraphicSize(ICON_SIZE, ICON_SIZE);
@@ -190,9 +188,8 @@ class InventoryMenuEntry extends FlxSpriteGroup {
     }
 
     public function select() {
-        var tex = isEmpty ? "assets/img/ui/item_icon_bg_empty_selected.png" : "assets/img/ui/item_icon_bg_selected.png";
-        if (Assets.exists(tex)) bgTextureRect.loadGraphic(tex);
-        else bgTextureRect.makeGraphic(ICON_SIZE, ICON_SIZE, 0xFFFF0000); 
+        var tex = isEmpty ? LilyAssets.image("img/ui/item_icon_bg_empty_selected") : LilyAssets.image("img/ui/item_icon_bg_selected");
+        bgTextureRect.loadGraphic(tex);
         bgTextureRect.setGraphicSize(ICON_SIZE, ICON_SIZE);
         bgTextureRect.updateHitbox();
         if (nQtyLabel != null) {
@@ -202,9 +199,8 @@ class InventoryMenuEntry extends FlxSpriteGroup {
     }
 
     public function deselect() {
-        var tex = isEmpty ? "assets/img/ui/item_icon_bg_empty.png" : "assets/img/ui/item_icon_bg.png";
-        if (Assets.exists(tex)) bgTextureRect.loadGraphic(tex);
-        else bgTextureRect.makeGraphic(ICON_SIZE, ICON_SIZE, 0xFF444444); 
+        var tex = isEmpty ? LilyAssets.image("img/ui/item_icon_bg_empty") : LilyAssets.image("img/ui/item_icon_bg");
+        bgTextureRect.loadGraphic(tex);
         bgTextureRect.setGraphicSize(ICON_SIZE, ICON_SIZE);
         bgTextureRect.updateHitbox();
         if (nQtyLabel != null) {

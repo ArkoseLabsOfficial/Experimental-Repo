@@ -76,11 +76,11 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
     }
 
     public function loadRoom(filePath:String) {
-        if (!FileSystem.exists(filePath)) {
+        if (!LilyAssets.fileExists(filePath)) {
             flixel.FlxG.log.warn("Room file not found: " + filePath);
             return;
         }
-        var rawData = File.getContent(filePath);
+        var rawData = LilyAssets.getTextFromFile(filePath);
         
         if (StringTools.endsWith(filePath, ".tscn")) {
             loadRoomFromTSCN(rawData);
@@ -89,7 +89,7 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
         }
 
         var autoScriptPath = filePath.substr(0, filePath.lastIndexOf(".")) + ".hx";
-        if (FileSystem.exists(autoScriptPath)) {
+        if (LilyAssets.fileExists(autoScriptPath)) {
             scripts.loadScript(autoScriptPath);
         }
 
@@ -122,11 +122,11 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
     }
 
     public function convertTSCN(filePath:String):String {
-        if (!FileSystem.exists(filePath)) {
+        if (!LilyAssets.fileExists(filePath)) {
             flixel.FlxG.log.warn("Cannot convert. File not found: " + filePath);
             return "";
         }
-        var rawTSCN = File.getContent(filePath);
+        var rawTSCN = LilyAssets.getTextFromFile(filePath);
         var lines = rawTSCN.split("\n");
         var extResources = new Map<Int, String>();
         
@@ -154,7 +154,7 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
                 if (nType == "") nType = "Node";
                 if (nParent == "") nParent = "root";
 
-                var fPath = (nParent == "." || nParent == "root") ? nName : nParent + "/" + nName;
+                var fPath = (nParent == "." || nParent == "root") ? nName : nParent + nName;
 
                 currentNode = {
                     name: nName, type: nType, parentPath: nParent, fullPath: fPath,
@@ -298,7 +298,7 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
                 if (nType == "") nType = "Node";
                 if (nParent == "") nParent = "root";
 
-                var fPath = (nParent == "." || nParent == "root") ? nName : nParent + "/" + nName;
+                var fPath = (nParent == "." || nParent == "root") ? nName : nParent + nName;
 
                 currentNode = {
                     name: nName,
@@ -403,7 +403,7 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
                     var tileInfo = tresData.get(id);
                     if (tileInfo != null && tileInfo.path != "") {
                         var tile = new WorldObject(absPos.x + (tx * cSize.x), absPos.y + (ty * cSize.y), z, "tile_" + tx + "_" + ty);
-                        if (FileSystem.exists(tileInfo.path)) {
+                        if (LilyAssets.fileExists(tileInfo.path)) {
                             var graph = flixel.FlxG.bitmap.add(tileInfo.path);
                             var sheetColumns = Std.int(graph.width / cSize.x);
                             tile.loadGraphic(tileInfo.path, true, Std.int(cSize.x), Std.int(cSize.y));
@@ -527,9 +527,9 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
 
     function parseTresTileSet(tresPath:String):Map<Int, TresTile> {
         var map = new Map<Int, TresTile>();
-        if (!FileSystem.exists(tresPath)) return map;
+        if (!LilyAssets.fileExists(tresPath)) return map;
         
-        var raw = File.getContent(tresPath);
+        var raw = LilyAssets.getTextFromFile(tresPath);
         var lines = raw.split("\n");
 
         var extRes = new Map<Int, String>();
@@ -615,7 +615,7 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
                     if (tileInfo != null && tileInfo.path != "") {
                         var tile = new WorldObject(tx * size, ty * size, z, "tile_" + tx + "_" + ty);
                         
-                        if (FileSystem.exists(tileInfo.path)) {
+                        if (LilyAssets.fileExists(tileInfo.path)) {
                             var graph = flixel.FlxG.bitmap.add(tileInfo.path);
                             var sheetColumns = Std.int(graph.width / size);
                             
@@ -657,7 +657,7 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
                     node.has.name ? node.att.name : "obj"
                 );
                 var sprPath = node.has.path ? node.att.path : (node.has.sprite ? node.att.sprite : "");
-                obj.loadEntity(baseFolder != "" ? "/" + baseFolder : "", sprPath);
+                obj.loadEntity(baseFolder != "" ? baseFolder : "", sprPath);
                 
                 if (node.has.collision) obj.solidCollision = node.att.collision == "true";
                 parseSharedAttributes(obj, node);
@@ -677,7 +677,7 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
                     node.has.name ? node.att.name : "npc"
                 );
                 var sprPath = node.has.path ? node.att.path : (node.has.sprite ? node.att.sprite : "");
-                npc.loadEntity(baseFolder != "" ? "/" + baseFolder : "", sprPath);
+                npc.loadEntity(baseFolder != "" ? baseFolder : "", sprPath);
                 parseSharedAttributes(npc, node);
                 addEntity(npc);
                 characters.set(npc.xmlName, npc);
@@ -695,7 +695,7 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
                     node.has.name ? node.att.name : "cutscene_player"
                 );
                 var sprPath = node.has.path ? node.att.path : (node.has.sprite ? node.att.sprite : "");
-                activeCutscenePlayer.loadEntity(baseFolder != "" ? "/" + baseFolder : "", sprPath);
+                activeCutscenePlayer.loadEntity(baseFolder != "" ? baseFolder : "", sprPath);
                 parseSharedAttributes(activeCutscenePlayer, node);
                 addEntity(activeCutscenePlayer);
                 characters.set(activeCutscenePlayer.xmlName, activeCutscenePlayer);
@@ -713,7 +713,7 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
                     node.has.name ? node.att.name : "player"
                 );
                 var sprPath = node.has.path ? node.att.path : (node.has.sprite ? node.att.sprite : "");
-                activePlayer.loadEntity(baseFolder != "" ? "/" + baseFolder : "", sprPath);
+                activePlayer.loadEntity(baseFolder != "" ? baseFolder : "", sprPath);
                 parseSharedAttributes(activePlayer, node);
                 addEntity(activePlayer);
                 characters.set(activePlayer.xmlName, activePlayer);
@@ -731,7 +731,7 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
                     node.has.name ? node.att.name : "follower"
                 );
                 var sprPath = node.has.path ? node.att.path : (node.has.sprite ? node.att.sprite : "");
-                follower.loadEntity(baseFolder != "" ? "/" + baseFolder : "", sprPath);
+                follower.loadEntity(baseFolder != "" ? baseFolder : "", sprPath);
                 parseSharedAttributes(follower, node);
                 
                 if (node.hasNode.target) {

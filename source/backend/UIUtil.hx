@@ -11,27 +11,30 @@ import openfl.geom.Rectangle;
 import flixel.util.FlxColor;
 
 class UIUtil {
-    public static function playNavSound(isBack:Bool = false):Void {
-        FlxG.sound.play(isBack ? "assets/sfx/ui_navigation2.ogg" : "assets/sfx/ui_navigation.ogg");
+    public static function playNavSound():Void {
+        FlxG.sound.play(LilyAssets.sound("sfx/ui_navigation"));
+    }
+
+    public static function playCancelSound() {
+        FlxG.sound.play(LilyAssets.sound("sfx/ui_navigation2"));
     }
 
     public static function playConfirmSound():Void {
-        FlxG.sound.play("assets/sfx/ui_start.ogg");
+        FlxG.sound.play(LilyAssets.sound("sfx/ui_start"));
     }
 
     public static function playErrorSound():Void {
-        FlxG.sound.play("assets/sfx/ui_bad.ogg");
+        FlxG.sound.play(LilyAssets.sound("sfx/ui_bad"));
     }
 
     public static function createText(X:Float, Y:Float, Width:Float, Text:String, Size:Int = 24, Align:FlxTextAlign = CENTER):FlxText {
         var txt = new FlxText(X, Y, Width, Text, Size);
-        txt.font = "assets/fonts/AlegreyaSC-Regular.ttf";
+        txt.font = LilyAssets.font("AlegreyaSC-Regular");
         txt.alignment = Align;
         return txt;
     }
 
-    public static function create9SliceSprite(frameImage:String, X:Float, Y:Float, Width:Float, Height:Float, scaleFactor:Float = 1.0):FlxUI9SliceSprite {
-        var originalGraphic = FlxGraphic.fromAssetKey(frameImage);
+    public static function create9SliceSprite(originalGraphic:FlxGraphic, X:Float, Y:Float, Width:Float, Height:Float, scaleFactor:Float = 1.0):FlxUI9SliceSprite {
         var newWidth:Int = Std.int(originalGraphic.width * scaleFactor);
         var newHeight:Int = Std.int(originalGraphic.height * scaleFactor);
         var matrix = new Matrix();
@@ -45,10 +48,10 @@ class UIUtil {
         return new FlxUI9SliceSprite(X, Y, finalGraphic, new Rectangle(0, 0, Width, Height), sliceRect);
     }
 
-    public static function createPanel(frameImage:String, X:Float, Y:Float, Width:Float, Height:Float, scaleFactor:Float = 0.66):FlxSpriteGroup {
+    public static function createPanel(frameImage:FlxGraphic, X:Float, Y:Float, Width:Float, Height:Float, scaleFactor:Float = 0.66):FlxSpriteGroup {
         var grp = new FlxSpriteGroup(X, Y);
         var bgPadding:Int = 4;
-        var bg = new FlxSprite(bgPadding, bgPadding, "assets/img/ui/frame_menu_bg.png");
+        var bg = new FlxSprite(bgPadding, bgPadding, LilyAssets.image("img/ui/frame_menu_bg"));
         bg.setGraphicSize(Std.int(Width - (bgPadding * 2)), Std.int(Height - (bgPadding * 2)));
         bg.updateHitbox();
         grp.add(bg);
@@ -57,10 +60,10 @@ class UIUtil {
         return grp;
     }
 
-    public static function createInfoBox(frameImage:String, X:Float, Y:Float, Width:Float, Height:Float, scaleFactor:Float = 0.66):FlxSpriteGroup {
+    public static function createInfoBox(frameImage:FlxGraphic, X:Float, Y:Float, Width:Float, Height:Float, scaleFactor:Float = 0.66):FlxSpriteGroup {
         var grp = new FlxSpriteGroup(X, Y);
         var bgPadding:Int = -30;
-        var bg = new FlxSprite(bgPadding, bgPadding + 20, "assets/img/ui/frame_menu_bg.png");
+        var bg = new FlxSprite(bgPadding, bgPadding + 20, LilyAssets.image("img/ui/frame_menu_bg"));
         bg.setGraphicSize(Std.int(Width) * 1.3, Std.int(Height) * 1.3);
         bg.updateHitbox();
         grp.add(bg);

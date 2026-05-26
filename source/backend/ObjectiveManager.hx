@@ -1,7 +1,6 @@
 package backend;
 
 import haxe.Json;
-import openfl.utils.Assets;
 import backend.GamePrefs; // Assuming you store save data here
 import backend.Language;  // Assuming your translation system is here
 import flixel.FlxG;
@@ -31,12 +30,12 @@ class ObjectiveManager {
 
         // In HaxeFlixel, it's safer to read a manifest or know your file paths explicitly, 
         // but let's assume we have an array of objective JSON file paths.
-        var jsonPaths = ["assets/data/objectives/story.json", "assets/data/objectives/sidequests.json"];
+        var jsonPaths = ["data/objectives/story.json", "data/objectives/sidequests.json"];
 
         for (path in jsonPaths) {
-            if (!Assets.exists(path)) continue;
+            if (!LilyAssets.fileExists(path)) continue;
 
-            var rawText = Assets.getText(path);
+            var rawText = LilyAssets.getTextFromFile(path);
             var parsedFile:{Objectives:Array<ObjectiveData>} = Json.parse(rawText);
             
             // Extract the group name from the filename (e.g., "story.json" -> "story")

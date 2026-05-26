@@ -1,7 +1,6 @@
 package backend;
 
 import haxe.xml.Access;
-import openfl.utils.Assets;
 
 class ItemData {
     public var id:String;
@@ -24,10 +23,10 @@ class ItemManager {
     public static var inventory:Map<String, Int> = new Map(); 
 
     public static function loadItems() {
-        var path = "assets/data/items.xml";
-        if (!Assets.exists(path)) return;
+        var path = "data/items.xml";
+        if (!LilyAssets.fileExists(path)) return;
         
-        var rawXML = Assets.getText(path);
+        var rawXML = LilyAssets.getTextFromFile(path);
         rawXML = StringTools.replace(rawXML, "<!DOCTYPE lacie-engine-item>", "");
         
         var parsedXml = Xml.parse(rawXML).firstElement();
@@ -76,9 +75,9 @@ class ItemManager {
 
     public static function runItemScript(scriptPath:String) {
         if (scriptPath == "") return;
-        var fullPath = "assets/data/" + scriptPath + ".hx";
+        var fullPath = "data/" + scriptPath + ".hx";
         
-        if (!Assets.exists(fullPath)) {
+        if (!LilyAssets.fileExists(fullPath)) {
             flixel.FlxG.log.warn("Item Script not found at: " + fullPath);
             return;
         }

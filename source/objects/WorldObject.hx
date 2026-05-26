@@ -2,7 +2,6 @@ package objects;
 
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
-import openfl.utils.Assets;
 import flixel.math.FlxRect; // Import FlxRect
 
 class WorldObject extends FlxSprite {
@@ -21,13 +20,14 @@ class WorldObject extends FlxSprite {
     }
 
     public function loadEntity(folder:String, spriteName:String) {
-        var pngPath = "assets" + folder + "/" + spriteName + ".png";
-        var xmlPath = "assets" + folder + "/" + spriteName + ".xml";
+        folder = (folder != null && folder != "") ? folder + "/" : "";
+        var xmlPath = folder + spriteName + ".xml";
+        trace(xmlPath);
 
-        if (Assets.exists(xmlPath)) {
-            frames = FlxAtlasFrames.fromSparrow(pngPath, xmlPath);
-        } else if (Assets.exists(pngPath)) {
-            loadGraphic(pngPath);
+        if (LilyAssets.fileExists(xmlPath)) {
+            frames = LilyAssets.getSparrowAtlas(folder + spriteName);
+        } else if (LilyAssets.fileExists(folder + spriteName + ".png")) {
+            loadGraphic(LilyAssets.image(folder + spriteName));
         }
 
         generateAccurateHitbox();

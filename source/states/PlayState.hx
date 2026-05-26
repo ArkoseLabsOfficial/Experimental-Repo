@@ -15,7 +15,7 @@ class PlayState extends StateBackend {
     public var objectives:ObjectiveManager;
 
     // NOTE: change current one to new(roomPath, fromLoad);
-    public function new(?fromLoad:Bool = false, roomPath:String = "assets/data/rooms/bathroom.xml") {
+    public function new(?fromLoad:Bool = false, roomPath:String = "data/rooms/bathroom.xml") {
         super();
         this.isFromLoad = fromLoad;
         this.roomPath = roomPath;
@@ -67,7 +67,7 @@ class PlayState extends StateBackend {
             var box:FlxRect = room.activePlayer.getInteractionBox();
             for (entity in room.entities) {
                 if (entity.interactable && box.overlaps(entity.getHitbox())) {
-                    openSubState(new backend.DialogueManager("assets/" + entity.dialogPath + ".xml", "start"));
+                    openSubState(new backend.DialogueManager(entity.dialogPath + ".xml", "start"));
                     break;
                 }
             }

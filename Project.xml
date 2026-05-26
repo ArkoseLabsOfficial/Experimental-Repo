@@ -47,6 +47,8 @@
 
 	<assets path='assets'/>
 	<assets path='resources'/>
+	<define name="FEATURE_TOUCH_CONTROLS" />
+	<haxedef name="mobile_controls_allow_mouse_clicks" if="desktop"/>
 
 	<!-- _______________________________ Defines _______________________________ -->
 
@@ -59,6 +61,7 @@
 	<haxelib name="flixel-addons" />
     <haxelib name="flixel-ui" />
 	<haxelib name="hscript-iris" />
+	<haxelib name="mobile-controls" />
 	<haxedef name="openflPos" />
 	<haxedef name="hscriptPos" />
 

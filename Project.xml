@@ -3,7 +3,6 @@
 	<!-- _________________________ Application Settings _________________________ -->
 
 	<app title="Lily Engine" file="LilyEngine" main="Main" packageName="com.arkoselabs.lilyengine" package="com.arkoselabs.lilyengine" company="ArkoseLabs" version="0.1.0" />
-	<app if="mobile" title='Psych Extended Online' />
 
 	<!--Switch Export with Unique ApplicationID and Icon-->
 	<set name="APP_ID" value="0x0100f6c013bbc000" />

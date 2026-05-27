@@ -1,5 +1,7 @@
 name: Build Lacie Engine
 
+permissions: write-all
+
 on: workflow_dispatch
 
 jobs:

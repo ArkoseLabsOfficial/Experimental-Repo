@@ -4,14 +4,16 @@
       "button": "buttonUp",
       "buttonIDs": ["UP"],
       "graphic": "up",
-      "position": [0, 830],
+      "position": [0, 715],
+      "scale": 1.5,
       "color": "0xFF12FA05"
     },
     {
       "button": "buttonDown",
       "buttonIDs": ["DOWN"],
       "graphic": "down",
-      "position": [0, 950],
+      "position": [0, 900],
+      "scale": 1.5,
       "color": "0xFF00FFFF"
     }
   ]

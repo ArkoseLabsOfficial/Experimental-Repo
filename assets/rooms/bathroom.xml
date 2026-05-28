@@ -1,0 +1,21 @@
+<!DOCTYPE lily-engine-room>
+<room name="bathroom" folder="">
+    <camera zoom="3.0" />
+    <sprite name="bg_walls" x="120" y="100" z="1" sprite="sprite/ch1/shop/furniture_shelf">
+        <script path="scripts/objects/shelf" />
+        <visibility visible="true" />
+    </sprite>
+
+    <sprite name="bed" x="120" y="300" z="19" sprite="sprite/ch1/home/bedroom_a/furniture_bed">
+        <script path="scripts/bed" />
+    </sprite>
+
+    <player x="300" y="250" z="20">
+        <visibility visible="true" />
+    </player>
+
+    <npc name="hiro_npc" x="800" y="300" z="20" sprite="sprite/common/character/hiro/hiro">
+        <interaction interactable="true" dialog="hiro_npc" />
+    </npc>
+
+</room>

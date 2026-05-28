@@ -4,14 +4,16 @@
       "button": "buttonB",
       "buttonIDs": ["B"],
       "graphic": "b",
-      "position": [1670, 950],
+      "position": [1550, 890],
+      "scale": 1.5,
       "color": "0xFFCB00"
     },
     {
       "button": "buttonA",
       "buttonIDs": ["A"],
       "graphic": "a",
-      "position": [1790, 950],
+      "position": [1730, 890],
+      "scale": 1.5,
       "color": "0xFF0000"
     }
   ]

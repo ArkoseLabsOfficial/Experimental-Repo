@@ -1,0 +1,64 @@
+package engine.states;
+
+import flixel.FlxSubState;
+import flixel.FlxG;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
+import flixel.FlxSprite;
+import engine.ui.UIPanel;
+
+class ExitPromptSubState extends FlxSubState {
+    var curSelected:Int = 0;
+    var options:Array<String> = ["Evet", "Hayır"];
+    var selector:FlxSprite;
+
+    override public function create() {
+        super.create();
+
+        var panel = new UIPanel(FlxG.width / 2 - 250, FlxG.height / 2 - 120, 500, 240, false);
+        add(panel);
+
+        var warning = new FlxText(panel.x + 20, panel.y + 30, 460, "Çıkmak istediğine emin misin?\nKaydedilmemiş tüm ilerlemen kaybolacak.", 20);
+        warning.alignment = CENTER;
+        add(warning);
+
+        selector = new FlxSprite(panel.x + 50, 0).makeGraphic(400, 40, 0xFF441829);
+        add(selector);
+
+        var txtYes = new FlxText(panel.x, panel.y + 120, 500, "Evet", 22);
+        txtYes.alignment = CENTER;
+        add(txtYes);
+
+        var txtNo = new FlxText(panel.x, panel.y + 170, 500, "Hayır", 22);
+        txtNo.alignment = CENTER;
+        add(txtNo);
+
+        changeSelection(0);
+    }
+
+    override public function update(elapsed:Float) {
+        super.update(elapsed);
+
+        if (FlxG.keys.justPressed.UP) changeSelection(-1);
+        if (FlxG.keys.justPressed.DOWN) changeSelection(1);
+        
+        if (FlxG.keys.justPressed.X || FlxG.keys.justPressed.ESCAPE) close();
+
+        if (FlxG.keys.justPressed.Z) {
+            if (curSelected == 0) {
+                Sys.exit(0); // Closes the application
+            } else {
+                close(); // Returns to Pause menu
+            }
+        }
+    }
+
+    function changeSelection(change:Int) {
+        curSelected += change;
+        if (curSelected < 0) curSelected = 1;
+        if (curSelected > 1) curSelected = 0;
+
+        // Align selector to the text
+        selector.y = (FlxG.height / 2 - 120) + 115 + (curSelected * 50);
+    }
+}

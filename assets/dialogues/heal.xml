@@ -1,0 +1,7 @@
+<!DOCTYPE lily-engine-dialog>
+<dialogues>
+    <dialog id="start">
+        <entry text="You ate the jar" />
+        <entry text="999999 HP Recovered" closeTheBox="true" />
+    </dialog>
+</dialogues>

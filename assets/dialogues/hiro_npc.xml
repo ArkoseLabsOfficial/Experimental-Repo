@@ -1,0 +1,27 @@
+<!DOCTYPE lily-engine-dialog>
+<dialogues>
+    <dialog id="start">
+        <entry leftChar="hiro/determined" name="Hiro" text="Hi Lacie." hasSelection="true">
+            <selections>
+                <item id="sayHi" text="Say Hi to Hiro" selectionConfirmed="path.sayHi" />
+                <item id="leave" text="Leave" selectionConfirmed="path.leave" />
+            </selections>
+        </entry>
+    </dialog>
+
+    <dialog id="path.sayHi">
+        <entry leftChar="lacie/blank5" name="Lacie" text="Hi Hiro, Do you speak English?" />
+        <entry leftChar="lacie/blank4" rightChar="aoi/coy" name="Aoi" text="Yes." />
+        <entry leftChar="lacie/shadow5" rightChar="aoi/coy" name="Lacie" text="Heeeh, Eeee..." />
+        <entry leftChar="lacie/sigh" rightChar="aoi/coy" name="Lacie" text="Ben no speak english." />
+        <entry leftChar="lacie/hide2" rightChar="aoi/coy" name="Lacie" text="Ahaa..., Bu speak english." />
+        <entry leftChar="lacie/reflective4" rightChar="aoi/coy" name="Lacie" text="Okay?" />
+        <entry leftChar="lacie/reflective5" rightChar="aoi/crazy" name="Aoi" text="Okay." />
+        <entry leftChar="lacie/sigh" rightChar="aoi/melt2" name="Lacie" text="Heeehh..." />
+        <entry leftChar="lacie/thinking3" rightChar="aoi/melt2" name="Lacie" text="Usta her gün bana 10 kelime ingilizce öğretsen ben bu işi çözerim." return="start"/>
+    </dialog>
+
+    <dialog id="path.leave">
+        <entry leftChar="lacie/neutral" name="Lacie" text="dialogs.leave" closeTheBox="true" />
+    </dialog>
+</dialogues>

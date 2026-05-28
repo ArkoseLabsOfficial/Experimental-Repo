@@ -1,0 +1,17 @@
+<!DOCTYPE lily-engine-character>
+<character sprite="sprite/common/character/lacie/lacie" flipX="false">
+	<anim name="idleUP" anim="idle_up0" fps="1" loop="false"/>
+    <anim name="idleLEFT" anim="idle_left0" fps="1" loop="false"/>
+    <anim name="idleRIGHT" anim="idle_right0" fps="1" loop="false"/>
+    <anim name="idleDOWN" anim="idle_down0" fps="1" loop="false"/>
+
+	<anim name="walkUP" anim="walk_up0" fps="6" loop="true"/>
+	<anim name="walkLEFT" anim="walk_left0" fps="6" loop="true"/>
+	<anim name="walkRIGHT" anim="walk_right0" fps="6" loop="true"/>
+	<anim name="walkDOWN" anim="walk_down0" fps="6" loop="true"/>
+
+	<anim name="runUP" anim="run_up0" fps="10" loop="true"/>
+	<anim name="runLEFT" anim="run_left0" fps="10" loop="true"/>
+	<anim name="runRIGHT" anim="run_right0" fps="10" loop="true"/>
+	<anim name="runDOWN" anim="run_down0" fps="10" loop="true"/>
+</character>

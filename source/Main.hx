@@ -2,10 +2,12 @@ package;
 
 import flixel.FlxGame;
 import openfl.display.Sprite;
-import states.MainMenuState;
+import engine.states.MainMenuState;
 import flixel.system.FlxAssets;
 import flixel.FlxSprite;
+#if FEATURE_TOUCH_CONTROLS
 import mobile.MobileConfig;
+#end
 import openfl.Assets;
 import haxe.io.Bytes;
 #if sys
@@ -27,7 +29,7 @@ class Main extends Sprite {
         FlxAssets.FONT_DEFAULT = "assets/fonts/NotoSans-Regular.ttf";
         FlxSprite.defaultAntialiasing = true;
         #if FEATURE_TOUCH_CONTROLS
-        MobileConfig.init('MobileControls', "ArkoseLabs/LilyEngine", 'assets/mobile/',
+        MobileConfig.init('MobileControls', "ArkoseLabs/LilyEngine", 'mobile/',
 			[
 				['MobilePad/DPadModes', ButtonModes.DPAD],
 				['MobilePad/ActionModes', ButtonModes.ACTION]

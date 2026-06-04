@@ -10,6 +10,7 @@ import engine.objects.*;
 import engine.scripting.*;
 import engine.scripting.events.*;
 import engine.states.*;
+import engine.substates.*;
 import engine.ui.*;
 
 

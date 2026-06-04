@@ -21,6 +21,84 @@ class GameScript implements ISharedScript {
     public var path:String;
     public var active:Bool = true;
 
+    var imports:Map<String, Dynamic> = [
+        /* Engine Backend */
+        "Controls" => engine.backend.Controls,
+        "DialogueManager" => engine.backend.DialogueManager,
+        "GamePrefs" => engine.backend.GamePrefs,
+        "GameState" => engine.backend.GameState,
+        "ItemManager" => engine.backend.ItemManager,
+        "Language" => engine.backend.Language,
+        "Mobile" => engine.backend.Mobile,
+        "Objective" => engine.backend.Objective,
+        "ObjectiveManager" => engine.backend.ObjectiveManager,
+        "RoomManager" => engine.backend.RoomManager,
+        "SaveManager" => engine.backend.SaveManager,
+        "StateBackend" => engine.backend.StateBackend,
+        "SubStateBackend" => engine.backend.SubStateBackend,
+        "UIUtil" => engine.backend.UIUtil,
+
+        /* Engine Objects */
+        "CharacterEntity" => engine.objects.CharacterEntity,
+        "CollisionBlock" => engine.objects.CollisionBlock,
+        "Follower" => engine.objects.Follower,
+        "Player" => engine.objects.Player,
+        "WorldObject" => engine.objects.WorldObject,
+
+        /* Engine Scripting */
+        "EventManager" => engine.scripting.EventManager,
+        "GameScript" => engine.scripting.GameScript,
+        "ScriptedSprite" => engine.scripting.ScriptedSprite,
+        "ScriptedSpriteGroup" => engine.scripting.ScriptedSpriteGroup,
+        "ScriptedState" => engine.scripting.ScriptedState,
+        "ScriptedSubState" => engine.scripting.ScriptedSubState,
+        "ScriptHandler" => engine.scripting.ScriptHandler,
+
+        /* Engine States & Substates */
+        "MainMenuState" => engine.states.MainMenuState,
+        "PlayState" => engine.states.PlayState,
+        "RoomEditorState" => engine.states.RoomEditorState,
+        "Inventory" => engine.substates.Inventory,
+        "LanguageMenu" => engine.substates.LanguageMenu,
+        "ObjectivesMenu" => engine.substates.ObjectivesMenu,
+        "ObtainScreen" => engine.substates.ObtainScreen,
+        "PauseScreen" => engine.substates.PauseScreen,
+        "SaveLoadSubState" => engine.substates.SaveLoadSubState,
+        "SettingsScreen" => engine.substates.SettingsScreen,
+
+        /* Engine UI */
+        "DialogBox" => engine.ui.DialogBox,
+        "DialogSelection" => engine.ui.DialogSelection,
+        "TitledMenuFrame" => engine.ui.TitledMenuFrame,
+
+        /* Engine IO */
+        "File" => io.File,
+        "FileSystem" => io.FileSystem,
+        "LilyAssets" => io.LilyAssets,
+
+        /* Engine Mobile */
+        "MobileConfig" => mobile.MobileConfig,
+        "MobilePad" => mobile.MobilePad,
+        "MobileUtil" => mobile.Util,
+
+        /* Flixel */
+        "FlxG" => flixel.FlxG,
+        "FlxSprite" => flixel.FlxSprite,
+        "FlxGamepad" => flixel.input.gamepad.FlxGamepad,
+        "FlxCamera" => flixel.FlxCamera,
+        "FlxTween" => flixel.tweens.FlxTween,
+        "FlxEase" => flixel.tweens.FlxEase,
+        "FlxText" => flixel.text.FlxText,
+        "FlxGroup" => flixel.group.FlxGroup,
+        "FlxTypedGroup" => flixel.group.FlxGroup.FlxTypedGroup,
+
+        /* Haxe / Native */
+        "Math" => Math,
+        "Std" => Std,
+        "StringTools" => StringTools,
+    ];
+
+
     public function new(scriptPath:String, ?parent:Dynamic) {
         this.path = scriptPath;
         
@@ -38,11 +116,9 @@ class GameScript implements ISharedScript {
             interp.importHandler = _importHandler;
             setParent(parent);
 
-            set("Math", Math);
-            set("Std", Std);
-            set("StringTools", StringTools);
-            set("FlxG", flixel.FlxG);
-            set("FlxSprite", flixel.FlxSprite);
+            for (importName => importClass in imports) {
+                set(importName, importClass);
+            }
 
             set("trace", Reflect.makeVarArgs(function(args) {
                 trace('[Script: ${path}] ' + args.join(", "));
@@ -59,6 +135,7 @@ class GameScript implements ISharedScript {
             active = false;
         }
     }
+    
 
     private function loadCode(path:String):String {
         var code:String = "";
@@ -67,9 +144,7 @@ class GameScript implements ISharedScript {
     }
 
     public function setParent(parent:Dynamic) {
-        if (interp != null && parent != null) {
-            interp.parentInstance = parent;
-        }
+        interp.parentInstance = parent;
     }
 
     @:noCompletion

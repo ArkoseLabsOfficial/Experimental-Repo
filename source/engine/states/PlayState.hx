@@ -7,7 +7,6 @@ import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
 import engine.backend.RoomManager;
 import engine.backend.SaveManager;
-import engine.states.PauseSubState;
 
 class PlayState extends StateBackend {
     var room:RoomManager;
@@ -70,9 +69,22 @@ class PlayState extends StateBackend {
             }
 
             camGame.zoom = room.roomZoom;
-            camGame.follow(room.activePlayer, NO_DEAD_ZONE, 1); 
+            camGame.follow(room.activePlayer, NO_DEAD_ZONE, 1);
         }
     }
+
+    public function followTheObject(obj:Dynamic, type:String = "NO_DEAD_ZONE", smoothness:Float = 1):Void {
+        var realType:FlxCameraFollowStyle = NO_DEAD_ZONE;
+        if (type == "LOCKON") realType = LOCKON;
+        if (type == "PLATFORMER") realType = PLATFORMER;
+        if (type == "TOPDOWN") realType = TOPDOWN;
+        if (type == "TOPDOWN_TIGHT") realType = TOPDOWN_TIGHT;
+        if (type == "SCREEN_BY_SCREEN") realType = SCREEN_BY_SCREEN;
+        if (type == "NO_DEAD_ZONE") realType = NO_DEAD_ZONE;
+
+        camGame.follow(obj, realType, smoothness);
+    }
+
 
     override public function update(elapsed:Float):Void {
         super.update(elapsed);
@@ -87,7 +99,7 @@ class PlayState extends StateBackend {
             }
         }
 
-        if (Controls.MENU_P) openSubState(new PauseSubState());
+        if (Controls.MENU_P) openSubState(new PauseScreen());
         
         if (room.activePlayer != null && Controls.ACCEPT_P) {
             var box:FlxRect = room.activePlayer.getInteractionBox();

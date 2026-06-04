@@ -53,7 +53,7 @@ class MainMenuState extends StateBackend {
         var menuDefinitions = [
             { transKey: "system.menu.newgame", action: function(d:Int) { SaveManager.reset(); FlxG.switchState(new PlayState("bathroom")); } },
             { transKey: "system.menu.debugroom", action: function(d:Int) { FlxG.switchState(new RoomEditorState()); } },
-            { transKey: "system.menu.settings", action: function(d:Int) { if (d == 0) openSubState(new SettingsScreenBase()); } },
+            { transKey: "system.menu.settings", action: function(d:Int) { if (d == 0) openSubState(new SettingsScreen()); } },
             { transKey: "system.menu.website.translator", action: function(d:Int) {} },
             { transKey: "system.menu.quit", action: function(d:Int) { if (d == 0) System.exit(0); } }
         ];
@@ -62,7 +62,7 @@ class MainMenuState extends StateBackend {
                 { transKey: "system.menu.loadgame", action: function(d:Int) { if (d == 0) openSubState(new SaveLoadSubState(false, true)); } },
                 { transKey: "system.menu.newgame", action: function(d:Int) { SaveManager.reset(); FlxG.switchState(new PlayState("bathroom")); } },
                 { transKey: "system.menu.debugroom", action: function(d:Int) { FlxG.switchState(new RoomEditorState()); } },
-                { transKey: "system.menu.settings", action: function(d:Int) { if (d == 0) openSubState(new SettingsScreenBase()); } },
+                { transKey: "system.menu.settings", action: function(d:Int) { if (d == 0) openSubState(new SettingsScreen()); } },
                 { transKey: "system.menu.website.translator", action: function(d:Int) {} },
                 { transKey: "system.menu.quit", action: function(d:Int) { if (d == 0) System.exit(0); } }
             ];

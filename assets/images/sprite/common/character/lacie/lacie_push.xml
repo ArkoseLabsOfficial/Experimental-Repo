@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="lacie.png">
+    <SubTexture name="push_left0000" x="0" y="0" width="32" height="48"/>
+    <SubTexture name="push_left1000" x="32" y="0" width="32" height="48"/>
+
+    <SubTexture name="push_up0000" x="0" y="48" width="32" height="48"/>
+    <SubTexture name="push_up1000" x="32" y="48" width="32" height="48"/>
+    <SubTexture name="push_up2000" x="64" y="48" width="32" height="48"/>
+
+    <SubTexture name="push_down0000" x="0" y="144" width="32" height="48"/>
+    <SubTexture name="push_down1000" x="32" y="144" width="32" height="48"/>
+    <SubTexture name="push_down2000" x="64" y="144" width="32" height="48"/>
+
+    <SubTexture name="push_right0000" x="0" y="96" width="32" height="48"/>
+    <SubTexture name="push_right1000" x="32" y="96" width="32" height="48"/>
+</TextureAtlas>

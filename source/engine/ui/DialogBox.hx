@@ -68,6 +68,16 @@ class DialogBox extends FlxSpriteGroup {
         continueIcon.visible = false;
         
         nameText.text = name;
+
+        if (name == null || name == "") {
+            nameText.visible = false;
+            nameSeperator.visible = false;
+            bodyText.y = bg.y + 55;
+        } else {
+            nameText.visible = true;
+            nameSeperator.visible = true;
+            bodyText.y = bg.y + 105;
+        }
         
         if (leftPath != "") {
             portraitLeft.loadGraphic(LilyAssets.image(leftPath));

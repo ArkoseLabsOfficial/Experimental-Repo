@@ -46,6 +46,7 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
         roomEvents = [];
         sortMap = new Map();
         scripts = new ScriptHandler();
+        scripts.setParentForAll(PlayState.instance);
         this.mainState = mainState;
     }
 

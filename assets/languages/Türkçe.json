@@ -29,8 +29,15 @@
     "system.settings.game.controls": "Kontroller",
     "system.settings.game.back": "Geri",
 
+    "system.game.item.jar_paint_red": "Kırmızı Renkli Jar",
+    "system.game.item.jar_paint_green": "Yeşil Renkli Jar",
+    "system.game.item.jar_paint_blue": "Mavi Renkli Jar",
+    "system.game.item.jar_paint_yellow": "Sarı Renkli Jar",
+    "system.game.item.jar_paint_purple": "Pembe Renkli Jar", 
+
     "system.menu.inventory": "Envanter",
     "system.menu.objectives": "Hedefler",
+    "system.menu.objectives.empty": "Hiçbir Hedef Yok",
     "system.menu.settings": "Ayarlar",
     "system.menu.load": "Yükle",
     "system.menu.save": "Kaydet",

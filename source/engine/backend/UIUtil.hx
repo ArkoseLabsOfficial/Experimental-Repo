@@ -46,6 +46,7 @@ class UIUtil {
         bg.updateHitbox();
         grp.add(bg);
         var hud = create9SliceSprite(frameImage, 0, 0, Width, Height, scaleFactor);
+        hud.antialiasing = false;
         grp.add(hud);
         return grp;
     }

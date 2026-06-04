@@ -32,6 +32,7 @@ class Controls {
         return baseResult #if FEATURE_TOUCH_CONTROLS || mobilePressed #end;
     }
 
+    #if FEATURE_TOUCH_CONTROLS
     private inline static function joyStickPressed(key:String):Bool
 	{
         var justPressed:Bool = false;
@@ -51,6 +52,7 @@ class Controls {
 
 		return pressed;
 	}
+    #end
 
     private inline static function checkKeyboardAndGamepad(action:String, justPressed:Bool):Bool {
         var binds:Array<String> = GamePrefs.keybinds.get(action);

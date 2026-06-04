@@ -10,10 +10,8 @@ import mobile.MobileConfig;
 #end
 import openfl.Assets;
 import haxe.io.Bytes;
-#if sys
 import sys.FileSystem as SysFileSystem;
 import sys.io.File as SysFile;
-#end
 
 class Main extends Sprite {
     public function new() {
@@ -23,11 +21,8 @@ class Main extends Sprite {
         #elseif ios
         Sys.setCwd(lime.system.System.documentsDirectory);
         #end
-        #if (mobile && sys)
-        copySpesificFileFromAssets("assets/fonts/NotoSans-Regular.ttf", Sys.getCwd() + "assets/fonts/NotoSans-Regular.ttf");
-        #end
-        FlxAssets.FONT_DEFAULT = "assets/fonts/NotoSans-Regular.ttf";
-        FlxSprite.defaultAntialiasing = true;
+        FlxAssets.FONT_DEFAULT = "assets/font/NotoSans-Regular.ttf";
+        FlxSprite.defaultAntialiasing = false;
         #if FEATURE_TOUCH_CONTROLS
         MobileConfig.init('MobileControls', "ArkoseLabs/LilyEngine", 'mobile/',
 			[

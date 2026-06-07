@@ -65,7 +65,7 @@ jobs:
             cd -
             echo =========
 
-        - name: Purge Linux Desktop Backends and Force Disable X11 in SDL
+        - name: Purge Linux Desktop Backends, X11, and Linux Audio in SDL
           run: |
             echo "=== CLEANING LIME OPENAL BACKENDS FOR SWITCH ==="
             find ~/haxelib/ -name "Build.xml" -exec sed -i '/<file name="alc\/backends\/alsa.cpp"/d' {} +
@@ -80,13 +80,22 @@ jobs:
             find ~/haxelib/ -name "pulseaudio.cpp" -exec sh -c 'echo "// Bypassed" > "{}"' \;
             find ~/haxelib/ -name "oss.cpp" -exec sh -c 'echo "// Bypassed" > "{}"' \;
             find ~/haxelib/ -name "jack.cpp" -exec sh -c 'echo "// Bypassed" > "{}"' \;
-            echo "=== FORCE DISABLING LINUX X11 WINDOWING IN SDL ==="
+            echo "=== FORCE DISABLING LINUX X11 WINDOWING & AUDIO IN SDL ==="
             find ~/haxelib/ -name "SDL_config_linux.h" -exec sed -i 's/#define SDL_VIDEO_DRIVER_X11 1/#define SDL_VIDEO_DRIVER_X11 0/g' {} +
+            find ~/haxelib/ -name "SDL_config_linux.h" -exec sed -i 's/#define SDL_AUDIO_DRIVER_ALSA 1/#define SDL_AUDIO_DRIVER_ALSA 0/g' {} +
+            find ~/haxelib/ -name "SDL_config_linux.h" -exec sed -i 's/#define SDL_AUDIO_DRIVER_PULSEAUDIO 1/#define SDL_AUDIO_DRIVER_PULSEAUDIO 0/g' {} +
+            find ~/haxelib/ -name "SDL_config_linux.h" -exec sed -i 's/#define SDL_AUDIO_DRIVER_ESD 1/#define SDL_AUDIO_DRIVER_ESD 0/g' {} +
+            find ~/haxelib/ -name "SDL_config_linux.h" -exec sed -i 's/#define SDL_AUDIO_DRIVER_ARTS 1/#define SDL_AUDIO_DRIVER_ARTS 0/g' {} +
+            find ~/haxelib/ -name "SDL_config_linux.h" -exec sed -i 's/#define SDL_AUDIO_DRIVER_OSS 1/#define SDL_AUDIO_DRIVER_OSS 0/g' {} +
             find ~/haxelib/ -name "SDL_config.h" -exec sed -i 's/#define SDL_VIDEO_DRIVER_X11 1/#define SDL_VIDEO_DRIVER_X11 0/g' {} +
-            find . -name "SDL_config_linux.h" -exec sed -i 's/#define SDL_VIDEO_DRIVER_X11 1/#define SDL_VIDEO_DRIVER_X11 0/g' {} +
-            find . -name "SDL_config.h" -exec sed -i 's/#define SDL_VIDEO_DRIVER_X11 1/#define SDL_VIDEO_DRIVER_X11 0/g' {} +
+            find ~/haxelib/ -name "SDL_config.h" -exec sed -i 's/#define SDL_AUDIO_DRIVER_ALSA 1/#define SDL_AUDIO_DRIVER_ALSA 0/g' {} +
             find ~/haxelib/ -name "Build.xml" -exec sed -i '/<file name="src\/video\/x11\//d' {} +
+            find ~/haxelib/ -name "Build.xml" -exec sed -i '/<file name="src\/audio\/alsa\//d' {} +
+            find ~/haxelib/ -name "Build.xml" -exec sed -i '/<file name="src\/audio\/pulse\//d' {} +
+            find ~/haxelib/ -name "Build.xml" -exec sed -i '/<file name="src\/audio\/arts\//d' {} +
+            find ~/haxelib/ -name "Build.xml" -exec sed -i '/<file name="src\/audio\/esd\//d' {} +
             find . -name "Build.xml" -exec sed -i '/<file name="src\/video\/x11\//d' {} +
+            find . -name "Build.xml" -exec sed -i '/<file name="src\/audio\/alsa\//d' {} +
             echo "========= PATCH COMPLETE ========="
         
         - name: Build Lime for Switch

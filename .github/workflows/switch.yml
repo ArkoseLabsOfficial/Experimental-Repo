@@ -23,7 +23,7 @@ jobs:
             echo === UPDATING HAXELIB ===
             mkdir -p ~/haxelib
             haxelib --always --quiet setup ~/haxelib
-            haxelib --global --always --quiet update haxelib
+            hahelib --global --always --quiet update haxelib
             echo =========
             
             echo === HAXE VERSION ===
@@ -52,6 +52,11 @@ jobs:
             echo === INSTALLING HAXE LIBRARIES ===
             haxelib --always --quiet install format
             haxelib --always --quiet install hxp
+            haxelib --always --quiet install flixel
+            haxelib --always --quiet install flixel-addons
+            haxelib --always --quiet install flixel-ui
+            haxelib --always --quiet install mobile-controls
+            haxelib --always --quiet git hscript-iris https://github.com/Aidan63/hscript-iris.git
             haxelib --always --quiet git lime https://github.com/Slushi-Github/lime-nx.git
             haxelib --always --quiet git hxcpp https://github.com/Slushi-Github/hxcpp-nx.git
             haxelib --always --quiet git hx_libnx https://github.com/Slushi-Github/hx_libnx.git
@@ -64,6 +69,15 @@ jobs:
             haxe compile.hxml
             cd -
             echo =========
+
+        - name: Purge ALSA Requirements from OpenAL Build Setup
+          run: |
+            echo "=== PATCHING LIME OPENAL ENGINE FOR SWITCH ==="
+            find ~/haxelib/ -name "Build.xml" -exec sed -i '/<file name="alc\/backends\/alsa.cpp"/d' {} +
+            find . -name "Build.xml" -exec sed -i '/<file name="alc\/backends\/alsa.cpp"/d' {} +
+            find ~/haxelib/ -name "alsa.cpp" -exec sh -c 'echo "// Bypassed for Switch Target" > "{}"' \;
+            find . -name "alsa.cpp" -exec sh -c 'echo "// Bypassed for Switch Target" > "{}"' \;
+            echo "========= PATCH COMPLETE ========="
         
         - name: Build Lime for Switch
           run: |
@@ -91,7 +105,7 @@ jobs:
             fi
         
         - name: Publish Artifact
-          uses: actions/upload-artifact@v4.3.4
+          uses: actions/upload-artifact@v4
           with:
             name: switchBuild
             path: export/release/switch/bin/*.nro

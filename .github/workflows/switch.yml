@@ -65,13 +65,25 @@ jobs:
             cd -
             echo =========
 
-        - name: Purge ALSA Requirements from OpenAL Build Setup
+        - name: Purge Linux Desktop Backends from OpenAL Build Setup
           run: |
-            echo "=== PATCHING LIME OPENAL ENGINE FOR SWITCH ==="
+            echo "=== CLEANING LIME OPENAL BACKENDS FOR SWITCH ==="
             find ~/haxelib/ -name "Build.xml" -exec sed -i '/<file name="alc\/backends\/alsa.cpp"/d' {} +
+            find ~/haxelib/ -name "Build.xml" -exec sed -i '/<file name="alc\/backends\/pulseaudio.cpp"/d' {} +
+            find ~/haxelib/ -name "Build.xml" -exec sed -i '/<file name="alc\/backends\/oss.cpp"/d' {} +
+            find ~/haxelib/ -name "Build.xml" -exec sed -i '/<file name="alc\/backends\/jack.cpp"/d' {} +
             find . -name "Build.xml" -exec sed -i '/<file name="alc\/backends\/alsa.cpp"/d' {} +
-            find ~/haxelib/ -name "alsa.cpp" -exec sh -c 'echo "// Bypassed for Switch Target" > "{}"' \;
-            find . -name "alsa.cpp" -exec sh -c 'echo "// Bypassed for Switch Target" > "{}"' \;
+            find . -name "Build.xml" -exec sed -i '/<file name="alc\/backends\/pulseaudio.cpp"/d' {} +
+            find . -name "Build.xml" -exec sed -i '/<file name="alc\/backends\/oss.cpp"/d' {} +
+            find . -name "Build.xml" -exec sed -i '/<file name="alc\/backends\/jack.cpp"/d' {} +
+            find ~/haxelib/ -name "alsa.cpp" -exec sh -c 'echo "// Bypassed" > "{}"' \;
+            find ~/haxelib/ -name "pulseaudio.cpp" -exec sh -c 'echo "// Bypassed" > "{}"' \;
+            find ~/haxelib/ -name "oss.cpp" -exec sh -c 'echo "// Bypassed" > "{}"' \;
+            find ~/haxelib/ -name "jack.cpp" -exec sh -c 'echo "// Bypassed" > "{}"' \;
+            find . -name "alsa.cpp" -exec sh -c 'echo "// Bypassed" > "{}"' \;
+            find . -name "pulseaudio.cpp" -exec sh -c 'echo "// Bypassed" > "{}"' \;
+            find . -name "oss.cpp" -exec sh -c 'echo "// Bypassed" > "{}"' \;
+            find . -name "jack.cpp" -exec sh -c 'echo "// Bypassed" > "{}"' \;
             echo "========= PATCH COMPLETE ========="
         
         - name: Build Lime for Switch

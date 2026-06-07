@@ -65,7 +65,7 @@ jobs:
             cd -
             echo =========
 
-        - name: Purge Linux Desktop Backends from OpenAL Build Setup
+        - name: Purge Linux Desktop Backends and Force Disable X11 in SDL
           run: |
             echo "=== CLEANING LIME OPENAL BACKENDS FOR SWITCH ==="
             find ~/haxelib/ -name "Build.xml" -exec sed -i '/<file name="alc\/backends\/alsa.cpp"/d' {} +
@@ -80,10 +80,13 @@ jobs:
             find ~/haxelib/ -name "pulseaudio.cpp" -exec sh -c 'echo "// Bypassed" > "{}"' \;
             find ~/haxelib/ -name "oss.cpp" -exec sh -c 'echo "// Bypassed" > "{}"' \;
             find ~/haxelib/ -name "jack.cpp" -exec sh -c 'echo "// Bypassed" > "{}"' \;
-            find . -name "alsa.cpp" -exec sh -c 'echo "// Bypassed" > "{}"' \;
-            find . -name "pulseaudio.cpp" -exec sh -c 'echo "// Bypassed" > "{}"' \;
-            find . -name "oss.cpp" -exec sh -c 'echo "// Bypassed" > "{}"' \;
-            find . -name "jack.cpp" -exec sh -c 'echo "// Bypassed" > "{}"' \;
+            echo "=== FORCE DISABLING LINUX X11 WINDOWING IN SDL ==="
+            find ~/haxelib/ -name "SDL_config_linux.h" -exec sed -i 's/#define SDL_VIDEO_DRIVER_X11 1/#define SDL_VIDEO_DRIVER_X11 0/g' {} +
+            find ~/haxelib/ -name "SDL_config.h" -exec sed -i 's/#define SDL_VIDEO_DRIVER_X11 1/#define SDL_VIDEO_DRIVER_X11 0/g' {} +
+            find . -name "SDL_config_linux.h" -exec sed -i 's/#define SDL_VIDEO_DRIVER_X11 1/#define SDL_VIDEO_DRIVER_X11 0/g' {} +
+            find . -name "SDL_config.h" -exec sed -i 's/#define SDL_VIDEO_DRIVER_X11 1/#define SDL_VIDEO_DRIVER_X11 0/g' {} +
+            find ~/haxelib/ -name "Build.xml" -exec sed -i '/<file name="src\/video\/x11\//d' {} +
+            find . -name "Build.xml" -exec sed -i '/<file name="src\/video\/x11\//d' {} +
             echo "========= PATCH COMPLETE ========="
         
         - name: Build Lime for Switch

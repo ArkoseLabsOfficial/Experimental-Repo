@@ -1,26 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
-	<!-- _________________________ Application Settings _________________________ -->
-
 	<app title="Lily Engine" file="LilyEngine" main="Main" packageName="com.arkoselabs.lilyengine" package="com.arkoselabs.lilyengine" company="ArkoseLabs" version="0.1.0" />
 
-	<!--Switch Export with Unique ApplicationID and Icon-->
 	<set name="APP_ID" value="0x0100f6c013bbc000" />
 
-	<!-- NOTE TO SELF: DISABLE THIS IF ISSUES ARE FOUND -->
-	<haxedef name="LINC_LUA_RELATIVE_DYNAMIC_LIB" /> <!-- stable luas PUT AFTER FIRST LINE WITH APP NAME AND ETC -->
+	<haxedef name="LINC_LUA_RELATIVE_DYNAMIC_LIB" /> <app preloader="flixel.system.FlxPreloader" />
 
-	<!--The flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a html file
-		or you can set the actual size of your file manually at "FlxPreloaderBase-onUpdate-bytesTotal"-->
-	<!-- <app preloader="Preloader" resizable="true" /> -->
-	<app preloader="flixel.system.FlxPreloader" />
-
-	<!--Minimum without FLX_NO_GAMEPAD: 11.8, without FLX_NO_NATIVE_CURSOR: 11.2-->
 	<set name="SWF_VERSION" value="11.8" />
 
-	<!-- ______________________ SWITCH PORT CUSTOMIZATION ______________________ -->
 	<section if="switch">
-		<!-- Required for Switch for use the correct renderer -->
 		<haxedef name="lime-opengl" if="switch" />
 		<haxedef name="lime-cairo" value="false" if="switch" />
 		<set name="LIME_CAIRO" value="0" if="switch" />
@@ -28,29 +16,21 @@
 
 		<haxelib name="hx_libnx"/>
 
-		<!-- CHANGE THIS TO YOUR SWITCH IP -->
+		<config:switch libs="lua5.1" if="switch"/>
+
 		<config:switch ip="192.168.1.140"/>
 	</section>
 
-	<!-- ____________________________ Window Settings ___________________________ -->
-
-	<!--These window settings apply to all targets-->
 	<window width="1920" height="1080" fps="120" background="#000000" hardware="true" vsync="false" />
 
-	<!--HTML5-specific-->
 	<window if="html5" resizable="true" />
 
-	<!--Desktop-specific-->
 	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" />
 
-	<!--Mobile-specific-->
 	<window if="mobile" orientation="landscape" fullscreen="true" resizable="false" allow-shaders="true"
 		require-shaders="true" allow-high-dpi="true" />
 
-	<!--Switch-specific-->
 	<window if="switch" orientation="landscape" fullscreen="true" width="0" height="0" resizable="true" />
-
-	<!-- _____________________________ Path Settings ____________________________ -->
 
 	<set name="BUILD_DIR" value="export/debug" if="debug" />
 	<set name="BUILD_DIR" value="export/release" unless="debug" />
@@ -62,72 +42,50 @@
 	<assets path='resources'/>
 	<haxedef name="mobile_controls_allow_mouse_clicks" if="desktop"/>
 
-	<!-- _______________________________ Defines _______________________________ -->
-
-	<!-- Comment this out to disable abstract support in hscript. !-->
 	<haxedef name="HSCRIPT_ABSTRACT_SUPPORT" unless="STRIPPED_COMPILE" />
 	<define name="FEATURE_HSCRIPT" />
-	<define name="FEATURE_TOUCH_CONTROLS" if="mobile"/>
+	<define name="FEATURE_TOUCH_CONTROLS" if="mobile || switch"/>
 	<haxedef name="scriptable" />
 
 	<haxedef name="FLX_RENDER_TILE" if="html5"/>
 
-	<!-- _______________________________ Libraries ______________________________ -->
-
 	<haxelib name="flixel" />
 	<haxelib name="flixel-addons" />
-    <haxelib name="flixel-ui" />
+	<haxelib name="flixel-ui" />
 	<haxelib name="hscript-iris" if="FEATURE_HSCRIPT"/>
 	<haxelib name="mobile-controls" />
 	<haxedef name="openflPos" />
 	<haxedef name="hscriptPos" />
 
-	<!-- ______________________________ Haxedefines _____________________________ -->
+	<haxedef name="NO_PRECOMPILED_HEADERS" if="linux || switch" />
 
-	<!--Disable the Flixel core focus lost screen-->
 	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
 
-	<!-- Show debug traces for hxCodec -->
 	<haxedef name="HXC_DEBUG_TRACE" if="debug" />
 
-	<!--Disable the Flixel core debugger. Automatically gets set whenever you compile in release mode!-->
-	<haxedef name="FLX_NO_DEBUG" /> <!-- worst debugger ever lol -->
+	<haxedef name="FLX_NO_DEBUG" /> <haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
 
-	<!--Enable this for Nape release builds for a serious peformance improvement-->
-	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
-
-	<!--Used for Izzy Engine's crash handler-->
 	<haxedef name="HXCPP_CHECK_POINTER" />
 	<haxedef name="HXCPP_STACK_LINE" />
 	<haxedef name="HXCPP_STACK_TRACE" />
 	<haxedef name="HXCPP_CATCH_SEGV" />
 	<haxedef name="HXCPP_DEBUG_LINK" />
 
-	<!-- <haxedef name="message.reporting" value="pretty" /> -->
 	<haxedef name='no-deprecation-warnings' />
 
-	<!--Macro fixes-->
 	<haxeflag name="--macro" value="allowPackage('flash')" />
 	<haxeflag name="--macro" value="include('my.pack')" />
 
 	<haxeflag name="-D" value="HXCPP_DEBUGGER" if="debug"/>
 	<haxeflag name="-debug" if="debug"/>
 
-	<haxedef name="DISABLE_AUDIO_FOCUS" if="android" /> <!-- Disable the fucking audio focus -->>
+	<haxedef name="DISABLE_AUDIO_FOCUS" if="android" /> <haxedef name="openfl_dpi_aware" />
 
-	<haxedef name="openfl_dpi_aware" />
-
-	<!-- Haxe 4.3.0+: Enable pretty syntax errors and stuff. -->
-	<!-- pretty (haxeflixel default), indent, classic (haxe compiler default) -->
-	<!-- makes much easier to understand which line is has problem -->
 	<haxedef name="message.reporting" value="pretty" />
 
-	<!-- Category Type for Apple Systems -->
 	<config:ios category_type="public.app-category.music-games" />
 	<config:mac category_type="public.app-category.music-games" />
 
 	<haxedef name="lime_use_old_deltatime" />
 	<haxedef name="lime_disable_motion_sensors" />
-
-	<!-- <icon path="art/switchAssets/SwitchIcon.png" size='256' if="switch"/> -->
 </project>

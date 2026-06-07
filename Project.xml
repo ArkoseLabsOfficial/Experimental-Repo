@@ -54,6 +54,7 @@
 	<!-- Comment this out to disable abstract support in hscript. !-->
 	<haxedef name="HSCRIPT_ABSTRACT_SUPPORT" unless="STRIPPED_COMPILE" />
 	<define name="FEATURE_HSCRIPT" />
+	<define name="FEATURE_TOUCH_CONTROLS" if="mobile"/>
 	<haxedef name="scriptable" />
 
 	<haxedef name="FLX_RENDER_TILE" if="html5"/>

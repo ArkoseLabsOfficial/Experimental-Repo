@@ -18,6 +18,20 @@
 	<!--Minimum without FLX_NO_GAMEPAD: 11.8, without FLX_NO_NATIVE_CURSOR: 11.2-->
 	<set name="SWF_VERSION" value="11.8" />
 
+	<!-- ______________________ SWITCH PORT CUSTOMIZATION ______________________ -->
+	<section if="switch">
+		<!-- Required for Switch for use the correct renderer -->
+		<haxedef name="lime-opengl" if="switch" />
+		<haxedef name="lime-cairo" value="false" if="switch" />
+		<set name="LIME_CAIRO" value="0" if="switch" />
+		<set name="LIME_OPENGL" value="1" if="switch" />
+
+		<haxelib name="hx_libnx"/>
+
+		<!-- CHANGE THIS TO YOUR SWITCH IP -->
+		<config:switch ip="192.168.1.140"/>
+	</section>
+
 	<!-- ____________________________ Window Settings ___________________________ -->
 
 	<!--These window settings apply to all targets-->
@@ -34,8 +48,7 @@
 		require-shaders="true" allow-high-dpi="true" />
 
 	<!--Switch-specific-->
-	<window if="switch" orientation="landscape" fullscreen="true" width="0" height="0"
-		resizable="true" />
+	<window if="switch" orientation="landscape" fullscreen="true" width="0" height="0" resizable="true" />
 
 	<!-- _____________________________ Path Settings ____________________________ -->
 
@@ -115,4 +128,6 @@
 
 	<haxedef name="lime_use_old_deltatime" />
 	<haxedef name="lime_disable_motion_sensors" />
+
+	<!-- <icon path="art/switchAssets/SwitchIcon.png" size='256' if="switch"/> -->
 </project>

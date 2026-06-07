@@ -101,7 +101,7 @@ jobs:
         - name: Build Lime for Switch
           run: |
             echo === REBUILDING LIME FOR SWITCH ===
-            haxelib run lime rebuild switch
+            haxelib run lime rebuild switch -Dswitch -v
             echo =========
         
         - name: Skip SScript setup mode

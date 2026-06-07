@@ -33,10 +33,11 @@ jobs:
         - name: Install DevKitPro dependencies
           run: |
             echo === SYNCING DEVKITPRO REPOS ===
-            dkp-pacman -Sy --noconfirm
+            sudo sed -i 's/#DisableSandbox/DisableSandbox/g' /etc/pacman.conf 2>/dev/null || true
+            dkp-pacman -Sy --noconfirm --disable-download-timeout
             
             echo === INSTALLING SWITCH LIBRARIES ===
-            dkp-pacman -S --needed --noconfirm \
+            dkp-pacman -S --needed --noconfirm --noconfirm --disable-download-timeout \
               switch-bzip2 switch-cmake switch-curl switch-flac \
               switch-freetype switch-glad switch-glm switch-harfbuzz \
               switch-libdrm_nouveau switch-libjpeg-turbo switch-libmodplug \

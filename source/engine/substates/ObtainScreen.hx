@@ -1,16 +1,5 @@
 package engine.substates;
 
-import flixel.FlxG;
-import flixel.FlxCamera;
-import flixel.FlxSprite;
-import flixel.text.FlxText;
-import flixel.util.FlxColor;
-import flixel.group.FlxSpriteGroup;
-import engine.backend.Language;
-import engine.backend.Controls;
-import engine.ui.LacieUIExperimental.MenuFrameNode;
-import io.LilyAssets;
-
 typedef ObtainedItem = {
     var itemID:String;
     var count:Int;
@@ -46,7 +35,7 @@ class ObtainScreen extends SubStateBackend {
         obtainBG.scrollFactor.set(0, 0);
         add(obtainBG);
 
-        menuFrame = new MenuFrameNode(0, 0, panelW, panelH, false);
+        menuFrame = new MenuFrameNode(0, 0, panelW, panelH, 0);
         menuFrame.screenCenter();
         add(menuFrame);
 

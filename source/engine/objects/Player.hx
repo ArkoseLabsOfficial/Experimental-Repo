@@ -1,7 +1,6 @@
 package engine.objects;
 
 class Player extends CharacterEntity {
-    public var canMove:Bool = true;
     var walkSpeed:Float = 160;
     var runSpeed:Float = 280;
 

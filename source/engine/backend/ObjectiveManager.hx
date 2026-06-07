@@ -1,11 +1,5 @@
 package engine.backend;
 
-import haxe.Json;
-import engine.backend.GamePrefs;
-import engine.backend.Language;
-import flixel.FlxG;
-import engine.backend.Objective;
-
 class ObjectiveManager {
     public var objectives:Map<String, Objective>;
     private var _objectivesUpdated:Bool = false;

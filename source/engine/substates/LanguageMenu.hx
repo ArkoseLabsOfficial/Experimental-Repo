@@ -216,17 +216,6 @@ class LanguageMenu extends SubStateBackend {
         startupMenu.onBack = closeMenu;
         startupMenu.root();
 
-        var infoBoxWidth:Float = 210;
-        var infoBoxHeight:Float = 70;
-        var infoBoxX:Float = FlxG.width - infoBoxWidth;
-        var infoBoxY:Float = FlxG.height - infoBoxHeight;
-
-        var infoBox = UIUtil.createInfoBox(LilyAssets.image("img/ui/frame_infobox"), infoBoxX - 35, infoBoxY - 10, infoBoxWidth, infoBoxHeight, 0.66);
-        add(infoBox);
-
-        var controlsText = UIUtil.createText(infoBoxX - 135, infoBoxY + (infoBoxHeight / 2) - 30, 400, "[Z] Seç   [X] Geri", 32);
-        add(controlsText);
-
         #if FEATURE_TOUCH_CONTROLS
         mobile.controls.addMobilePad("UP_DOWN", "A_B");
         mobile.controls.addMobilePadCamera();

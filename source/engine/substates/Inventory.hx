@@ -27,7 +27,7 @@ class Inventory extends SubStateBackend {
         var startX = (FlxG.width - totalWidth) / 2;
         var startY = (FlxG.height - MAIN_PANEL_H) / 2;
 
-        var invFrame = new TitledMenuFrame(startX, startY, MAIN_PANEL_W, MAIN_PANEL_H, "Eşyalar", LilyAssets.image("img/ui/divider_md"), "");
+        var invFrame = new TitledMenuFrame(startX, startY, MAIN_PANEL_W, MAIN_PANEL_H, Language.GetCaption("system.menu.items"), LilyAssets.image("img/ui/divider_md"), "");
         add(invFrame);
 
         var descX = startX + MAIN_PANEL_W + separation;

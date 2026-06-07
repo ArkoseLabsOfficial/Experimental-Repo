@@ -1,22 +1,5 @@
 package engine.substates;
 
-import flixel.FlxG;
-import flixel.FlxCamera;
-import flixel.FlxSprite;
-import flixel.group.FlxSpriteGroup;
-import flixel.text.FlxText;
-import flixel.util.FlxColor;
-import flixel.input.keyboard.FlxKey;
-import flixel.input.gamepad.FlxGamepadInputID;
-import sys.FileSystem;
-import engine.backend.GamePrefs;
-import engine.backend.Language;
-import engine.backend.Controls;
-import engine.ui.LacieUIExperimental.MenuFrameNode;
-import engine.ui.LacieUIExperimental.MenuVisualEntry;
-import io.LilyAssets;
-import haxe.xml.Access;
-
 typedef XmlOption = {
     var label:String;
     var type:String;
@@ -55,6 +38,7 @@ class SettingsScreen extends SubStateBackend {
 
     override public function create():Void {
         super.create();
+        Language.onLanguageUpdate.push(refreshText);
         var camPause = new FlxCamera();
         camPause.bgColor = FlxColor.TRANSPARENT;
         FlxG.cameras.add(camPause, false);
@@ -73,9 +57,8 @@ class SettingsScreen extends SubStateBackend {
         var entryWidth = targetWidth * 0.85;
 
         var useTitle = currentMenuId != "main";
-        menuFrame = new MenuFrameNode(0, 0, targetWidth, targetHeight, useTitle);
-        
-        // 1. Center the frame first so it establishes its world coordinates
+        menuFrame = new MenuFrameNode(0, 0, targetWidth, targetHeight, useTitle ? 2 : 0);
+
         menuFrame.screenCenter();
         if (fromPause) menuFrame.y += 2.5;
         
@@ -107,8 +90,7 @@ class SettingsScreen extends SubStateBackend {
         }
 
         menuFrame.addMenu(optionContainer);
-        
-        // 2. THE FIX: Anchor the container's position to the menuFrame's world coordinates
+
         optionContainer.x = menuFrame.x + (targetWidth - entryWidth) / 2;
         optionContainer.y = menuFrame.y + (targetHeight - (numItems * optionGap)) / 2;
         if (useTitle) optionContainer.y += (30 * uiScale);
@@ -163,19 +145,19 @@ class SettingsScreen extends SubStateBackend {
         }
 
         if (Controls.UP_P) {
-            LilyAssets.play("sfx/ui_navigation");
+            LilyAssets.play(LilyAssets.NAVIGATE);
             changeSelection(-1);
         }
         if (Controls.DOWN_P) {
-            LilyAssets.play("sfx/ui_navigation");
+            LilyAssets.play(LilyAssets.NAVIGATE);
             changeSelection(1);
         }
         if (Controls.ACCEPT_P) {
-            LilyAssets.play("sfx/ui_start");
+            LilyAssets.play(LilyAssets.CONFIRM);
             acceptSelection();
         }
         if (Controls.CANCEL_P) {
-            LilyAssets.play("sfx/ui_cancel");
+            LilyAssets.play(LilyAssets.CANCEL);
             close();
         }
 
@@ -281,6 +263,7 @@ class SettingsScreen extends SubStateBackend {
             if (menuNode.att.id == menuId) {
                 if (menuId == "main") {
                     for (cat in menuNode.nodes.category) {
+                        if (cat.att.label == "system.settings.game.language" && fromPause) continue;
                         options.push({ label: cat.att.label, target: cat.att.target, type: "category" });
                     }
                 } else {
@@ -304,11 +287,19 @@ class SettingsScreen extends SubStateBackend {
             }
         }
     }
+
+    function refreshText():Void {
+        for (item in visualItems) {
+            item.refreshText();
+        }
+    }
+
+    override function destroy() {
+        super.destroy();
+        Language.onLanguageUpdate.remove(refreshText);
+    }
 }
 
-// ==========================================
-// Encapsulated Node Logic for Settings Items
-// ==========================================
 class SettingsVisualEntry extends MenuVisualEntry {
     public var valueText:FlxText;
     public var optionLabel:FlxText;
@@ -318,6 +309,21 @@ class SettingsVisualEntry extends MenuVisualEntry {
     private var internalScale:Float;
     private var entryWidth:Float;
     private var entryHeight:Float;
+
+    public function refreshText():Void {
+        FlxDestroyUtil.destroy(optionLabel);
+
+        optionLabel = new FlxText(0, 0, 0, Language.GetCaption(optData.label), Std.int(20 * internalScale));
+        
+        if (optData.type == "category" || optData.type == "button") {
+            optionLabel.x = (entryWidth - optionLabel.width) / 2;
+        } else {
+            optionLabel.x = 15 * internalScale;
+        }
+        
+        optionLabel.y = (entryHeight - optionLabel.height) / 2;
+        add(optionLabel);
+    }
     
     public function new(X:Float, Y:Float, opt:XmlOption, width:Float, height:Float, scale:Float) {
         super(X, Y, "", width, height); 
@@ -399,7 +405,6 @@ class SettingsVisualEntry extends MenuVisualEntry {
                 }
         }
 
-        // 3. THE FIX: Always use this.x and this.y to account for the group's world position
         valueText.x = this.x + entryWidth - valueText.width - (15 * internalScale);
         valueText.y = this.y + (entryHeight - valueText.height) / 2;
 
@@ -418,7 +423,6 @@ class SettingsVisualEntry extends MenuVisualEntry {
     public function setListeningState():Void {
         valueText.text = "? Waiting ?";
         
-        // Use this.x and this.y here as well
         valueText.x = this.x + entryWidth - valueText.width - (15 * internalScale);
         valueText.y = this.y + (entryHeight - valueText.height) / 2;
         

@@ -53,13 +53,17 @@
 
 	<!-- Comment this out to disable abstract support in hscript. !-->
 	<haxedef name="HSCRIPT_ABSTRACT_SUPPORT" unless="STRIPPED_COMPILE" />
+	<define name="FEATURE_HSCRIPT" />
+	<haxedef name="scriptable" />
+
+	<haxedef name="FLX_RENDER_TILE" if="html5"/>
 
 	<!-- _______________________________ Libraries ______________________________ -->
 
 	<haxelib name="flixel" />
 	<haxelib name="flixel-addons" />
     <haxelib name="flixel-ui" />
-	<haxelib name="hscript-iris" />
+	<haxelib name="hscript-iris" if="FEATURE_HSCRIPT"/>
 	<haxelib name="mobile-controls" />
 	<haxedef name="openflPos" />
 	<haxedef name="hscriptPos" />

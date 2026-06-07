@@ -80,6 +80,7 @@ class ItemManager {
             return;
         }
 
+        #if FEATURE_HSCRIPT
         if (RoomManager.instance != null && RoomManager.instance.scripts != null) {
             var itemScript = RoomManager.instance.scripts.loadScript(fullPath);
             RoomManager.instance.injectScriptVariables();
@@ -89,5 +90,6 @@ class ItemManager {
             tempScript.call("onUse");
             tempScript.destroy();
         }
+        #end
     }
 }

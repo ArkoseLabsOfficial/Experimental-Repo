@@ -1,15 +1,7 @@
 package engine.backend;
 
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.FlxSprite;
-import flixel.util.FlxSort;
-import flixel.math.FlxRect;
-import flixel.FlxObject; 
-import haxe.xml.Access;
+import haxe.Json;
 import engine.objects.WorldObject;
-import engine.objects.CharacterEntity;
-import engine.objects.Player;
-import engine.objects.Follower;
 import engine.objects.CollisionBlock;
 
 typedef TresTile = { var path:String; var rx:Int; var ry:Int; var solid:Bool; }
@@ -31,7 +23,9 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
     public var activeCutscenePlayer:CharacterEntity;
     
     public var roomZoom:Float = 1.0;
+    #if FEATURE_HSCRIPT
     public var scripts:ScriptHandler;
+    #end
     public var mainState:Dynamic = null;
 
     public function new(?mainState:Dynamic) {
@@ -45,27 +39,177 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
         spawnPoints = new Map();
         roomEvents = [];
         sortMap = new Map();
+        #if FEATURE_HSCRIPT
         scripts = new ScriptHandler();
         scripts.setParentForAll(PlayState.instance);
+        #end
         this.mainState = mainState;
     }
 
-    public function loadRoom(filePath:String) {
-        if (!LilyAssets.fileExists("rooms/" + filePath + ".xml")) {
-            flixel.FlxG.log.warn("Room file not found: " + filePath);
-            return;
+    public function loadRoom(filePath:String, ?ldtkLevelName:String) {
+        var hasLoadedSomething = false;
+        
+        if (LilyAssets.fileExists("rooms/" + filePath + ".xml")) {
+            var rawData = LilyAssets.getTextFromFile("rooms/" + filePath + ".xml");
+            loadRoomFromString(rawData); 
+            hasLoadedSomething = true;
+        }
+
+        if (ldtkLevelName != null) {
+            var rawJson:String = null;
+            if (LilyAssets.fileExists("rooms/" + filePath + ".ldtk")) {
+                rawJson = LilyAssets.getTextFromFile("rooms/" + filePath + ".ldtk");
+            } else if (LilyAssets.fileExists("rooms/" + filePath + ".json")) {
+                rawJson = LilyAssets.getTextFromFile("rooms/" + filePath + ".json");
+            }
+            
+            if (rawJson != null) {
+                loadLDtkLevel(rawJson, ldtkLevelName);
+                hasLoadedSomething = true;
+            } else {
+                flixel.FlxG.log.warn("LDtk/JSON file not found: " + filePath);
+            }
         }
         
-        var rawData = LilyAssets.getTextFromFile("rooms/" + filePath + ".xml");
-        loadRoomFromString(rawData); 
+        if (!hasLoadedSomething) {
+            flixel.FlxG.log.warn("No valid room file found for: " + filePath);
+            return;
+        }
 
-        var autoScriptPath = filePath.substr(0, filePath.lastIndexOf(".")) + ".hx";
+        #if FEATURE_HSCRIPT
+        var dotIndex = filePath.lastIndexOf(".");
+        var autoScriptPath = dotIndex != -1 ? filePath.substr(0, dotIndex) + ".hx" : filePath + ".hx";
+        
         if (LilyAssets.fileExists(autoScriptPath)) {
             scripts.loadScript(autoScriptPath);
         }
 
         injectScriptVariables();
         if (scripts != null) scripts.call("create");
+        #end
+    }
+    
+    public function loadLDtkLevel(rawJson:String, levelName:String) {
+        if (rawJson == null || rawJson == "") return;
+        var json:Dynamic = Json.parse(rawJson);
+        
+        var targetLevel:Dynamic = null;
+        var levels:Array<Dynamic> = json.levels;
+        for (level in levels) {
+            if (level.identifier == levelName) {
+                targetLevel = level;
+                break;
+            }
+        }
+        
+        if (targetLevel == null) {
+            flixel.FlxG.log.warn("LDtk Level identifier not found: " + levelName);
+            return;
+        }
+        
+        currentRoomName = levelName;
+        
+        var layerInstances:Array<Dynamic> = targetLevel.layerInstances;
+        layerInstances.reverse(); 
+        
+        var zIndex = 0;
+        var hasSpawn = false;
+        var spawnX:Float = 0;
+        var spawnY:Float = 0;
+        
+        for (layer in layerInstances) {
+            var type:String = layer.__type;
+            var gridSize:Int = layer.__gridSize;
+            var isVisible:Bool = (layer.visible != null) ? layer.visible : true;
+            
+            // 1. Process Tiles (Both GridTiles and AutoLayerTiles)
+            var tsPath:String = layer.__tilesetRelPath;
+            var allTiles:Array<Dynamic> = [];
+            
+            var gridTiles:Array<Dynamic> = layer.gridTiles;
+            var autoTiles:Array<Dynamic> = layer.autoLayerTiles;
+            if (gridTiles != null && gridTiles.length > 0) allTiles = allTiles.concat(gridTiles);
+            if (autoTiles != null && autoTiles.length > 0) allTiles = allTiles.concat(autoTiles);
+            
+            if (allTiles.length > 0 && tsPath != null) {
+                var imagePath = tsPath;
+                if (imagePath.indexOf("assets/") != -1) {
+                    imagePath = imagePath.substring(imagePath.indexOf("assets/") + 7);
+                }
+                if (StringTools.endsWith(imagePath, ".png")) {
+                    imagePath = imagePath.substring(0, imagePath.length - 4);
+                }
+                
+                var resolvedPath = LilyAssets.image(imagePath);
+                
+                for (tile in allTiles) {
+                    var tx:Float = tile.px[0];
+                    var ty:Float = tile.px[1];
+                    var flip:Int = tile.f;
+                    var tileId:Int = tile.t;
+                    
+                    var obj = new WorldObject(tx, ty, zIndex, "tile_" + Std.int(tx) + "_" + Std.int(ty));
+                    
+                    obj.loadGraphic(resolvedPath, true, gridSize, gridSize);
+                    obj.animation.frameIndex = tileId;
+                    
+                    obj.flipX = (flip == 1 || flip == 3);
+                    obj.flipY = (flip == 2 || flip == 3);
+                    
+                    // Kill auto-collision for tiles
+                    obj.solidCollision = false;
+                    obj.allowCollisions = flixel.FlxObject.NONE;
+                    obj.immovable = true;
+                    obj.visible = isVisible;
+                    
+                    addEntity(obj);
+                    sortMap.set(obj, {sortY: 0, treeIndex: 0, z: zIndex, isDynamic: false});
+                }
+            } 
+            
+            // 2. Process Collisions
+            if (type == "IntGrid" && layer.__identifier == "Collisions") {
+                var cWid:Int = layer.__cWid;
+                var csv:Array<Dynamic> = layer.intGridCsv;
+                for (i in 0...csv.length) {
+                    var val:Int = csv[i];
+                    if (val > 0) {
+                        var cx = (i % cWid) * gridSize;
+                        var cy = Std.int(i / cWid) * gridSize;
+                        var block = new CollisionBlock(cx, cy, gridSize, gridSize);
+                        block.visible = false; 
+                        solids.add(block);
+                    }
+                }
+            } 
+            
+            // 3. Process Entities
+            if (type == "Entities") {
+                var entities:Array<Dynamic> = layer.entityInstances;
+                for (ent in entities) {
+                    if (ent.__identifier == "SpawnPoint" || ent.__identifier == "SpawnPosition") {
+                        hasSpawn = true;
+                        spawnX = ent.px[0];
+                        spawnY = ent.px[1];
+                        spawnPoints.set(ent.__identifier, { x: spawnX, y: spawnY, dir: "down" });
+                        spawnPoints.set("entrance", { x: spawnX, y: spawnY, dir: "down" });
+                    }
+                }
+            }
+            zIndex += 10;
+        }
+        
+        // Move the player if they already exist from the XML parser, otherwise spawn fresh
+        if (hasSpawn) {
+            if (activePlayer != null) {
+                activePlayer.setPosition(spawnX, spawnY);
+                for (member in partyMembers) {
+                    member.setPosition(spawnX, spawnY);
+                }
+            } else {
+                spawnParty(spawnX, spawnY, 10);
+            }
+        }
     }
 
     public function getPartyMember(index:Int):CharacterEntity {
@@ -78,7 +222,6 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
         var party = SaveManager.currentParty;
         if (party == null || party.length == 0) party = ["lacie"];
 
-        // Cleanup existing party
         if (activePlayer != null) {
             remove(activePlayer);
             entities.remove(activePlayer.xmlName);
@@ -93,7 +236,6 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
         }
         partyMembers = [];
 
-        // Spawn Main Player
         activePlayer = new Player(px, py, pz, node != null && node.has.name ? node.att.name : "player");
         activePlayer.loadEntity("", "characters/" + party[0]);
         if (node != null) parseSharedAttributes(activePlayer, node);
@@ -102,7 +244,6 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
         characters.set(activePlayer.xmlName, activePlayer);
         sortMap.set(activePlayer, {sortY: 0, treeIndex: 102, z: pz, isDynamic: true});
 
-        // Spawn Followers
         var previousTarget:CharacterEntity = activePlayer;
         for (i in 1...party.length) {
             var fName = party[i];
@@ -125,6 +266,7 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
     }
 
     public function injectScriptVariables():Void {
+        #if FEATURE_HSCRIPT
         if (scripts == null) return;
         scripts.setGlobal("room", this);
         scripts.setGlobal("player", activePlayer);
@@ -134,12 +276,15 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
         for (key => val in characters) {
             if (!entities.exists(key)) scripts.setGlobal(key, val);
         }
+        #end
     }
 
+    #if FEATURE_HSCRIPT
     public function fireEvent<T:CancellableEvent>(eventName:String, eventClass:Class<T>, ?setup:T->Void):T {
         if (scripts == null) return null;
         return scripts.fireEvent(eventName, eventClass, setup);
     }
+    #end
 
     public function loadRoomFromString(rawXML:String) {
         if (rawXML == null || rawXML == "") return;
@@ -171,9 +316,11 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
 
     private function parseScripts(xml:Access) {
         if (!xml.hasNode.scripts) return;
+        #if FEATURE_HSCRIPT
         for (scriptNode in xml.node.scripts.nodes.script) {
             if (scriptNode.has.path) scripts.loadScript(scriptNode.att.path + ".hx");
         }
+        #end
     }
 
     private function parsePoints(xml:Access) {
@@ -228,7 +375,7 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
                     }
                     
                     tile.solidCollision = solidCollision;
-                    tile.allowCollisions = tile.solidCollision ? FlxObject.ANY : FlxObject.NONE;
+                    tile.allowCollisions = tile.solidCollision ? flixel.FlxObject.ANY : flixel.FlxObject.NONE;
                     tile.immovable = true; 
                     
                     addEntity(tile);
@@ -263,7 +410,10 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
             var sprPath = node.has.path ? node.att.path : (node.has.sprite ? node.att.sprite : "");
             obj.loadEntity(baseFolder != "" ? baseFolder : "", sprPath);
             
-            if (node.has.collision) obj.solidCollision = node.att.collision == "true";
+            // Disable auto collision for regular sprites unless explicitly defined in XML
+            obj.solidCollision = node.has.collision ? node.att.collision == "true" : false;
+            obj.allowCollisions = obj.solidCollision ? flixel.FlxObject.ANY : flixel.FlxObject.NONE;
+            
             parseSharedAttributes(obj, node);
             
             addEntity(obj);
@@ -272,7 +422,6 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
     }
 
     private function parseCharacters(objContainer:Access, baseFolder:String) {
-        // NPCs
         if (objContainer.hasNode.npc) {
             for (node in objContainer.nodes.npc) {
                 var z = getZIndex(node);
@@ -292,7 +441,6 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
             }
         }
 
-        // Cutscene Player
         if (objContainer.hasNode.cutscenePlayer) {
             for (node in objContainer.nodes.cutscenePlayer) {
                 var z = getZIndex(node);
@@ -328,7 +476,6 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
             }
         }
 
-        // Failsafe if <player> node is missing
         if (!playerSpawned) {
             var startX:Float = 0; var startY:Float = 0;
             var pointList = [for (p in spawnPoints) p];
@@ -403,9 +550,11 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
         if (node.hasNode.script) {
             for (scriptNode in node.nodes.script) {
                 if (scriptNode.has.path) {
+                    #if FEATURE_HSCRIPT
                     var objScript = scripts.loadScript(scriptNode.att.path + ".hx");
                     objScript.set("this", obj);
                     objScript.set("obj", obj);
+                    #end
                 }
             }
         }
@@ -446,7 +595,9 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
     }
 
     override public function update(elapsed:Float) {
+        #if FEATURE_HSCRIPT
         if (scripts != null) scripts.call("update", [elapsed]);
+        #end
         super.update(elapsed);
         
         if (activeCutscenePlayer != null && activePlayer != null) {
@@ -474,14 +625,19 @@ class RoomManager extends FlxTypedGroup<FlxSprite> {
             
             return FlxSort.byY(order, obj1, obj2);
         });
+        #if FEATURE_HSCRIPT
         if (scripts != null) scripts.call("postUpdate", [elapsed]);
+        #end
     }
 
     override public function destroy() {
+        #if FEATURE_HSCRIPT
         if (scripts != null) {
             scripts.destroy();
             scripts = null;
         }
+        #end
+
         EventManager.reset(); 
         currentRoomName = null;
         

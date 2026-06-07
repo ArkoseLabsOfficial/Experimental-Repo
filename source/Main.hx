@@ -10,8 +10,14 @@ import mobile.MobileConfig;
 #end
 import openfl.Assets;
 import haxe.io.Bytes;
+#if sys
 import sys.FileSystem as SysFileSystem;
 import sys.io.File as SysFile;
+#end
+#if cpp
+import cpp.cppia.Host;
+import cpp.cppia.Module;
+#end
 
 class Main extends Sprite {
     public function new() {
@@ -22,7 +28,7 @@ class Main extends Sprite {
         Sys.setCwd(lime.system.System.documentsDirectory);
         #end
         FlxAssets.FONT_DEFAULT = "assets/font/NotoSans-Regular.ttf";
-        FlxSprite.defaultAntialiasing = false;
+        FlxSprite.defaultAntialiasing = true;
         #if FEATURE_TOUCH_CONTROLS
         MobileConfig.init('MobileControls', "ArkoseLabs/LilyEngine", 'mobile/',
 			[
@@ -31,7 +37,38 @@ class Main extends Sprite {
 			]
 		);
         #end
-        addChild(new FlxGame(1920, 1080, MainMenuState, 144, 144, true));
+		loadAllMods();
+		if (loadedFiles.get("MainMenu")) {
+			var cl = Type.resolveClass("MainMenu");
+			var menuInstance = Type.createInstance(cl, []);
+			addChild(new FlxGame(1920, 1080, cast menuInstance, 144, 144, true));
+		} else {
+			addChild(new FlxGame(1920, 1080, MainMenuState, 144, 144, true));
+		}
+		#if html5
+		FlxG.fixedTimestep = false;
+		#end
+    }
+
+	static var loadedFiles = new Map<String, Bool>();
+
+	/**
+	 * A cppia loader.
+	**/
+	public static function loadAllMods() {
+		#if (!cppia && cpp)
+        var modDir = "mods/";
+        if (!FileSystem.exists(modDir)) return;
+
+        for (file in FileSystem.readDirectory(modDir)) {
+            if (file.endsWith(".cppia")) {
+                var bytes = modDir + file;
+                Host.runFile(bytes);
+				loadedFiles.set(file.replace(".cppia", ""), true);
+                trace("Mod yüklendi: " + file);
+            }
+        }
+		#end
     }
 
     #if sys

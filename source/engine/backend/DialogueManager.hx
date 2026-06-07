@@ -102,17 +102,20 @@ class DialogueManager extends FlxSubState {
 
         var leftPath = "";
         if (entry.has.leftChar && entry.att.leftChar != "none") {
-            var baseChar = entry.att.leftChar.split("_")[0];
             leftPath = "img/bust/" + entry.att.leftChar;
         }
 
         var rightPath = "";
         if (entry.has.rightChar && entry.att.rightChar != "none") {
-            var baseChar = entry.att.rightChar.split("_")[0];
             rightPath = "img/bust/" + entry.att.rightChar;
         }
 
-        dialogBox.show(charName, localizedText, leftPath, rightPath);
+        var leftAnim = entry.has.leftCharAnim ? entry.att.leftCharAnim : "none";
+        var rightAnim = entry.has.rightCharAnim ? entry.att.rightCharAnim : "none";
+        var boxAnim = entry.has.boxAnim ? entry.att.boxAnim : "none";
+        var textDelay = entry.has.textDelay ? Std.parseFloat(entry.att.textDelay) : 0; 
+
+        dialogBox.show(charName, localizedText, leftPath, rightPath, leftAnim, rightAnim);
         waitingForInput = true;
     }
 
@@ -161,9 +164,7 @@ class DialogueManager extends FlxSubState {
         selectionMenu.show(options, function(choiceIndex:Int) {
             var chosenItem = validItems[choiceIndex];
 
-            // Saves the item's ID as true in GameState
             if (chosenItem.has.id) GameState.setFlag(chosenItem.att.id, true);
-            
             if (chosenItem.has.setFlag) applySetFlag(chosenItem.att.setFlag);
 
             jumpToDialog(chosenItem.att.selectionConfirmed);
@@ -185,8 +186,10 @@ class DialogueManager extends FlxSubState {
     }
 
     function closeDialogue():Void {
-        if (onCompleteCallback != null) onCompleteCallback();
-        close(); 
+        dialogBox.hide(function() {
+            if (onCompleteCallback != null) onCompleteCallback();
+            close(); 
+        });
     }
 
     function evaluateLogic(condition:String):Bool {

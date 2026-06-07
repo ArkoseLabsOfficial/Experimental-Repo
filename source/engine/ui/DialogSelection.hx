@@ -1,8 +1,7 @@
 package engine.ui;
 
 class DialogSelection extends FlxTypedGroup<FlxSprite> {
-    var bgBox:FlxUI9SliceSprite;
-    var overlayBox:FlxUI9SliceSprite;
+    var menuFrame:MenuFrameNode;
     var selector:FlxSprite;
     var options:Array<String>;
     var optionTexts:Array<FlxText> = [];
@@ -33,6 +32,7 @@ class DialogSelection extends FlxTypedGroup<FlxSprite> {
         options = optionsList;
         onSelect = callback;
 
+        // Clean up previous elements
         for (txt in optionTexts) {
             remove(txt, true);
             txt.destroy();
@@ -40,18 +40,15 @@ class DialogSelection extends FlxTypedGroup<FlxSprite> {
         optionTexts = [];
         
         remove(selector, true);
-        if (bgBox != null) {
-            remove(bgBox, true);
-            bgBox.destroy();
-        }
-        if (overlayBox != null) {
-            remove(overlayBox, true);
-            overlayBox.destroy();
+        if (menuFrame != null) {
+            remove(menuFrame, true);
+            menuFrame.destroy();
         }
         
         var maxTextWidth:Float = 200; 
         var textHeight:Float = 20;
 
+        // Pre-calculate dimensions based on exact scaled text bounds
         for (opt in options) {
             var tempText = UIUtil.createText(0, 0, 0, opt, 40);
             tempText.scale.set(0.5, 0.5);
@@ -67,28 +64,28 @@ class DialogSelection extends FlxTypedGroup<FlxSprite> {
         var finalBoxWidth = (customBoxWidth > 0) ? customBoxWidth : (maxTextWidth + boxPaddingX); 
         var finalBoxHeight = (customBoxHeight > 0) ? customBoxHeight : (totalTextHeight + 60); 
         
-        bgBox = UIUtil.create9SliceSprite(LilyAssets.image("img/ui/frame_default_bg"), 1300, 561, finalBoxWidth, finalBoxHeight, 1.0);
-        bgBox.scrollFactor.set(0, 0); 
-        bgBox.screenCenter();
+        // Use MenuFrameNode with mode 1 (Standard frame_menu_2, no title)
+        menuFrame = new MenuFrameNode(0, 0, finalBoxWidth, finalBoxHeight, 0);
+        menuFrame.scrollFactor.set(0, 0); 
+        menuFrame.screenCenter();
 
-        overlayBox = UIUtil.create9SliceSprite(LilyAssets.image("img/ui/frame_menu_2b"), 1300, 561, finalBoxWidth, finalBoxHeight, 1.0);
-        overlayBox.scrollFactor.set(0, 0);
-        overlayBox.screenCenter();
+        add(menuFrame);
 
+        // Position the selector strictly relative to the frame's world coordinates
         selector.setGraphicSize(Std.int(finalBoxWidth - 20), 30);
         selector.updateHitbox();
-        selector.x = bgBox.x + 10;
-
-        add(bgBox);
+        selector.x = menuFrame.x + 10;
         add(selector);
 
-        var layoutY = bgBox.y + ((bgBox.height - totalTextHeight) / 2);
+        var layoutY = menuFrame.y + ((finalBoxHeight - totalTextHeight) / 2);
 
         for (i in 0...options.length) {
             var txt = UIUtil.createText(0, layoutY, 0, options[i], 40);
             txt.scale.set(0.5, 0.5);
             txt.updateHitbox();
-            txt.x = bgBox.x + ((bgBox.width - txt.width) / 2);
+            
+            // Center the text horizontally within the frame
+            txt.x = menuFrame.x + ((finalBoxWidth - txt.width) / 2);
             txt.scrollFactor.set(0, 0);
             txt.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5); 
             
@@ -97,8 +94,6 @@ class DialogSelection extends FlxTypedGroup<FlxSprite> {
             
             layoutY += optionSpacing;
         }
-
-        add(overlayBox);
 
         visible = true;
         activeMenu = true;

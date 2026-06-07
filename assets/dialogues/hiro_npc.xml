@@ -1,10 +1,15 @@
 <!DOCTYPE lily-engine-dialog>
 <dialogues>
     <dialog id="start">
-        <entry leftChar="hiro/determined" name="Hiro" text="Hi Lacie." hasSelection="true">
+        <entry leftChar="hiro/determined" name="Hiro" text="Hi Lacie." hasSelection="true" leftCharAnim="leftToRight" boxAnim="downToUp">
             <selections>
                 <item id="sayHi" text="Say Hi to Hiro" selectionConfirmed="path.sayHi" />
                 <item id="leave" text="Leave" selectionConfirmed="path.leave" />
+                <item id="1" text="test 1" selectionConfirmed="path.leave" />
+                <item id="1" text="test 2" selectionConfirmed="path.leave" />
+                <item id="1" text="test 3" selectionConfirmed="path.leave" />
+                <item id="1" text="test 4" selectionConfirmed="path.leave" />
+                <item id="1" text="test 5" selectionConfirmed="path.leave" />
             </selections>
         </entry>
     </dialog>

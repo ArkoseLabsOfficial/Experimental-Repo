@@ -24,7 +24,7 @@ import engine.ui.LacieUIExperimental.SpecialNinePatch;
 
 
 /* Scripted Classes */
-#if FEATURE_HSCRIPT
+#if hscript-iris
 import engine.scripting.ScriptedSprite;
 import engine.scripting.ScriptedSpriteGroup;
 import engine.scripting.ScriptedState;

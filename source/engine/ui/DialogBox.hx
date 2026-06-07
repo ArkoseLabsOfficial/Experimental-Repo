@@ -11,25 +11,33 @@ class DialogBox extends FlxSpriteGroup {
     
     public var isTyping:Bool = false;
 
+    var currentLeftPath:String = "";
+    var currentRightPath:String = "";
+
+    var leftBaseX:Float = 0;
+    var leftBaseY:Float = 0;
+    var rightBaseX:Float = 1400;
+    var rightBaseY:Float = 0;
+
     public function new() {
         super();
+
+        portraitLeft = new FlxSprite(leftBaseX, leftBaseY);
+        portraitLeft.antialiasing = true;
+        portraitLeft.scrollFactor.set(0, 0);
+        add(portraitLeft);
+
+        portraitRight = new FlxSprite(rightBaseX, rightBaseY);
+        portraitRight.antialiasing = true;
+        portraitRight.flipX = true; 
+        portraitRight.scrollFactor.set(0, 0);
+        add(portraitRight);
 
         bg = new FlxSprite(0, 0).loadGraphic(LilyAssets.image("img/ui/frame_dialogue"));
         bg.screenCenter(X);
         bg.y = FlxG.height - bg.height - 20; 
         bg.scrollFactor.set(0, 0);
         add(bg);
-
-        portraitLeft = new FlxSprite(0, 0);
-        portraitLeft.antialiasing = true;
-        portraitLeft.scrollFactor.set(0, 0);
-        add(portraitLeft);
-
-        portraitRight = new FlxSprite(1400, 0);
-        portraitRight.antialiasing = true;
-        portraitRight.flipX = true; 
-        portraitRight.scrollFactor.set(0, 0);
-        add(portraitRight);
 
         nameText = UIUtil.createText(bg.x + 120, bg.y + 45, 400, "", 36, LEFT);
         nameText.scrollFactor.set(0, 0);
@@ -43,7 +51,6 @@ class DialogBox extends FlxSpriteGroup {
 
         bodyText = new FlxTypeText(bg.x + 120, bg.y + 105, Std.int(bg.width - 160), "", 33);
         bodyText.font = LilyAssets.font("fonts/AlegreyaSC-Regular.ttf"); 
-        bodyText.delay = 0.03;
         bodyText.eraseDelay = 0;
         bodyText.showCursor = false;
         bodyText.scrollFactor.set(0, 0);
@@ -61,9 +68,7 @@ class DialogBox extends FlxSpriteGroup {
         add(continueIcon);
     }
 
-    public function show(name:String, text:String, leftPath:String = "", rightPath:String = ""):Void {
-        visible = true;
-        active = true;
+    public function show(name:String, text:String, leftPath:String = "", rightPath:String = "", leftAnim:String = "leftToRight", rightAnim:String = "rightToLeft"):Void {
         isTyping = true;
         continueIcon.visible = false;
         
@@ -79,20 +84,23 @@ class DialogBox extends FlxSpriteGroup {
             bodyText.y = bg.y + 105;
         }
         
-        if (leftPath != "") {
-            portraitLeft.loadGraphic(LilyAssets.image(leftPath));
-            portraitLeft.updateHitbox();
-            portraitLeft.visible = true;
-        } else portraitLeft.visible = false;
+        // Handle Character Animations
+        animateCharacter(portraitLeft, currentLeftPath, leftPath, leftAnim, leftBaseX, leftBaseY);
+        currentLeftPath = leftPath;
 
-        if (rightPath != "") {
-            portraitRight.loadGraphic(LilyAssets.image(rightPath));
-            portraitRight.updateHitbox();
-            portraitRight.visible = true;
-        } else portraitRight.visible = false;
+        animateCharacter(portraitRight, currentRightPath, rightPath, rightAnim, rightBaseX, rightBaseY);
+        currentRightPath = rightPath;
+
+        this.visible = true;
+        this.active = true;
 
         bodyText.resetText(text);
         bodyText.start(0.03, true);
+    }
+
+    public function hide(onComplete:Void->Void):Void {
+        visible = false;
+        onComplete();
     }
 
     public function advance():Bool {
@@ -104,5 +112,64 @@ class DialogBox extends FlxSpriteGroup {
             return false; 
         }
         return true; 
+    }
+
+    private function animateCharacter(sprite:FlxSprite, oldPath:String, newPath:String, animType:String, baseX:Float, baseY:Float):Void {
+        if (oldPath == newPath) return; 
+        
+        FlxTween.cancelTweensOf(sprite);
+
+        if (newPath == "") {
+            if (animType != "none") {
+                var offsets = getMoveOffsets(animType, sprite.width, sprite.height);
+                FlxTween.tween(sprite, {x: baseX + offsets.x, y: baseY + offsets.y}, 0.1, {ease: FlxEase.quadOut, onComplete: function(_) {
+                    sprite.visible = false;
+                }});
+            } else {
+                sprite.visible = false;
+            }
+        } else {
+            var swapGraphic = function() {
+                sprite.loadGraphic(LilyAssets.image(newPath));
+                sprite.updateHitbox();
+                sprite.visible = true;
+
+                if (animType != "none") {
+                    var offsets = getMoveOffsets(animType, sprite.width, sprite.height);
+                    sprite.x = baseX + offsets.x; 
+                    sprite.y = baseY + offsets.y;
+                    FlxTween.tween(sprite, {x: baseX, y: baseY}, 0.1, {ease: FlxEase.quadOut});
+                } else {
+                    sprite.x = baseX;
+                    sprite.y = baseY;
+                }
+            };
+
+            if (oldPath != "") {
+                if (animType != "none") {
+                    var offsets = getMoveOffsets(animType, sprite.width, sprite.height);
+                    FlxTween.tween(sprite, {x: baseX + offsets.x, y: baseY + offsets.y}, 0.05, {ease: FlxEase.quadOut, onComplete: function(_) {
+                        swapGraphic();
+                    }});
+                } else {
+                    swapGraphic();
+                }
+            } else {
+                swapGraphic();
+            }
+        }
+    }
+
+    private function getMoveOffsets(anim:String, objWidth:Float, objHeight:Float):{x:Float, y:Float} {
+        var w = objWidth + 20; 
+        var h = objHeight + 20;
+        
+        switch(anim) {
+            case "downToUp": return {x: 0, y: h};     
+            case "upToDown": return {x: 0, y: -h};    
+            case "leftToRight": return {x: -w, y: 0}; 
+            case "rightToLeft": return {x: w, y: 0};  
+            default: return {x: 0, y: 0};
+        }
     }
 }

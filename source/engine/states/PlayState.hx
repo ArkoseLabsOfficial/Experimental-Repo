@@ -39,11 +39,14 @@ class PlayState extends StateBackend {
         objectives = new ObjectiveManager();
 
         room = new RoomManager(this);
-        room.loadRoom(this.roomPath);
+        room.loadRoom(this.roomPath, "Room1");
         add(room);
         add(room.solids);
 
+        #if FEATURE_HSCRIPT
         room.scripts.setParentForAll(this);
+        room.scripts.call("onRoomLoaded");
+        #end
         SaveManager.currentRoomPath = this.roomPath;
 
         if (room.activePlayer != null) {
@@ -98,6 +101,7 @@ class PlayState extends StateBackend {
                 SaveManager.partyPositions.push({x: member.x, y: member.y});
             }
         }
+        camGame.targetOffset.set(room.activePlayer.cameraOffset.x, room.activePlayer.cameraOffset.y);
 
         if (Controls.MENU_P) openSubState(new PauseScreen());
         

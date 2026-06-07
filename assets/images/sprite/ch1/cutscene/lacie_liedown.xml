@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="lacie_liedown.png">
+    <SubTexture name="liedown_sleep0000" x="50" y="0" width="48" height="32"/>
+    <SubTexture name="liedown_sleep1000" x="0" y="0" width="48" height="32"/>
+</TextureAtlas>

@@ -821,7 +821,7 @@ class RoomEditorState extends FlxState {
         if (FlxG.keys.pressed.RIGHT || FlxG.keys.pressed.D) workspaceCam.scroll.x += 15 / workspaceCam.zoom; 
         if (FlxG.keys.pressed.UP || FlxG.keys.pressed.W) workspaceCam.scroll.y -= 15 / workspaceCam.zoom; 
         if (FlxG.keys.pressed.DOWN || FlxG.keys.pressed.S) workspaceCam.scroll.y += 15 / workspaceCam.zoom; 
-        if (FlxG.mouse.justPressedMiddle) isDraggingWindow = true; else if (FlxG.mouse.releasedMiddle) { isDraggingWindow = false; isDraggingTileWin = false; }
+        //if (FlxG.mouse.justPressedMiddle) isDraggingWindow = true; else if (FlxG.mouse.releasedMiddle) { isDraggingWindow = false; isDraggingTileWin = false; }
     }
     
     function handleWindowDragging() { 

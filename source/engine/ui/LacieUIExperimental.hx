@@ -1,27 +1,5 @@
 package engine.ui;
 
-import flixel.FlxG;
-import flixel.FlxState;
-import flixel.FlxSubState;
-import flixel.FlxSprite;
-import flixel.text.FlxText;
-import flixel.group.FlxSpriteGroup;
-import flixel.util.FlxColor;
-import flixel.system.FlxAssets.FlxGraphicAsset;
-import flixel.graphics.frames.FlxImageFrame;
-import flixel.math.FlxRect;
-import flixel.input.keyboard.FlxKey;
-import openfl.system.System;
-import engine.backend.GamePrefs;
-import io.LilyAssets;
-import Xml;
-import Math;
-import openfl.display.BitmapData;
-import openfl.display.BitmapDataChannel;
-import openfl.geom.Matrix;
-import openfl.geom.Point;
-import openfl.geom.Rectangle;
-
 class SpecialNinePatch extends FlxSpriteGroup
 {
     public var texture:FlxGraphicAsset;
@@ -52,7 +30,7 @@ class SpecialNinePatch extends FlxSpriteGroup
         render();
     }
 
-    private function render():Void
+    public function render():Void
     {
         clear();
         if (targetWidth <= 0 || targetHeight <= 0) return;
@@ -208,19 +186,25 @@ class SpecialNinePatch extends FlxSpriteGroup
 
 class MenuFrameNode extends FlxSpriteGroup
 {
-    private var nodeFrame:SpecialNinePatch;
+    public var nodeFrame:SpecialNinePatch;
     private var titleText:FlxText;
     private var divider:FlxSprite;
     private var hasTitle:Bool = false;
 
-    public function new(X:Float = 0, Y:Float = 0, targetWidth:Float, targetHeight:Float, useTitleFrame:Bool = false)
+    /**
+     * modes:
+     * 0 = default frame texture.
+     * 1 = second frame texture.
+     * 2 = second frame texture with title.
+    **/
+    public function new(X:Float = 0, Y:Float = 0, targetWidth:Float, targetHeight:Float, mode:Int = 0)
     {
         super(X, Y);
-        hasTitle = useTitleFrame;
+        hasTitle = mode == 2;
         
         nodeFrame = new SpecialNinePatch();
         
-        if (useTitleFrame)
+        if (mode == 1 || mode == 2)
         {
             nodeFrame.texture = LilyAssets.image("img/ui/frame_menu_2");
             nodeFrame.bgTexture = LilyAssets.image("img/ui/frame_menu_bg");
@@ -231,20 +215,22 @@ class MenuFrameNode extends FlxSpriteGroup
             nodeFrame.patchMarginBottom = 50;
             nodeFrame.scaleFactor = 0.75;
             
-            titleText = new FlxText(0, 30, Std.int(targetWidth), 48);
-            titleText.alignment = CENTER;
-            
-            divider = new FlxSprite(0, 90);
-            divider.loadGraphic(LilyAssets.image("img/ui/divider_md"));
-            divider.scale.set(0.75, 0.75);
-            divider.updateHitbox();
-            divider.x = (targetWidth - divider.width) / 2;
+            if (mode == 2) {
+                titleText = new FlxText(0, 30, Std.int(targetWidth), 48);
+                titleText.alignment = CENTER;
+                
+                divider = new FlxSprite(0, 90);
+                divider.loadGraphic(LilyAssets.image("img/ui/divider_md"));
+                divider.scale.set(0.75, 0.75);
+                divider.updateHitbox();
+                divider.x = (targetWidth - divider.width) / 2;
+            }
         }
         else
         {
             nodeFrame.texture = LilyAssets.image("img/ui/frame_default");
             nodeFrame.bgTexture = LilyAssets.image("img/ui/frame_default_bg");
-            nodeFrame.bgMaskTexture = LilyAssets.image("img/ui/frame_default_mask");
+            nodeFrame.bgMaskTexture = LilyAssets.image("img/ui/frame_default_bg_mask");
             nodeFrame.patchMarginLeft = 123;
             nodeFrame.patchMarginTop = 142;
             nodeFrame.patchMarginRight = 123;
@@ -255,7 +241,7 @@ class MenuFrameNode extends FlxSpriteGroup
         nodeFrame.setSizeEx(targetWidth, targetHeight);
         add(nodeFrame);
         
-        if (useTitleFrame)
+        if (mode == 2)
         {
             add(titleText);
             add(divider);

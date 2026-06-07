@@ -2,8 +2,8 @@ package engine.substates;
 
 class PauseScreen extends SubStateBackend {
     var menuItems:Array<String> = ["system.menu.inventory", "system.menu.objectives", "system.menu.settings", "system.menu.load", "system.menu.quit"];
-    var textGroup:FlxTypedGroup<FlxText>;
-    var highlightBox:FlxSprite;
+    var visualItems:Array<PauseMenuVisualEntry> = [];
+    var optionContainer:FlxSpriteGroup;
     var selectedIndex:Int = 0;
     var camPause:FlxCamera;
 
@@ -23,34 +23,38 @@ class PauseScreen extends SubStateBackend {
         pauseBG.scrollFactor.set(0, 0);
         add(pauseBG);
 
-        add(UIUtil.createPanel(LilyAssets.image("img/ui/frame_menu_2"), 10, 10, 450, 600, 0.66));
-        add(UIUtil.createPanel(LilyAssets.image("img/ui/frame_menu_2b"), 10, 615, 450, 135, 0.66));
-        add(UIUtil.createPanel(LilyAssets.image("img/ui/frame_menu_2b"), 10, 755, 450, 240, 0.66));
-        
-        highlightBox = UIUtil.createHighlightBox(115, 0, 240, 36);
-        add(highlightBox);
+        var mainFrame = new MenuFrameNode(10, 10, 450, 600, 1);
+        add(mainFrame);
 
-        textGroup = new FlxTypedGroup<FlxText>();
-        add(textGroup);
+        var chapterFrame = new MenuFrameNode(10, 615, 450, 135, 1);
+        chapterFrame.nodeFrame.texture = LilyAssets.image("img/ui/frame_menu_2b");
+        chapterFrame.nodeFrame.render();
+        add(chapterFrame);
+
+        var bottomFrame = new MenuFrameNode(10, 755, 450, 240, 1);
+        bottomFrame.nodeFrame.texture = LilyAssets.image("img/ui/frame_menu_2b");
+        bottomFrame.nodeFrame.render();
+        add(bottomFrame);
+
+        optionContainer = new FlxSpriteGroup();
+        var startY:Float = 60;
+        var cellSpacing:Float = 55;
 
         for (i in 0...menuItems.length) {
-            var itemText = UIUtil.createText(20, 60 + (i * 55), 440, Language.GetCaption(menuItems[i]), 32);
-            textGroup.add(itemText);
+            var entryY = startY + (i * cellSpacing);
+            var entry = new PauseMenuVisualEntry(20, entryY, menuItems[i], 440, cellSpacing);
+            visualItems.push(entry);
+            optionContainer.add(entry);
         }
+        
+        add(optionContainer);
 
-        var chapterText = UIUtil.createText(20, 660, 440, "Paper Lily Chapter 1", 32);
+        var chapterText = new FlxText(0, 0, 440, "lilyengine.mods.modname", 32);
+        chapterText.alignment = CENTER;
         add(chapterText);
-
-        var infoBoxWidth:Float = 210;
-        var infoBoxHeight:Float = 70;
-        var infoBoxX:Float = FlxG.width - infoBoxWidth;
-        var infoBoxY:Float = FlxG.height - infoBoxHeight;
-
-        var infoBox = UIUtil.createInfoBox(LilyAssets.image("img/ui/frame_infobox"), infoBoxX - 35, infoBoxY - 10, infoBoxWidth, infoBoxHeight, 0.66);
-        add(infoBox);
-
-        var controlsText = UIUtil.createText(infoBoxX - 135, infoBoxY + (infoBoxHeight / 2) - 30, 400, Language.GetCaption("system.menu.tip"), 24);
-        add(controlsText);
+        
+        chapterText.x = 20;
+        chapterText.y = 660;
 
         updateHighlight();
 
@@ -93,19 +97,41 @@ class PauseScreen extends SubStateBackend {
     }
 
     private function updateHighlight():Void {
-        var activeText = textGroup.members[selectedIndex];
-        highlightBox.y = activeText.y + 8; 
+        for (i in 0...visualItems.length) {
+            visualItems[i].setHighlight(i == selectedIndex);
+        }
     }
 
     private function selectCurrentItem():Void {
         switch(selectedIndex) {
             case 0: openSubState(new Inventory());
             case 1: openSubState(new ObjectivesMenu());
-            case 2:
-                //openSubState(new ObtainScreen([{itemID: "jar_paint_red", count: 1}]));
-                openSubState(new SettingsScreen("main", true));                
+            case 2: openSubState(new SettingsScreen("main", true));                
             case 3: openSubState(new SaveLoadSubState(false));
             case 4: FlxG.switchState(new MainMenuState());
         }
+    }
+}
+
+class PauseMenuVisualEntry extends MenuVisualEntry {
+    public var optionLabel:FlxText;
+    
+    public function new(X:Float, Y:Float, transKey:String, textWidth:Float, cellHeight:Float) {
+        super(X, Y, "", textWidth, cellHeight); 
+        
+        bg.makeGraphic(240, 36, FlxColor.TRANSPARENT);
+        bg.x = 115; 
+        bg.y = Y + 8; 
+        
+        optionLabel = new FlxText(0, 0, textWidth, Language.GetCaption(transKey), 32);
+        optionLabel.alignment = CENTER;
+        add(optionLabel);
+        
+        optionLabel.x = X; 
+        optionLabel.y = Y;
+    }
+    
+    override public function setHighlight(isActive:Bool):Void { 
+        bg.makeGraphic(Std.int(bg.width), Std.int(bg.height), isActive ? 0x66FFFFFF : FlxColor.TRANSPARENT); 
     }
 }

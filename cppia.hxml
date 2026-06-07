@@ -1,0 +1,27 @@
+-cp mods
+-cp source
+
+-main CppiaStartup
+
+#--cppia export/cppia/script.cppia
+--cppia export/cppia/script.cppia
+
+-lib flixel
+-lib flixel-addons
+-lib flixel-ui
+-lib lime
+-lib openfl
+
+-D lime_use_old_deltatime
+-D dll_import=export_classes.info
+-D scriptable
+-D no-deprecation-warnings
+
+-D FLX_GAMEINPUT_API
+-D FLX_SOUND_SYSTEM
+-D FLX_KEYBOARD
+-D FLX_POINTER_INPUT
+-D FLX_MOUSE
+-D FLX_SAVE
+-D FLX_GAMEPAD
+-D FLX_TOUCH

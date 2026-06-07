@@ -1,11 +1,11 @@
-package engine.states;
+package;
 
 typedef MenuDefinition = {
     var transKey:String;
     var action:Int->Void;
 }
 
-class MainMenuState extends StateBackend {
+class MainMenu extends StateBackend {
     var bg:FlxSprite;
     var titleLogo:FlxSprite;
     var extraInfoText:FlxText;
@@ -19,8 +19,16 @@ class MainMenuState extends StateBackend {
     var selectedIndex:Int = 0;
     var layoutSpacing:Float = 50; 
     var hasSaveFile:Bool = false;
+    var isCreated:Bool = false;
+
+    public function new() {
+        super();
+        trace("test");
+    }
 
     override public function create():Void {
+        if (isCreated) return;
+        isCreated = true;
         super.create();
         
         for (slotNum in 0...31) {
@@ -44,7 +52,7 @@ class MainMenuState extends StateBackend {
         extraInfoText.alignment = RIGHT;
         add(extraInfoText);
 
-        versionInfoText = new FlxText(0, FlxG.height - 35, FlxG.width - 15, "v1.1.6 Debug © Leef 6010 2024", 24);
+        versionInfoText = new FlxText(0, FlxG.height - 35, FlxG.width - 15, "v2.1.6 Debug © Leef 6010 2024", 24);
         versionInfoText.alignment = RIGHT;
         add(versionInfoText);
 
@@ -135,6 +143,7 @@ class MainMenuState extends StateBackend {
     override public function destroy():Void {
         Language.onLanguageUpdate.remove(refreshText);
         Language.onLanguageUpdate.remove(updateLocalizedImages);
+        isCreated = false;
         super.destroy();
     }
 }

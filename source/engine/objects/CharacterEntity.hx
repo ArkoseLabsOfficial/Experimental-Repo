@@ -13,6 +13,8 @@ typedef CharAnimData = {
     var loop:Bool;
     var offsetX:Float;
     var offsetY:Float;
+    var cameraX:Float;
+    var cameraY:Float;
     var spritePath:String;
 }
 
@@ -20,6 +22,7 @@ enum FacingDirection { UP; DOWN; LEFT; RIGHT; }
 enum CharacterState { Standing; Walking; Running; Idle; }
 
 class CharacterEntity extends WorldObject {
+    public var canMove:Bool = true;
     public var currentFacing:FacingDirection = DOWN;
     public var currentState:CharacterState = Standing;
 
@@ -39,6 +42,7 @@ class CharacterEntity extends WorldObject {
     public var animData:Map<String, CharAnimData> = new Map();
     public var loadedFrames:Map<String, FlxAtlasFrames> = new Map();
     public var currentSpritePath:String = "";
+    public var cameraOffset:FlxPoint = FlxPoint.get();
 
     public function new(x:Float, y:Float, z:Int, name:String) {
         super(x, y, z, name);
@@ -70,11 +74,20 @@ class CharacterEntity extends WorldObject {
                             var aLoop = animNode.has.loop ? animNode.att.loop == "true" : false;
                             var ax = animNode.has.x ? Std.parseFloat(animNode.att.x) : 0;
                             var ay = animNode.has.y ? Std.parseFloat(animNode.att.y) : 0;
+                            var aCamX = animNode.has.camX ? Std.parseFloat(animNode.att.camX) : 0;
+                            var aCamY = animNode.has.camY ? Std.parseFloat(animNode.att.camY) : 0;
                             var aSprite = animNode.has.sprite ? animNode.att.sprite : defaultSprite;
                             
                             animData.set(aName, {
-                                name: aName, prefix: aPrefix, fps: aFps, loop: aLoop,
-                                offsetX: ax, offsetY: ay, spritePath: aSprite
+                                name: aName,
+                                prefix: aPrefix,
+                                fps: aFps,
+                                loop: aLoop,
+                                offsetX: ax,
+                                offsetY: ay,
+                                cameraX: aCamX,
+                                cameraY: aCamY,
+                                spritePath: aSprite
                             });
                             
                             if (!loadedFrames.exists(aSprite)) {
@@ -117,7 +130,7 @@ class CharacterEntity extends WorldObject {
         animation.play("idle_down");
     }
 
-    public function playAnim(animName:String, force:Bool = false) {
+    public function playAnim(animName:String, force:Bool = false, reversed:Bool = false) {
         var isNewAnim = (force || animation.curAnim == null || animation.curAnim.name != animName);
 
         if (animData.exists(animName)) {
@@ -138,13 +151,13 @@ class CharacterEntity extends WorldObject {
                     animation.addByPrefix(animName, data.prefix, data.fps, data.loop);
                 }
 
-                animation.play(animName, force);
+                animation.play(animName, force, reversed);
             }
             
             offset.set((frameWidth / 2) - data.offsetX, frameHeight - data.offsetY);
-            
+            cameraOffset.set(data.cameraX, data.cameraY);
         } else {
-            if (isNewAnim) animation.play(animName, force);
+            if (isNewAnim) animation.play(animName, force, reversed);
             offset.set(frameWidth / 2, frameHeight);
         }
     }
@@ -161,8 +174,10 @@ class CharacterEntity extends WorldObject {
 
     override public function update(elapsed:Float) {
         super.update(elapsed);
-        recordHistory();
-        updateAnimations();
+        if (canMove) {
+            recordHistory();
+            updateAnimations();
+        }
     }
 
     public function recordHistory() {

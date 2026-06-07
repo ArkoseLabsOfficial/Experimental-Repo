@@ -34,7 +34,8 @@ class SaveManager {
     public static var currentRoomPath:String = "rooms/bathroom.xml";
     
     public static var currentPlaytime:Float = 0;
-    public static var currentParty:Array<String> = ["lacie", "hiro"];
+    private static var defaultParty:Array<String> = ["lacie"];
+    public static var currentParty:Array<String> = ["lacie"];
     
     public static var partyPositions:Array<Position> = [{x: 0, y: 0}];
     
@@ -50,7 +51,7 @@ class SaveManager {
         currentLocationImage = "img/ui/save/ch1_home_day";
         currentRoomPath = "rooms/bathroom.xml";
         currentPlaytime = 0;
-        currentParty = ["lacie", "hiro"];
+        currentParty = defaultParty.copy();
         partyPositions = [{x: 0, y: 0}];
         progressionFlags = {};
         currentObjectives = [];

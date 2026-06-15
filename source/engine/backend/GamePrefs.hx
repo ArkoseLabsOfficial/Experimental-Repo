@@ -6,8 +6,13 @@ class GamePrefs {
     public static var options:Map<String, Dynamic> = new Map();
     public static var keybinds:Map<String, Array<String>> = new Map();
 
+    public static var discordRPC:Bool = true;
+    
     public static function loadSettings():Void {
         FlxG.save.bind("PaperLilyPrefs");
+
+        if(FlxG.save.data.discordRPC != null)
+        discordRPC = FlxG.save.data.discordRPC;
 
         if (FlxG.save.data.options != null) {
             var savedOptions:Map<String, Dynamic> = FlxG.save.data.options;
@@ -33,6 +38,7 @@ class GamePrefs {
 
     public static function saveSettings():Void {
         FlxG.save.data.options = options;
+        FlxG.save.data.discordRPC = discordRPC;
         
         var bindsObj:Dynamic = {};
         for (key in keybinds.keys()) Reflect.setField(bindsObj, key, keybinds.get(key));

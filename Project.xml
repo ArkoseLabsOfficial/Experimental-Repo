@@ -59,6 +59,12 @@
 
 	<haxedef name="FLX_RENDER_TILE" if="html5"/>
 
+	<define name="OLD_DISCORD_ALLOWED" if="desktop"/>
+
+	<!-- Disable Discord IO Thread -->
+	<haxedef name="DISCORD_DISABLE_IO_THREAD" if="hxdiscord_rpc" />
+	<haxedef name="NO_PRECOMPILED_HEADERS" if="linux" />
+
 	<!-- _______________________________ Libraries ______________________________ -->
 
 	<haxelib name="flixel" />
@@ -68,6 +74,8 @@
 	<haxelib name="mobile-controls" />
 	<haxedef name="openflPos" />
 	<haxedef name="hscriptPos" />
+	<haxelib name="hxdiscord_rpc" if="OLD_DISCORD_ALLOWED"/>
+
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
 
@@ -115,4 +123,9 @@
 
 	<haxedef name="lime_use_old_deltatime" />
 	<haxedef name="lime_disable_motion_sensors" />
+
+	<icon path="placeholders/icon.png" size='16'/>
+	<icon path="placeholders/icon.png" size='32'/>
+	<icon path="placeholders/icon.png" size='64'/>
+	<icon path="placeholders/icon.png" />
 </project>

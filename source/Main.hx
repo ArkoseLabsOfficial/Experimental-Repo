@@ -48,6 +48,10 @@ class Main extends Sprite {
 		#if html5
 		FlxG.fixedTimestep = false;
 		#end
+
+		#if OLD_DISCORD_ALLOWED
+		DiscordClient.prepare();
+		#end
     }
 
 	static var loadedFiles = new Map<String, Bool>();

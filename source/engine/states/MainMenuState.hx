@@ -20,8 +20,14 @@ class MainMenuState extends StateBackend {
     var layoutSpacing:Float = 50; 
     var hasSaveFile:Bool = false;
 
+    public static var version:String = "v1.1.6 Debug © Leef 6010 2024";
+
     override public function create():Void {
         super.create();
+
+        #if OLD_DISCORD_ALLOWED
+		DiscordClient.changePresence("Lily Engine : Main Menu", null);
+		#end
         
         for (slotNum in 0...31) {
             var info = SaveManager.getSlotInfo(slotNum);
@@ -44,7 +50,7 @@ class MainMenuState extends StateBackend {
         extraInfoText.alignment = RIGHT;
         add(extraInfoText);
 
-        versionInfoText = new FlxText(0, FlxG.height - 35, FlxG.width - 15, "v1.1.6 Debug © Leef 6010 2024", 24);
+        versionInfoText = new FlxText(0, FlxG.height - 35, FlxG.width - 15, version, 24);
         versionInfoText.alignment = RIGHT;
         add(versionInfoText);
 

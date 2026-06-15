@@ -115,6 +115,11 @@ class RoomEditorState extends FlxState {
 
     override public function create():Void {
         super.create();
+
+        #if OLD_DISCORD_ALLOWED
+		DiscordClient.changePresence("Lily Engine : In Room Editor", null);
+		#end
+
         FlxG.mouse.useSystemCursor = true;
         FlxG.mouse.visible = true;
 

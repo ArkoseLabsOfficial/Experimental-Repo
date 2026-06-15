@@ -1,5 +1,9 @@
 #if !macro
 
+#if OLD_DISCORD_ALLOWED
+import engine.backend.Discord_Old;
+#end
+
 /* Source Code */
 import engine.backend.*;
 import macros.*;

@@ -25,6 +25,10 @@ class PlayState extends StateBackend {
     override public function create():Void {
         super.create();
 
+        #if OLD_DISCORD_ALLOWED
+		DiscordClient.changePresence("Lily Engine : Playing in PlayState", null);
+		#end
+
         camGame = new FlxCamera();
         FlxG.cameras.reset(camGame);
         FlxG.cameras.setDefaultDrawTarget(camGame, true);

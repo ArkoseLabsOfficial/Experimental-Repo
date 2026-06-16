@@ -34,7 +34,8 @@ class DiscordClient
 		Discord.Shutdown();
 		isInitialized = false;
 	}
-	
+
+	@:unreflective
 	private static function onReady(request:cpp.RawConstPointer<DiscordUser>):Void {
 		var requestPtr:cpp.Star<DiscordUser> = cpp.ConstPointer.fromRaw(request).ptr;
 
@@ -46,10 +47,12 @@ class DiscordClient
 		changePresence();
 	}
 
+	@:unreflective
 	private static function onError(errorCode:Int, message:cpp.ConstCharStar):Void {
 		trace('Discord: Error ($errorCode: ${cast(message, String)})');
 	}
 
+	@:unreflective
 	private static function onDisconnected(errorCode:Int, message:cpp.ConstCharStar):Void {
 		trace('Discord: Disconnected ($errorCode: ${cast(message, String)})');
 	}

@@ -13,8 +13,9 @@
     },
     {
       "name": "flixel",
-      "type": "haxelib",
-      "version": null
+      "type": "git",
+      "ref": "main",
+      "url": "https://github.com/ArkoseLabsOfficial/flixel-lily"
     },
     {
       "name": "flixel-addons",

@@ -1,3 +1,4 @@
+#if html5
 package lime._internal.backend.html5;
 
 import js.html.DeviceMotionEvent;
@@ -695,3 +696,4 @@ class GameDeviceData
 		axes = [];
 	}
 }
+#end

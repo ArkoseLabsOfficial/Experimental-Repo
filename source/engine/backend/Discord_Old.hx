@@ -35,34 +35,35 @@ class DiscordClient
 		isInitialized = false;
 	}
 
-	@:unreflective
-	private static function onReady(request:cpp.RawConstPointer<DiscordUser>):Void {
-		var requestPtr:cpp.Star<DiscordUser> = cpp.ConstPointer.fromRaw(request).ptr;
+	private static function onReady(request:Dynamic):Void {
+		var rawRequest:cpp.RawConstPointer<DiscordUser> = cast request;
+		var requestPtr:cpp.Star<DiscordUser> = cpp.ConstPointer.fromRaw(rawRequest).ptr;
 
-		if (Std.parseInt(cast(requestPtr.discriminator, String)) != 0) //New Discord IDs/Discriminator system
+		if (Std.parseInt(cast(requestPtr.discriminator, String)) != 0)
 			trace('(Discord) Connected to User (${cast(requestPtr.username, String)}#${cast(requestPtr.discriminator, String)})');
-		else //Old discriminators
+		else
 			trace('(Discord) Connected to User (${cast(requestPtr.username, String)})');
 
 		changePresence();
 	}
 
-	@:unreflective
-	private static function onError(errorCode:Int, message:cpp.ConstCharStar):Void {
-		trace('Discord: Error ($errorCode: ${cast(message, String)})');
+	private static function onError(errorCode:Int, message:Dynamic):Void {
+		var rawMessage:cpp.ConstCharStar = cast message;
+		trace('Discord: Error ($errorCode: ${cast(rawMessage, String)})');
 	}
 
-	@:unreflective
-	private static function onDisconnected(errorCode:Int, message:cpp.ConstCharStar):Void {
-		trace('Discord: Disconnected ($errorCode: ${cast(message, String)})');
+	private static function onDisconnected(errorCode:Int, message:Dynamic):Void {
+		var rawMessage:cpp.ConstCharStar = cast message;
+		trace('Discord: Disconnected ($errorCode: ${cast(rawMessage, String)})');
 	}
 
 	public static function initialize()
 	{
 		var discordHandlers:DiscordEventHandlers = #if (hxdiscord_rpc > "1.2.4") new DiscordEventHandlers(); #else DiscordEventHandlers.create(); #end
-		discordHandlers.ready = cpp.Function.fromStaticFunction(onReady);
-		discordHandlers.disconnected = cpp.Function.fromStaticFunction(onDisconnected);
-		discordHandlers.errored = cpp.Function.fromStaticFunction(onError);
+		discordHandlers.ready = cast cpp.Function.fromStaticFunction(onReady);
+		discordHandlers.disconnected = cast cpp.Function.fromStaticFunction(onDisconnected);
+		discordHandlers.errored = cast cpp.Function.fromStaticFunction(onError);
+		
 		Discord.Initialize(clientID, cpp.RawPointer.addressOf(discordHandlers), #if (hxdiscord_rpc > "1.2.4") false #else 1 #end, null);
 
 		if(!isInitialized) trace("Discord Client initialized");

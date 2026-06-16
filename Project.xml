@@ -58,7 +58,7 @@
 	<haxedef name="scriptable" />
 
 	<haxedef name="FLX_RENDER_TILE" if="html5"/>
-
+	<define name="DISCORD_ALLOWED" if="OLD_DISCORD_ALLOWED"/>
 	<define name="OLD_DISCORD_ALLOWED" if="desktop"/>
 
 	<!-- Disable Discord IO Thread -->

@@ -43,8 +43,6 @@
 	<set name="BUILD_DIR" value="export/release" unless="debug" />
 	<set name="BUILD_DIR" value="export/32bit" if="32bits" />
 
-	<classpath name="source" />
-
 	<assets path='assets'/>
 	<assets path='resources'/>
 	<haxedef name="mobile_controls_allow_mouse_clicks" if="desktop"/>
@@ -67,6 +65,8 @@
 
 	<!-- _______________________________ Libraries ______________________________ -->
 
+	<haxelib name="hxdiscord_rpc" if="OLD_DISCORD_ALLOWED"/>
+	<classpath name="source" />
 	<haxelib name="flixel" />
 	<haxelib name="flixel-addons" />
     <haxelib name="flixel-ui" />
@@ -74,8 +74,6 @@
 	<haxelib name="mobile-controls" />
 	<haxedef name="openflPos" />
 	<haxedef name="hscriptPos" />
-	<haxelib name="hxdiscord_rpc" if="OLD_DISCORD_ALLOWED"/>
-
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
 

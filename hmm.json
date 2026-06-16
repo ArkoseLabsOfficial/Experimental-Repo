@@ -3,20 +3,18 @@
     {
       "name": "lime",
       "type": "git",
-      "ref": "adbdbf23dd5a0ecd6c6b06a6f6704b6db9b6ef94",
-      "url": "https://github.com/ArkoseLabsOfficial/lime"
+      "ref": "main",
+      "url": "https://github.com/kittycathy233/lime"
     },
     {
       "name": "openfl",
-      "type": "git",
-      "ref": "main",
-      "url": "https://github.com/ArkoseLabsOfficial/openfl-lily"
+      "type": "haxelib",
+      "version": null
     },
     {
       "name": "flixel",
-      "type": "git",
-      "ref": "main",
-      "url": "https://github.com/ArkoseLabsOfficial/flixel-lily"
+      "type": "haxelib",
+      "version": null
     },
     {
       "name": "flixel-addons",

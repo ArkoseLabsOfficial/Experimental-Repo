@@ -1,28 +1,28 @@
-package engine.backend;
+package;
 
 import Sys.sleep;
 import lime.app.Application;
 import hxdiscord_rpc.Discord;
 import hxdiscord_rpc.Types;
-import engine.backend.GamePrefs;
-import engine.states.MainMenuState;
+import OptionsState;
+import MenuState;
 
 class DiscordClient
 {
 	public static var isInitialized:Bool = false;
-	private static final _defaultID:String = "1516130100742062140";
+	private static final _defaultID:String = "1516125335501017200";
 	public static var clientID(default, set):String = _defaultID;
 	private static var presence:DiscordRichPresence = #if (hxdiscord_rpc > "1.2.4") new DiscordRichPresence(); #else DiscordRichPresence.create(); #end
 
 	public static function check()
 	{
-		if(GamePrefs.discordRPC) initialize();
+		if(OptionsState.discordRPC) initialize();
 		else if(isInitialized) shutdown();
 	}
 	
 	public static function prepare()
 	{
-		if (!isInitialized && GamePrefs.discordRPC)
+		if (!isInitialized && OptionsState.discordRPC)
 			initialize();
 
 		Application.current.window.onClose.add(function() {
@@ -34,36 +34,32 @@ class DiscordClient
 		Discord.Shutdown();
 		isInitialized = false;
 	}
+	
+	private static function onReady(request:cpp.RawConstPointer<DiscordUser>):Void {
+		var requestPtr:cpp.Star<DiscordUser> = cpp.ConstPointer.fromRaw(request).ptr;
 
-	private static function onReady(request:Dynamic):Void {
-		var rawRequest:cpp.RawConstPointer<DiscordUser> = cast request;
-		var requestPtr:cpp.Star<DiscordUser> = cpp.ConstPointer.fromRaw(rawRequest).ptr;
-
-		if (Std.parseInt(cast(requestPtr.discriminator, String)) != 0)
+		if (Std.parseInt(cast(requestPtr.discriminator, String)) != 0) //New Discord IDs/Discriminator system
 			trace('(Discord) Connected to User (${cast(requestPtr.username, String)}#${cast(requestPtr.discriminator, String)})');
-		else
+		else //Old discriminators
 			trace('(Discord) Connected to User (${cast(requestPtr.username, String)})');
 
 		changePresence();
 	}
 
-	private static function onError(errorCode:Int, message:Dynamic):Void {
-		var rawMessage:cpp.ConstCharStar = cast message;
-		trace('Discord: Error ($errorCode: ${cast(rawMessage, String)})');
+	private static function onError(errorCode:Int, message:cpp.ConstCharStar):Void {
+		trace('Discord: Error ($errorCode: ${cast(message, String)})');
 	}
 
-	private static function onDisconnected(errorCode:Int, message:Dynamic):Void {
-		var rawMessage:cpp.ConstCharStar = cast message;
-		trace('Discord: Disconnected ($errorCode: ${cast(rawMessage, String)})');
+	private static function onDisconnected(errorCode:Int, message:cpp.ConstCharStar):Void {
+		trace('Discord: Disconnected ($errorCode: ${cast(message, String)})');
 	}
 
 	public static function initialize()
 	{
 		var discordHandlers:DiscordEventHandlers = #if (hxdiscord_rpc > "1.2.4") new DiscordEventHandlers(); #else DiscordEventHandlers.create(); #end
-		discordHandlers.ready = cast cpp.Function.fromStaticFunction(onReady);
-		discordHandlers.disconnected = cast cpp.Function.fromStaticFunction(onDisconnected);
-		discordHandlers.errored = cast cpp.Function.fromStaticFunction(onError);
-		
+		discordHandlers.ready = cpp.Function.fromStaticFunction(onReady);
+		discordHandlers.disconnected = cpp.Function.fromStaticFunction(onDisconnected);
+		discordHandlers.errored = cpp.Function.fromStaticFunction(onError);
 		Discord.Initialize(clientID, cpp.RawPointer.addressOf(discordHandlers), #if (hxdiscord_rpc > "1.2.4") false #else 1 #end, null);
 
 		if(!isInitialized) trace("Discord Client initialized");
@@ -85,7 +81,7 @@ class DiscordClient
 		isInitialized = true;
 	}
 
-	public static function changePresence(?details:String = 'Lily Engine : MainMenu', ?state:Null<String>, ?smallImageKey : String, ?hasStartTimestamp : Bool, ?endTimestamp: Float)
+	public static function changePresence(?details:String = 'In the Menus', ?state:Null<String>, ?smallImageKey : String, ?hasStartTimestamp : Bool, ?endTimestamp: Float)
 	{
 		var startTimestamp:Float = 0;
 		if (hasStartTimestamp) startTimestamp = Date.now().getTime();
@@ -94,7 +90,7 @@ class DiscordClient
 		presence.details = details;
 		presence.state = state;
 		presence.largeImageKey = 'icon';
-		presence.largeImageText = "Lily Engine Version: " + MainMenuState.version;
+		presence.largeImageText = "Engine Version: " + MenuState.shittaleversion;
 		presence.smallImageKey = smallImageKey;
 		presence.startTimestamp = Std.int(startTimestamp / 1000);
 		presence.endTimestamp = Std.int(endTimestamp / 1000);
@@ -123,7 +119,7 @@ class DiscordClient
 		return newID;
 	}
 
-	/*#if (MODS_ALLOWED && DISCORD_ALLOWED)
+	#if (MODS_ALLOWED && DISCORD_ALLOWED)
 	public static function loadModRPC()
 	{
 		var pack:Dynamic = Mods.getPack();
@@ -133,5 +129,5 @@ class DiscordClient
 			//trace('Changing clientID! $clientID, $_defaultID');
 		}
 	}
-	#end*/
+	#end
 }

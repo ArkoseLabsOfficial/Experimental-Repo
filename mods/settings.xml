@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<settings>
+    <menu id="main">
+        <category label="system.settings.ui.language" target="language" />
+        <category label="system.settings.ui.controls" target="menu_controls" />
+    </menu>
+
+    <menu id="menu_controls">
+        <option type="keybind" label="system.settings.game.controls.move_up" variable="UP" />
+        <option type="keybind" label="system.settings.game.controls.move_down" variable="DOWN" />
+        <option type="keybind" label="system.settings.game.controls.move_left" variable="LEFT" />
+        <option type="keybind" label="system.settings.game.controls.move_right" variable="RIGHT" />
+        <option type="keybind" label="system.settings.game.controls.accept" variable="ACCEPT" />
+        <option type="keybind" label="system.settings.game.controls.cancel" variable="CANCEL" />
+        <option type="keybind" label="system.settings.game.controls.run" variable="RUN" />
+        <option type="keybind" label="system.settings.game.controls.menu" variable="MENU" />
+    </menu>
+</settings>

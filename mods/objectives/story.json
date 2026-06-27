@@ -1,0 +1,30 @@
+{
+  "Objectives": [
+    {
+      "Id": "sitPC",
+      "Name": "Sit Both PC",
+      "Description": "Sit Both PC to Complete",
+      "Hidden": false,
+      "OnComplete": ["collect_key"],
+      "Children": [
+        {
+          "Id": "sitUP",
+          "Name": "Up",
+          "Description": "sit the chair that placed upper in the room"
+        },
+        {
+          "Id": "sitDOWN",
+          "Name": "Down",
+          "Description": "sit the chair that placed down in the room"
+        }
+      ]
+    },
+    {
+      "Id": "collect_key",
+      "Name": "Find the Rusty Key",
+      "Description": "Search the room for the key to the cellar.",
+      "Hidden": false,
+      "OnComplete": ["open_cellar"]
+    }
+  ]
+}

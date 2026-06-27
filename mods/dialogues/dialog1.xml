@@ -1,0 +1,18 @@
+<!DOCTYPE lily-engine-dialog>
+<dialogues>
+    <dialog id="start">
+        <entry rightChar="hiro/blank" name="Hiro" text="Hi Lacie, Naber Lan" rightCharAnim="rightToLeft" />
+        <entry leftChar="lacie/annoyed" name="Lacie" text="Bas git Hiro işlerim var" leftCharAnim="leftToRight" />
+        <entry rightChar="hiro/other" name="Hiro" text="Tamam Seni Rahat Bırakıyorum :)" rightCharAnim="rightToLeft" />
+        <entry leftChar="lacie/thinking" name="Lacie" text="(Ne Yapsam Acaba...)" hasSelection="true" leftCharAnim="leftToRight" >
+            <selections>
+                <item id="hiroBosverildi" text="Boşver" selectionConfirmed="" closeTheBox="true" />
+                <item id="lafatildi" text="Laf Atarak Git" selectionConfirmed="path.lafat" />
+            </selections>
+        </entry>
+    </dialog>
+
+    <dialog id="path.bosvermek">
+        <entry closeTheBox="true" />
+    </dialog>
+</dialogues>

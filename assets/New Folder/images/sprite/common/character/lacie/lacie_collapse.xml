@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TextureAtlas imagePath="lacie_collapse.png">
+    <SubTexture name="waking0000" x="0" y="0" width="38" height="68"/>
+    <SubTexture name="waking0001" x="38" y="0" width="38" height="68"/>
+    <SubTexture name="waking0002" x="76" y="0" width="38" height="68"/>
+    <SubTexture name="waking0003" x="114" y="0" width="38" height="68"/>
+    <SubTexture name="waking0004" x="152" y="0" width="38" height="68"/>
+    <SubTexture name="waking0005" x="190" y="0" width="38" height="68"/>
+    <SubTexture name="waking0006" x="228" y="0" width="38" height="68"/>
+    <SubTexture name="waking0007" x="266" y="0" width="38" height="68"/>
+</TextureAtlas>

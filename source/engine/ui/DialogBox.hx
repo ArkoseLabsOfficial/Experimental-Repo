@@ -33,18 +33,20 @@ class DialogBox extends FlxSpriteGroup {
         portraitRight.scrollFactor.set(0, 0);
         add(portraitRight);
 
-        bg = new FlxSprite(0, 0).loadGraphic(LilyAssets.image("img/ui/frame_dialogue"));
+        bg = new FlxSprite(0, 0).loadGraphic(LilyAssets.image("ui/dialogs/dialogue"));
         bg.screenCenter(X);
         bg.y = FlxG.height - bg.height - 20; 
         bg.scrollFactor.set(0, 0);
         add(bg);
 
-        nameText = UIUtil.createText(bg.x + 120, bg.y + 45, 400, "", 36, LEFT);
+        nameText = new FlxText(bg.x + 120, bg.y + 45, 400, "", 36);
+	    nameText.font = LilyAssets.font("AlegreyaSC-Regular");
+    	nameText.alignment = LEFT;
         nameText.scrollFactor.set(0, 0);
         add(nameText);
 
         nameSeperator = new FlxSprite(bg.x + 100, bg.y + 80);
-        nameSeperator.loadGraphic(LilyAssets.image("img/ui/dialogue_name_separator_2"));
+        nameSeperator.loadGraphic(LilyAssets.image("ui/dialogs/name_seperator"));
         nameSeperator.scale.set(1.025, 1.025);
         nameSeperator.scrollFactor.set(0, 0);
         add(nameSeperator);
@@ -62,7 +64,7 @@ class DialogBox extends FlxSpriteGroup {
         add(bodyText);
 
         continueIcon = new FlxSprite(bg.x + bg.width - 200, bg.y + bg.height - 125);
-        continueIcon.loadGraphic(LilyAssets.image("img/ui/continue_indicator"), true, 95, 95);
+        continueIcon.loadGraphic(LilyAssets.image("ui/dialogs/continue_indicator"), true, 95, 95);
         continueIcon.animation.add("blink", [0, 1, 2, 1], 6, true);
         continueIcon.scrollFactor.set(0, 0);
         add(continueIcon);
@@ -83,8 +85,7 @@ class DialogBox extends FlxSpriteGroup {
             nameSeperator.visible = true;
             bodyText.y = bg.y + 105;
         }
-        
-        // Handle Character Animations
+
         animateCharacter(portraitLeft, currentLeftPath, leftPath, leftAnim, leftBaseX, leftBaseY);
         currentLeftPath = leftPath;
 

@@ -1,0 +1,12 @@
+<!DOCTYPE lily-engine-item>
+<data>
+    <items>
+        <item 
+            id="potion_health" 
+            name="Health Potion" 
+            desc="Heals 50 HP instantly."
+            sprite="items/jar_paint_red"
+            script="items/heal"
+        />
+    </items>
+</data>

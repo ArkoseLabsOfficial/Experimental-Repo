@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="hiro.png">
+    <SubTexture name="idle_down0000" x="0" y="0" width="32" height="64"/>
+    <SubTexture name="walk_down0000" x="32" y="0" width="32" height="64"/>
+    <SubTexture name="walk_down0001" x="64" y="0" width="32" height="64"/>
+
+    <SubTexture name="idle_left0000" x="0" y="64" width="32" height="64"/>
+    <SubTexture name="walk_left0000" x="32" y="64" width="32" height="64"/>
+    <SubTexture name="walk_left0001" x="64" y="64" width="32" height="64"/>
+
+    <SubTexture name="idle_right0000" x="0" y="128" width="32" height="64"/>
+    <SubTexture name="walk_right0000" x="32" y="128" width="32" height="64"/>
+    <SubTexture name="walk_right0001" x="64" y="128" width="32" height="64"/>
+
+    <SubTexture name="idle_up0000" x="0" y="192" width="32" height="64"/>
+    <SubTexture name="walk_up0000" x="32" y="192" width="32" height="64"/>
+    <SubTexture name="walk_up0001" x="64" y="192" width="32" height="64"/>
+</TextureAtlas>

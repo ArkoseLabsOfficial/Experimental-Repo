@@ -2,14 +2,12 @@ package;
 
 import flixel.FlxGame;
 import openfl.display.Sprite;
-import engine.states.MainMenuState;
+import engine.states.TitleMenu;
 import flixel.system.FlxAssets;
 import flixel.FlxSprite;
-#if FEATURE_TOUCH_CONTROLS
-import mobile.MobileConfig;
-#end
 import openfl.Assets;
 import haxe.io.Bytes;
+import openfl.display.Bitmap;
 #if sys
 import sys.FileSystem as SysFileSystem;
 import sys.io.File as SysFile;
@@ -18,8 +16,18 @@ import sys.io.File as SysFile;
 import cpp.cppia.Host;
 import cpp.cppia.Module;
 #end
+import openfl.events.MouseEvent;
+
+#if FEATURE_TOUCH_CONTROLS
+import mobile.openfl.controls.MobileControls;
+#end
+import openfl.ui.Mouse;
 
 class Main extends Sprite {
+	var game:Game;
+	#if FEATURE_TOUCH_CONTROLS
+	public static var mobileControls:MobileControls;
+	#end
     public function new() {
         super();
         #if android
@@ -29,24 +37,37 @@ class Main extends Sprite {
         #end
         FlxAssets.FONT_DEFAULT = "assets/font/NotoSans-Regular.ttf";
         FlxSprite.defaultAntialiasing = true;
-        #if FEATURE_TOUCH_CONTROLS
-        MobileConfig.init('MobileControls', "ArkoseLabs/LilyEngine", 'mobile/',
-			[
-				['MobilePad/DPadModes', ButtonModes.DPAD],
-				['MobilePad/ActionModes', ButtonModes.ACTION]
-			]
-		);
-        #end
+
+
+		/* Loading Game Stuffs */
+		game = new Game();
 		loadAllMods();
-		if (loadedFiles.get("MainMenu")) {
-			var cl = Type.resolveClass("MainMenu");
-			var menuInstance = Type.createInstance(cl, []);
-			addChild(new FlxGame(1920, 1080, cast menuInstance, 144, 144, true));
-		} else {
-			addChild(new FlxGame(1920, 1080, MainMenuState, 144, 144, true));
-		}
-		#if html5
+
+		/* Game and Mobile Control Childs */
+		#if FEATURE_TOUCH_CONTROLS
+		mobileControls = new MobileControls(1920, 1080);
+		#end
+		addChild(new FlxGame(1920, 1080, TitleMenu, 144, 144, true));
+		#if FEATURE_TOUCH_CONTROLS
+		addChild(mobileControls);
+		#end
+		mobile.openfl.screen.ScreenUtil.init(stage);
+
+		FlxG.mouse.useSystemCursor = true;
 		FlxG.fixedTimestep = false;
+
+		// Custom Mouse Loading for Desktop Builds
+		#if desktop
+		var bitmapData = FileSystem.getBitmapData("assets/images/ui/cursor.png");
+        var customCursor = new Bitmap(bitmapData);
+        addChild(customCursor);
+		stage.addEventListener(MouseEvent.MOUSE_MOVE, function(e:MouseEvent) {
+			Mouse.hide();
+			customCursor.x = e.stageX;
+			customCursor.y = e.stageY;
+		});
+		customCursor.scaleX = 0.15;
+		customCursor.scaleY = 0.15;
 		#end
     }
 
@@ -70,40 +91,4 @@ class Main extends Sprite {
         }
 		#end
     }
-
-    #if sys
-    public static function copySpesificFileFromAssets(filePathInAssets:String, copyTo:String, ?changeable:Bool)
-	{
-		try {
-			if (Assets.exists(filePathInAssets)) {
-				var fileData:Bytes = Assets.getBytes(filePathInAssets);
-				if (fileData != null) {
-					if (SysFileSystem.exists(copyTo) && changeable) {
-						var existingFileData:Bytes = File.getBytes(filePathInAssets);
-						if (existingFileData != fileData && existingFileData != null)
-							SysFile.saveBytes(copyTo, fileData);
-					}
-					else if (!SysFileSystem.exists(copyTo))
-						SysFile.saveBytes(copyTo, fileData);
-
-					trace('Copied: $filePathInAssets -> $copyTo');
-				} else {
-					var textData = Assets.getText(filePathInAssets);
-					if (textData != null) {
-						if (SysFileSystem.exists(copyTo) && changeable) {
-							var existingTxtData = SysFile.getContent(filePathInAssets);
-							if (existingTxtData != textData && existingTxtData != null)
-								SysFile.saveContent(copyTo, textData);
-						}
-						else if (!SysFileSystem.exists(copyTo))
-							SysFile.saveContent(copyTo, textData);
-						trace('Copied (text): $filePathInAssets -> $copyTo');
-					}
-				}
-			}
-		} catch (e:Dynamic) {
-			trace('Error copying file $filePathInAssets: $e');
-		}
-	}
-    #end
 }

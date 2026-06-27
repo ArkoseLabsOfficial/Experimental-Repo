@@ -3,76 +3,115 @@ package engine.scripting;
 import engine.scripting.events.CancellableEvent;
 
 class ScriptHandler {
-    public var scripts:Array<GameScript> = [];
+	public var scriptArray:Array<GameScript> = [];
+	public var scriptMap:Map<String, GameScript> = new Map();
 
-    public function new() {}
+	public function new() {}
 
-    /**
-     * Initializes and adds a script to the handler, passing an optional parent.
-     */
-    public function loadScript(path:String, ?parent:Dynamic):GameScript {
-        var script = new GameScript(path, parent);
-        if (script.active) {
-            scripts.push(script);
-            script.call("onCreate"); 
-        }
-        return script;
-    }
+	public function loadScript(id:String, path:String, ?parent:Dynamic):GameScript {
+		if (scriptMap.exists(id))
+			return scriptMap.get(id);
 
-    /**
-     * Re-assigns the parent object for all actively loaded scripts.
-     */
-    public function setParentForAll(parent:Dynamic) {
-        for (script in scripts) {
-            script.setParent(parent);
-        }
-    }
+		var script = new GameScript(path, parent);
+		if (script.active) {
+			scriptArray.push(script);
+			scriptMap.set(id, script);
 
-    public function setGlobal(name:String, value:Dynamic):Void {
-        for (script in scripts) {
-            script.set(name, value);
-        }
-    }
+			var roomContext = RoomManager.currentRoomName;
+			if (roomContext != null) {
+				var stateKey = roomContext + "_" + id;
+				var savedState = Game.instance.save.scriptVariables.get(stateKey);
+				if (savedState != null) {
+					for (k in Reflect.fields(savedState)) {
+						script.set(k, Reflect.field(savedState, k));
+					}
+				}
+			}
 
-    public function call(funcName:String, ?args:Array<Dynamic>):Void {
-        var i:Int = 0;
-        while (i < scripts.length) {
-            var script = scripts[i];
-            if (script != null && script.active) {
-                script.call(funcName, args);
-            }
-            i++;
-        }
-    }
+			script.call("create");
+		}
+		return script;
+	}
 
-    public function fireEvent<T:CancellableEvent>(funcName:String, eventClass:Class<T>, ?setup:T->Void):T {
-        var event:T = EventManager.get(eventClass);
-        
-        if (setup != null) setup(event);
+	public function setParentForAll(parent:Dynamic) {
+		for (script in scriptArray) {
+			if (script != null && script.active)
+				script.setParent(parent);
+		}
+	}
 
-        for (script in scripts) {
-            if (!script.active) continue;
+	public function setGlobal(name:String, value:Dynamic):Void {
+		for (script in scriptArray) {
+			if (script != null && script.active)
+				script.set(name, value);
+		}
+	}
 
-            script.call(funcName, [event]);
+	public function setOn(id:String, name:String, value:Dynamic):Void {
+		var script = scriptMap.get(id);
+		if (script != null && script.active)
+			script.set(name, value);
+	}
 
-            // If the script cancelled it, stop iterating immediately
-            if (event.cancelled && !event.__continueCalls) {
-                break;
-            }
-        }
-        return event;
-    }
+	public function call(funcName:String, ?args:Array<Dynamic>):Void {
+		var i:Int = 0;
+		while (i < scriptArray.length) {
+			var script = scriptArray[i];
 
-    public function destroy():Void {
-        var i:Int = 0;
-        while (i < scripts.length) {
-            var script = scripts[i];
-            if (script != null) {
-                script.call("onDestroy");
-                script.destroy();
-            }
-            i++;
-        }
-        scripts = [];
-    }
+			if (script == null || !script.active) {
+				scriptArray.splice(i, 1);
+				for (key in scriptMap.keys()) {
+					if (scriptMap.get(key) == script)
+						scriptMap.remove(key);
+				}
+				continue;
+			}
+
+			script.call(funcName, args);
+			i++;
+		}
+	}
+
+	public function callOn(id:String, funcName:String, ?args:Array<Dynamic>):Dynamic {
+		var script = scriptMap.get(id);
+		if (script != null && script.active) {
+			return script.call(funcName, args);
+		}
+		return null;
+	}
+
+	public function fireEvent<T:CancellableEvent>(funcName:String, eventClass:Class<T>, ?setup:T->Void):T {
+		var event:T = EventManager.get(eventClass);
+		if (setup != null)
+			setup(event);
+
+		var i:Int = 0;
+		while (i < scriptArray.length) {
+			var script = scriptArray[i];
+
+			if (script == null || !script.active) {
+				scriptArray.splice(i, 1);
+				continue;
+			}
+
+			script.call(funcName, [event]);
+
+			if (event.cancelled && !event.__continueCalls)
+				break;
+			i++;
+		}
+
+		return event;
+	}
+
+	public function destroy():Void {
+		for (script in scriptArray) {
+			if (script != null && script.active) {
+				script.call("destroy");
+				script.destroy();
+			}
+		}
+		scriptArray = [];
+		scriptMap.clear();
+	}
 }

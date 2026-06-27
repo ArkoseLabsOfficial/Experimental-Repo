@@ -1,0 +1,42 @@
+package engine.ui;
+
+import flixel.group.FlxSpriteGroup;
+
+interface IMenuEntry {
+    public var parent:IMenuEntryList;
+    public function accept():Void;
+    public function left():Void;
+    public function right():Void;
+    public function cancel():Void;
+    public function drawEntry():FlxSpriteGroup;
+}
+
+interface IMenuEntryList {
+    public var menuContainer:IMenuEntryContainer;
+    public var parent:IMenuEntryList;
+    public var selection:Int;
+    public var entries:Array<IMenuEntry>;
+    
+    // Haxe'te Action yerine fonksiyon imzası kullanılır
+    public var onBack:Void -> Void;
+
+    public function drawContent():FlxSpriteGroup;
+
+    public function back():Void;
+
+    public function root():Void;
+
+    // HaxeFlixel'de input için flixel.input.FlxInput kullanılabilir
+    public function handleInput(?event:Dynamic):Void;
+
+    public function highlightSelection():Void;
+
+    public function resetSelection():Void;
+}
+
+interface IMenuEntryContainer {
+    public var activeMenu:IMenuEntryList;
+    public function clearContainer():Void;
+    public function addToFrame(content:FlxSpriteGroup):Void;
+    public function closeMenu():Void;
+}

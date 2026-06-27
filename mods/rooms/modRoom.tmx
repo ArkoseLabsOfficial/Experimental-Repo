@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="16" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="75">
+ <editorsettings>
+  <export target="modRoom.tmj" format="json"/>
+ </editorsettings>
+ <properties>
+  <property name="location" value="Lily's Room"/>
+  <property name="script" value="rooms/setup"/>
+  <property name="zoom" type="float" value="3"/>
+ </properties>
+ <tileset firstgid="1" name="objects" tilewidth="32" tileheight="32" tilecount="2" columns="0">
+  <grid orientation="orthogonal" width="1" height="1"/>
+  <tile id="0">
+   <image source="rooms/home/exterior/tiles_floor_deck.png" width="32" height="32"/>
+  </tile>
+  <tile id="1">
+   <image source="rooms/home/exterior/tiles_floor_deck_2.png" width="32" height="32"/>
+  </tile>
+ </tileset>
+ <tileset firstgid="3" name="walls" tilewidth="32" tileheight="32" tilecount="32" columns="4">
+  <image source="rooms/home/hallway/tiles_walls.png" width="128" height="256"/>
+ </tileset>
+ <tileset firstgid="35" name="Objects" tilewidth="96" tileheight="90" tilecount="37" columns="0">
+  <grid orientation="orthogonal" width="1" height="1"/>
+  <tile id="0">
+   <image source="rooms/home/bedroom_a/floor_carpet_2.png" width="96" height="73"/>
+  </tile>
+  <tile id="1">
+   <image source="rooms/home/bedroom_a/floor_carpet.png" width="68" height="59"/>
+  </tile>
+  <tile id="2">
+   <image source="rooms/home/bedroom_a/floor_pillows.png" width="82" height="54"/>
+  </tile>
+  <tile id="3">
+   <image source="rooms/home/bedroom_a/floor_trash.png" width="32" height="32"/>
+  </tile>
+  <tile id="4">
+   <image source="rooms/home/bedroom_a/floor_windowseat.png" width="32" height="90"/>
+  </tile>
+  <tile id="5">
+   <image source="rooms/home/bedroom_a/misc_book.png" width="32" height="32"/>
+  </tile>
+  <tile id="6">
+   <image source="rooms/home/bedroom_a/misc_blanket.png" width="32" height="32"/>
+  </tile>
+  <tile id="7">
+   <image source="rooms/home/bedroom_a/furniture_chair.png" width="32" height="36"/>
+  </tile>
+  <tile id="8">
+   <image source="rooms/home/bedroom_a/furniture_bed.png" width="68" height="53"/>
+  </tile>
+  <tile id="9">
+   <image source="rooms/home/bedroom_a/furniture_bookshelf.png" width="48" height="86"/>
+  </tile>
+  <tile id="10">
+   <image source="rooms/home/bedroom_a/furniture_desk.png" width="80" height="56"/>
+  </tile>
+  <tile id="11">
+   <image source="rooms/home/bedroom_a/misc_console.png" width="32" height="32"/>
+  </tile>
+  <tile id="12">
+   <image source="rooms/home/bedroom_a/misc_cups.png" width="32" height="32"/>
+  </tile>
+  <tile id="13">
+   <image source="rooms/home/bedroom_a/misc_digital_clock.png" width="32" height="32"/>
+  </tile>
+  <tile id="14">
+   <image source="rooms/home/bedroom_a/misc_flower.png" width="32" height="32"/>
+  </tile>
+  <tile id="15">
+   <image source="rooms/home/bedroom_a/misc_oj.png" width="20" height="20"/>
+  </tile>
+  <tile id="16">
+   <image source="rooms/home/bedroom_a/misc_papers.png" width="20" height="20"/>
+  </tile>
+  <tile id="17">
+   <image source="rooms/home/bedroom_a/misc_plant.png" width="32" height="64"/>
+  </tile>
+  <tile id="18">
+   <image source="rooms/home/bedroom_a/misc_pc_screen.png" width="24" height="16"/>
+  </tile>
+  <tile id="19">
+   <image source="rooms/home/bedroom_a/misc_plush.png" width="32" height="32"/>
+  </tile>
+  <tile id="20">
+   <image source="rooms/home/bedroom_a/wall_lightswitch.png" width="32" height="32"/>
+  </tile>
+  <tile id="21">
+   <image source="rooms/home/bedroom_a/wall_paintings.png" width="32" height="48"/>
+  </tile>
+  <tile id="22">
+   <image source="rooms/home/bedroom_a/wall_pinboard.png" width="32" height="41"/>
+  </tile>
+  <tile id="23">
+   <image source="rooms/home/bedroom_a/wall_posters_2.png" width="32" height="32"/>
+  </tile>
+  <tile id="24">
+   <image source="rooms/home/bedroom_a/wall_posters.png" width="34" height="45"/>
+  </tile>
+  <tile id="25">
+   <image source="rooms/home/bedroom_a/wall_shelf_2.png" width="64" height="32"/>
+  </tile>
+  <tile id="26">
+   <image source="rooms/home/bedroom_a/wall_shelf_3.png" width="48" height="31"/>
+  </tile>
+  <tile id="27">
+   <image source="rooms/home/bedroom_a/wall_shelf_4.png" width="32" height="32"/>
+  </tile>
+  <tile id="28">
+   <image source="rooms/home/bedroom_a/wall_shelf.png" width="61" height="47"/>
+  </tile>
+  <tile id="29">
+   <image source="rooms/home/bedroom_a/misc_remote.png" width="20" height="20"/>
+  </tile>
+  <tile id="30">
+   <image source="rooms/home/bedroom_a/misc_sidetable.png" width="32" height="32"/>
+  </tile>
+  <tile id="31">
+   <image source="rooms/home/bedroom_a/misc_snowglobe.png" width="32" height="32"/>
+  </tile>
+  <tile id="32">
+   <image source="rooms/home/bedroom_a/misc_table.png" width="44" height="36"/>
+  </tile>
+  <tile id="33">
+   <image source="rooms/home/bedroom_a/misc_toy.png" width="32" height="32"/>
+  </tile>
+  <tile id="34">
+   <image source="rooms/home/bedroom_a/misc_trashcan.png" width="32" height="32"/>
+  </tile>
+  <tile id="35">
+   <image source="rooms/home/bedroom_a/misc_tv.png" width="96" height="30"/>
+  </tile>
+  <tile id="36">
+   <image source="rooms/home/bedroom_a/furniture_chair.png" width="32" height="36"/>
+  </tile>
+ </tileset>
+ <tileset firstgid="72" name="Hiro" tilewidth="32" tileheight="64" tilecount="36" columns="9">
+  <image source="characters/hiro/hiro.png" width="288" height="256"/>
+ </tileset>
+ <tileset firstgid="108" name="crow_blink" tilewidth="32" tileheight="32" tilecount="2" columns="2">
+  <image source="rooms/cutscene/crow_blink.png" width="64" height="32"/>
+ </tileset>
+ <layer id="1" name="Tiles" width="16" height="32">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+10,21,21,21,21,21,21,21,21,21,21,21,21,21,21,9,
+18,24,25,25,25,25,25,25,25,25,25,25,25,25,26,16,
+18,28,29,29,29,29,29,29,29,29,29,29,29,29,30,16,
+18,28,29,29,29,29,29,29,29,29,29,29,29,29,30,16,
+18,28,29,29,29,29,29,29,29,29,29,29,29,29,30,16,
+18,28,29,29,29,29,29,29,29,29,29,29,29,29,30,16,
+18,28,29,29,29,29,29,29,29,29,29,29,29,29,30,16,
+18,32,33,33,33,33,33,33,33,33,33,33,33,33,34,16,
+18,1,1,1,1,1,1,1,1,1,1,1,1,1,1,16,
+18,1,1,1,1,1,1,1,1,1,1,1,1,1,1,16,
+18,1,1,1,1,1,1,1,1,1,1,1,1,1,1,16,
+18,1,1,1,1,1,1,1,1,1,1,1,1,1,1,16,
+18,1,1,1,1,1,1,1,1,1,1,1,1,1,1,16,
+18,1,1,1,1,1,1,1,1,1,1,1,1,1,1,16,
+18,1,1,1,1,1,1,1,1,1,1,1,1,1,1,16,
+18,1,1,1,1,1,1,1,1,1,1,1,1,1,1,16,
+6,13,13,13,13,13,14,2,2147483650,12,13,13,13,13,13,5,
+0,0,0,0,0,0,18,2,2147483650,16,0,0,0,0,0,0,
+0,0,0,0,0,0,18,2,2147483650,16,0,0,0,0,0,0,
+0,0,0,0,0,0,18,2,2147483650,16,0,0,0,0,0,0,
+0,0,0,0,0,0,18,2,2147483650,16,0,0,0,0,0,0,
+0,0,0,0,0,0,18,2,2147483650,16,0,0,0,0,0,0,
+0,0,0,0,0,0,18,2,2147483650,16,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup id="2" name="LowerObjects" class="Object">
+  <properties>
+   <property name="autocollision" type="bool" value="false"/>
+  </properties>
+  <object id="39" name="floor_pillows" type="Object" gid="37" x="352" y="576" width="82" height="54">
+   <properties>
+    <property name="autocollision" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="1" name="furniture_bed" type="Object" gid="43" x="32" y="576" width="68" height="53">
+   <properties>
+    <property name="autocollision" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="3" name="wall_lightswitch" type="Object" gid="55" x="36.5455" y="525.97" width="32" height="32"/>
+  <object id="7" name="wall_shelf" type="Object" gid="63" x="32" y="512" width="61" height="47"/>
+  <object id="8" name="misc_trashcan" type="Object" gid="69" x="94.5455" y="560.545" width="32" height="32"/>
+  <object id="10" name="floor_carpet_2" type="Object" gid="35" x="77.6667" y="652" width="96" height="73"/>
+  <object id="15" name="wall_posters_2" type="Object" gid="58" x="128" y="512" width="32" height="32"/>
+  <object id="16" name="wall_posters" type="Object" gid="59" x="160" y="512" width="34" height="45"/>
+  <object id="17" name="wall_paintings" type="Object" gid="56" x="192" y="512" width="32" height="48"/>
+  <object id="18" name="wall_pinboard" type="Object" gid="57" x="224" y="512" width="32" height="41"/>
+  <object id="20" name="misc_plant" type="Object" gid="52" x="23.4545" y="589.818" width="32" height="64">
+   <properties>
+    <property name="autocollision" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="29" name="furniture_desk" type="Object" gid="45" x="273.25" y="564" width="80" height="56">
+   <properties>
+    <property name="autocollision" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="6" name="misc_table" type="Object" gid="67" x="32" y="620.75" width="44" height="36">
+   <properties>
+    <property name="autocollision" type="bool" value="true"/>
+    <property name="script" value="items/modRoom"/>
+   </properties>
+  </object>
+  <object id="41" name="floor_carpet" type="Object" gid="36" x="274.318" y="635.682" width="68" height="59"/>
+  <object id="54" name="misc_sidetable" type="Object" gid="65" x="244.25" y="559.999" width="32" height="32"/>
+  <object id="56" name="floor_trash" type="Object" gid="38" x="101.909" y="571" width="32" height="32"/>
+  <object id="58" name="furniture_bookshelf" type="Object" gid="44" x="432" y="562.273" width="48" height="86">
+   <properties>
+    <property name="autocollision" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="57" name="furniture_chair2" type="Object" gid="71" x="422.25" y="789.5" width="32" height="35">
+   <properties>
+    <property name="autocollision" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="30" name="furniture_chair" type="Object" gid="42" x="293.25" y="578" width="32" height="36">
+   <properties>
+    <property name="autocollision" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="74" name="crow" gid="109" x="32" y="736" width="32" height="32">
+   <properties>
+    <property name="script" value="save.hx"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="3" name="Objects" class="Object">
+  <object id="25" name="misc_oj" type="Object" gid="50" x="53.8182" y="600.364" width="20" height="20"/>
+  <object id="26" name="misc_plush" type="Object" gid="54" x="86.0909" y="560.364" width="32" height="32" rotation="-90"/>
+  <object id="27" name="hiro" type="Object" gid="72" x="128" y="557.667" width="32" height="64">
+   <properties>
+    <property name="anim" value="idle_down"/>
+    <property name="dialog" value="dialog1"/>
+    <property name="interactable" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="46" name="misc_cups" type="Object" gid="47" x="325.5" y="548.375" width="32" height="32"/>
+  <object id="47" name="misc_pc_screen" type="Object" gid="53" x="299.25" y="527" width="24" height="16"/>
+  <object id="50" name="misc_snowglobe" type="Object" gid="66" x="35.0909" y="605.091" width="32" height="32"/>
+  <object id="51" name="misc_flower" type="Object" gid="49" x="42.1875" y="611.5" width="32" height="32"/>
+ </objectgroup>
+ <objectgroup id="9" name="Player" class="Player"/>
+ <objectgroup id="12" name="UpperObjects">
+  <object id="5" name="misc_tv" type="Object" gid="70" x="384" y="800" width="96" height="30">
+   <properties>
+    <property name="autocollision" type="bool" value="false"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="4" name="Triggers" visible="0">
+  <object id="31" name="Room_Enters" type="SpawnPoint" x="256" y="992">
+   <properties>
+    <property name="id" type="int" value="0"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="33" name="trigger_sit" type="ObjectTrigger" x="297" y="542" width="24" height="33">
+   <properties>
+    <property name="chair" type="object" value="30"/>
+    <property name="script" value="sit_pc"/>
+   </properties>
+  </object>
+  <object id="68" name="exit_room" type="Exit" x="223.818" y="1008.4" width="64.3636" height="11.2386">
+   <properties>
+    <property name="exit" type="int" value="0"/>
+    <property name="room" value="room"/>
+   </properties>
+  </object>
+  <object id="73" name="trigger_sit_down" type="ObjectTrigger" x="426.237" y="754.493" width="23.0078" height="32.7031">
+   <properties>
+    <property name="chair" type="object" value="57"/>
+    <property name="script" value="sit_pc"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="5" name="Collisions" class="Collision" visible="0">
+  <object id="37" type="Collision" x="297" y="542" width="24" height="33"/>
+  <object id="60" type="Collision" x="25.6369" y="515.33" width="460.083" height="28.6667"/>
+  <object id="61" type="Collision" x="25.625" y="543.5" width="6.25" height="263.208"/>
+  <object id="65" type="Collision" x="218.625" y="800.5" width="6.25" height="225.708"/>
+  <object id="66" type="Collision" x="287.625" y="800.5" width="6.25" height="225.708"/>
+  <object id="62" type="Collision" x="479.875" y="543.063" width="6.25" height="263.208"/>
+  <object id="63" type="Collision" x="287.125" y="800" width="197.375" height="5.75"/>
+  <object id="64" type="Collision" x="27.125" y="800" width="197.375" height="5.75"/>
+  <object id="67" type="Collision" x="218.875" y="1019.88" width="72.25" height="6.5"/>
+  <object id="70" type="Collision" x="426.261" y="754.469" width="22.9883" height="33"/>
+  <object id="71" type="Collision" x="383.992" y="783.999" width="96.8263" height="17.5469"/>
+ </objectgroup>
+</map>

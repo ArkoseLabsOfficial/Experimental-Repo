@@ -6,43 +6,6 @@
             name="Iron Sword" 
             desc="A sharp steel blade, standard issue for guards." 
             sprite="sprite/common/item/screwdriver" 
-            script="scripts/use_sword" 
+            script="use_sword" 
         />
-
-        <item 
-            id="potion_health" 
-            name="Health Potion" 
-            desc="Heals 50 HP instantly."
-            sprite="sprite/common/item/jar_paint_red"
-            script="scripts/items/heal"
-        />
-
-        <item 
-            id="1" 
-            name="Health Potion 1" 
-            desc="Heals 50 HP instantly."
-            sprite="sprite/common/item/jar_paint_red"
-        />
-
-        <item 
-            id="2" 
-            name="Health Potion 2" 
-            desc="Heals 50 HP instantly."
-            sprite="sprite/common/item/jar_paint_red"
-        />
-
-        <item 
-            id="3" 
-            name="Health Potion 3" 
-            desc="Heals 50 HP instantly."
-            sprite="sprite/common/item/jar_paint_red"
-        />
-
-        <item 
-            id="4" 
-            name="Health Potion4 " 
-            desc="Heals 50 HP instantly."
-            sprite="sprite/common/item/jar_paint_red"
-        />
-    </items>
 </data>

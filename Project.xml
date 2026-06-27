@@ -21,7 +21,7 @@
 	<!-- ____________________________ Window Settings ___________________________ -->
 
 	<!--These window settings apply to all targets-->
-	<window width="1920" height="1080" fps="120" background="#000000" hardware="true" vsync="false" />
+	<window width="1280" height="720" fps="120" background="#000000" hardware="true" vsync="false" />
 
 	<!--HTML5-specific-->
 	<window if="html5" resizable="true" />
@@ -46,7 +46,6 @@
 	<classpath name="source" />
 
 	<assets path='assets'/>
-	<assets path='resources'/>
 	<haxedef name="mobile_controls_allow_mouse_clicks" if="desktop"/>
 
 	<!-- _______________________________ Defines _______________________________ -->
@@ -54,8 +53,8 @@
 	<!-- Comment this out to disable abstract support in hscript. !-->
 	<haxedef name="HSCRIPT_ABSTRACT_SUPPORT" unless="STRIPPED_COMPILE" />
 	<define name="FEATURE_HSCRIPT" />
-	<define name="FEATURE_TOUCH_CONTROLS" if="mobile"/>
-	<haxedef name="scriptable" />
+	<define name="FEATURE_TOUCH_CONTROLS" />
+	<haxedef name="scriptable" if="android || linux"/>
 
 	<haxedef name="FLX_RENDER_TILE" if="html5"/>
 
@@ -65,9 +64,10 @@
 	<haxelib name="flixel-addons" />
     <haxelib name="flixel-ui" />
 	<haxelib name="hscript-iris" if="FEATURE_HSCRIPT"/>
-	<haxelib name="mobile-controls" />
+	<haxelib name="mobile-dev" />
 	<haxedef name="openflPos" />
 	<haxedef name="hscriptPos" />
+	<assets path="mobile" embed="false" />
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
 

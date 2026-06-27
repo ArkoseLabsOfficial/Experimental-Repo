@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="lacie.png">
+    <SubTexture name="walk_down0000" x="0" y="0" width="32" height="48"/>
+    <SubTexture name="walk_down1000" x="32" y="0" width="32" height="48"/>
+    <SubTexture name="walk_down2000" x="64" y="0" width="32" height="48"/>
+    <SubTexture name="run_down0000" x="96" y="0" width="32" height="48"/>
+    <SubTexture name="run_down1000" x="128" y="0" width="32" height="48"/>
+    <SubTexture name="run_down2000" x="160" y="0" width="32" height="48"/>
+    <SubTexture name="run_down3000" x="192" y="0" width="32" height="48"/>
+    <SubTexture name="run_down4000" x="224" y="0" width="32" height="48"/>
+    <SubTexture name="run_down5000" x="256" y="0" width="32" height="48"/>
+
+    <SubTexture name="walk_left0000" x="0" y="48" width="32" height="48"/>
+    <SubTexture name="walk_left1000" x="32" y="48" width="32" height="48"/>
+    <SubTexture name="walk_left2000" x="64" y="48" width="32" height="48"/>
+    <SubTexture name="run_left0000" x="96" y="48" width="32" height="48"/>
+    <SubTexture name="run_left1000" x="128" y="48" width="32" height="48"/>
+    <SubTexture name="run_left2000" x="160" y="48" width="32" height="48"/>
+    <SubTexture name="run_left3000" x="192" y="48" width="32" height="48"/>
+    <SubTexture name="run_left4000" x="224" y="48" width="32" height="48"/>
+    <SubTexture name="run_left5000" x="256" y="48" width="32" height="48"/>
+
+    <SubTexture name="walk_right0000" x="0" y="96" width="32" height="48"/>
+    <SubTexture name="walk_right1000" x="32" y="96" width="32" height="48"/>
+    <SubTexture name="walk_right2000" x="64" y="96" width="32" height="48"/>
+    <SubTexture name="run_right0000" x="96" y="96" width="32" height="48"/>
+    <SubTexture name="run_right1000" x="128" y="96" width="32" height="48"/>
+    <SubTexture name="run_right2000" x="160" y="96" width="32" height="48"/>
+    <SubTexture name="run_right3001" x="192" y="96" width="32" height="48"/>
+    <SubTexture name="run_right4002" x="224" y="96" width="32" height="48"/>
+    <SubTexture name="run_right5000" x="256" y="96" width="32" height="48"/>
+
+    <SubTexture name="walk_up0000" x="0" y="144" width="32" height="48"/>
+    <SubTexture name="walk_up1000" x="32" y="144" width="32" height="48"/>
+    <SubTexture name="walk_up2000" x="64" y="144" width="32" height="48"/>
+    <SubTexture name="run_up0000" x="96" y="144" width="32" height="48"/>
+    <SubTexture name="run_up1000" x="128" y="144" width="32" height="48"/>
+    <SubTexture name="run_up2000" x="160" y="144" width="32" height="48"/>
+    <SubTexture name="run_up3000" x="192" y="144" width="32" height="48"/>
+    <SubTexture name="run_up4000" x="224" y="144" width="32" height="48"/>
+    <SubTexture name="run_up5000" x="256" y="144" width="32" height="48"/>
+</TextureAtlas>

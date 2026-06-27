@@ -1,0 +1,94 @@
+package engine.ui;
+
+class UIUtil {
+    public static inline var TRANSPARENT:FlxColor = FlxColor.TRANSPARENT;
+    public static inline var SELECTION_COLOR:FlxColor = 0x33EDDEDE;
+    public static inline var SCREEN_DARKENER_COLOR:FlxColor = 0xB3000000;
+    
+    public static inline var BULLET_POINT:String = "[img=11]res://assets/img/ui/bullet_point.png[/img]"; // Used for text parsers later
+
+    public static function createOverlay(color:FlxColor):FlxSprite {
+        var overlay = new FlxSprite(0, 0);
+        overlay.makeGraphic(FlxG.width, FlxG.height, color);
+        overlay.scrollFactor.set(0, 0);
+        return overlay;
+    }
+
+    public static function createDarkenerOverlay():FlxSprite {
+        return createOverlay(SCREEN_DARKENER_COLOR);
+    }
+
+    public static function createVerticalEntryList(entries:Array<IMenuEntry>, selectBgs:Array<FlxSprite>, itemWidth:Float = 492, itemHeight:Float = 72, separation:Float = 0):FlxSpriteGroup {
+        var container = new FlxSpriteGroup();
+        var currentY:Float = 0;
+
+        for (i in 0...entries.length) {
+            var entry = entries[i];
+            var row = entry.drawEntry();
+
+            var bg = new FlxSprite(0, currentY);
+            bg.makeGraphic(Std.int(itemWidth), Std.int(itemHeight), TRANSPARENT);
+            selectBgs.push(bg);
+
+            container.add(bg);
+            
+            row.y = currentY;
+            container.add(row);
+
+            currentY += itemHeight + separation;
+        }
+
+        return container;
+    }
+
+    public static function createSimpleEntry(captionKey:String, width:Float, height:Float, fontSize:Int = 48, align:flixel.text.FlxText.FlxTextAlign = CENTER):FlxSpriteGroup {
+        var group = new FlxSpriteGroup();
+        var text = new FlxText(0, 0, width, Game.instance.language.getCaption(captionKey), fontSize);
+        text.alignment = align;
+        group.add(text);
+        
+        // Emulates Godot's VCenter alignment
+        text.y = (height - text.height) / 2; 
+        
+        return group;
+    }
+
+    public static function handleVerticalNavigationInput(menu:IMenuEntryList):Void {
+        if (Controls.UP_P) {
+            LilyAssets.play(LilyAssets.NAVIGATE);
+            menu.selection--;
+            if (menu.selection < 0) {
+                menu.selection = menu.entries.length - 1;
+            }
+            menu.highlightSelection();
+        } 
+        else if (Controls.DOWN_P) {
+            LilyAssets.play(LilyAssets.NAVIGATE);
+            menu.selection++;
+            if (menu.selection >= menu.entries.length) {
+                menu.selection = 0;
+            }
+            menu.highlightSelection();
+        } 
+        else if (Controls.LEFT_P) {
+            if (menu.entries[menu.selection] != null) {
+                menu.entries[menu.selection].left();
+            }
+        } 
+        else if (Controls.RIGHT_P) {
+            if (menu.entries[menu.selection] != null) {
+                menu.entries[menu.selection].right();
+            }
+        } 
+        else if (Controls.ACCEPT) {
+            LilyAssets.play(LilyAssets.CONFIRM);
+            if (menu.entries[menu.selection] != null) {
+                menu.entries[menu.selection].accept();
+            }
+        } 
+        else if (Controls.CANCEL) {
+            LilyAssets.play(LilyAssets.CANCEL);
+            menu.back();
+        }
+    }
+}

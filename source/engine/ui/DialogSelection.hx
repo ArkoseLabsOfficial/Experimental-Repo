@@ -21,7 +21,8 @@ class DialogSelection extends FlxTypedGroup<FlxSprite> {
         super();
         this.parent = parent;
         
-        selector = UIUtil.createHighlightBox(0, 0, 1, 1, 0.4);
+        selector = new FlxSprite(0, 0).makeGraphic(1, 1, 0xFF4A4A4A);
+		selector.alpha = 0.4;
         selector.scrollFactor.set(0, 0);
         
         visible = false;
@@ -32,7 +33,6 @@ class DialogSelection extends FlxTypedGroup<FlxSprite> {
         options = optionsList;
         onSelect = callback;
 
-        // Clean up previous elements
         for (txt in optionTexts) {
             remove(txt, true);
             txt.destroy();
@@ -48,9 +48,9 @@ class DialogSelection extends FlxTypedGroup<FlxSprite> {
         var maxTextWidth:Float = 200; 
         var textHeight:Float = 20;
 
-        // Pre-calculate dimensions based on exact scaled text bounds
         for (opt in options) {
-            var tempText = UIUtil.createText(0, 0, 0, opt, 40);
+            var tempText = new FlxText(0, 0, 0, opt, 40);
+	        tempText.font = LilyAssets.font("AlegreyaSC-Regular");
             tempText.scale.set(0.5, 0.5);
             tempText.updateHitbox();
             
@@ -64,14 +64,12 @@ class DialogSelection extends FlxTypedGroup<FlxSprite> {
         var finalBoxWidth = (customBoxWidth > 0) ? customBoxWidth : (maxTextWidth + boxPaddingX); 
         var finalBoxHeight = (customBoxHeight > 0) ? customBoxHeight : (totalTextHeight + 60); 
         
-        // Use MenuFrameNode with mode 1 (Standard frame_menu_2, no title)
         menuFrame = new MenuFrameNode(0, 0, finalBoxWidth, finalBoxHeight, 0);
         menuFrame.scrollFactor.set(0, 0); 
         menuFrame.screenCenter();
 
         add(menuFrame);
 
-        // Position the selector strictly relative to the frame's world coordinates
         selector.setGraphicSize(Std.int(finalBoxWidth - 20), 30);
         selector.updateHitbox();
         selector.x = menuFrame.x + 10;
@@ -80,11 +78,11 @@ class DialogSelection extends FlxTypedGroup<FlxSprite> {
         var layoutY = menuFrame.y + ((finalBoxHeight - totalTextHeight) / 2);
 
         for (i in 0...options.length) {
-            var txt = UIUtil.createText(0, layoutY, 0, options[i], 40);
+            var txt = new FlxText(0, layoutY, 0, options[i], 40);
+	    	txt.font = LilyAssets.font("AlegreyaSC-Regular");
             txt.scale.set(0.5, 0.5);
             txt.updateHitbox();
-            
-            // Center the text horizontally within the frame
+
             txt.x = menuFrame.x + ((finalBoxWidth - txt.width) / 2);
             txt.scrollFactor.set(0, 0);
             txt.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5); 
@@ -134,7 +132,7 @@ class DialogSelection extends FlxTypedGroup<FlxSprite> {
 
                 if (overlap) {
                     if (selectedIndex != i) {
-                        UIUtil.playNavSound();
+                        LilyAssets.play(LilyAssets.NAVIGATE);
                         changeSelection(i - selectedIndex); 
                     }
                     if (pointerJustPressed || touchJustPressed) {
@@ -146,21 +144,21 @@ class DialogSelection extends FlxTypedGroup<FlxSprite> {
         }
 
         if (Controls.UP_P) {
-            UIUtil.playNavSound();
+            LilyAssets.play(LilyAssets.NAVIGATE);
             changeSelection(-1);
         }
         if (Controls.DOWN_P) {
-            UIUtil.playNavSound();
+            LilyAssets.play(LilyAssets.NAVIGATE);
             changeSelection(1);
         }
         
-        if (Controls.ACCEPT_P) {
+        if (Controls.ACCEPT) {
             confirmSelection();
         }
     }
 
     function confirmSelection():Void {
-        UIUtil.playConfirmSound();
+        LilyAssets.play(LilyAssets.CONFIRM);
         visible = false;
         activeMenu = false;
         if (onSelect != null) onSelect(selectedIndex);

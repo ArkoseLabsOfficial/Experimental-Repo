@@ -1,0 +1,437 @@
+package engine.states;
+
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.FlxCamera;
+import flixel.text.FlxText;
+import flixel.ui.FlxButton;
+import flixel.util.FlxColor;
+import flixel.group.FlxGroup;
+import flixel.group.FlxSpriteGroup;
+import engine.backend.StateBackend;
+import engine.backend.RoomManager;
+import engine.objects.WorldObject;
+import openfl.net.FileReference;
+import openfl.net.FileFilter;
+import openfl.events.Event;
+
+#if flixel_addons
+import flixel.addons.ui.FlxInputText;
+#end
+
+class RoomEditorState extends StateBackend {
+    public var roomManager:RoomManager;
+    
+    // Cameras
+    var camGame:FlxCamera;
+    var camUI:FlxCamera;
+
+    // Material UI Colors
+    var bgColorS:FlxColor = 0xFF121212;
+    var surfaceColor:FlxColor = 0xFF1E1E1E;
+    var primaryColor:FlxColor = 0xFFBB86FC;
+    var secondaryColor:FlxColor = 0xFF03DAC6;
+    var errorColor:FlxColor = 0xFFCF6679;
+
+    // UI Elements
+    var uiGroup:FlxTypedGroup<FlxSprite>;
+    var propertiesPanel:FlxSpriteGroup;
+    var subValueGroup:FlxTypedGroup<FlxSprite>;
+    
+    #if flixel_addons
+    var ldtkInput:FlxInputText;
+    #end
+
+    // Editor State Data
+    var selectedObject:WorldObject = null;
+    var editorObjects:Array<WorldObject> = [];
+    var triggerValues:Map<WorldObject, Array<String>> = new Map();
+    var spritePaths:Map<WorldObject, String> = new Map();
+
+    // Placement Mode
+    var placementMode:String = null;
+    var ghostObject:FlxSprite;
+    var fileDialog:FileReference;
+
+    override public function create() {
+        super.create();
+
+        // Setup Cameras
+        camGame = new FlxCamera();
+        camGame.bgColor = bgColorS;
+        FlxG.cameras.reset(camGame);
+
+        camUI = new FlxCamera();
+        camUI.bgColor = FlxColor.TRANSPARENT;
+        FlxG.cameras.add(camUI, false);
+
+        FlxG.mouse.visible = true;
+
+        roomManager = new RoomManager(this);
+        add(roomManager);
+
+        // Ghost placement object setup
+        ghostObject = new FlxSprite();
+        ghostObject.makeGraphic(32, 32, 0xFFFFFFFF);
+        ghostObject.alpha = 0.3;
+        ghostObject.visible = false;
+        add(ghostObject);
+
+        // UI Setup
+        uiGroup = new FlxTypedGroup<FlxSprite>();
+        uiGroup.cameras = [camUI];
+        add(uiGroup);
+        
+        propertiesPanel = new FlxSpriteGroup();
+        propertiesPanel.cameras = [camUI];
+        add(propertiesPanel);
+
+        subValueGroup = new FlxTypedGroup<FlxSprite>();
+        subValueGroup.cameras = [camUI];
+        add(subValueGroup);
+
+        buildTopBar();
+        buildLeftTools();
+        buildPropertiesPanel();
+    }
+
+    function buildTopBar() {
+        var topBar = new FlxSprite(0, 0).makeGraphic(FlxG.width, 50, surfaceColor);
+        uiGroup.add(topBar);
+
+        var title = new FlxText(10, 15, 0, "Arkose Engine - Room Editor", 16);
+        title.color = primaryColor;
+        uiGroup.add(title);
+
+        var loadLabel = new FlxText(250, 18, 0, "LDtk Level ID:", 12);
+        uiGroup.add(loadLabel);
+
+        #if flixel_addons
+        ldtkInput = new FlxInputText(350, 15, 100, "Level_0", 12);
+        uiGroup.add(ldtkInput);
+        #end
+
+        var loadBtn = createMaterialButton(470, 10, "Load File", openFileDialog);
+        uiGroup.add(loadBtn);
+    }
+
+    function buildLeftTools() {
+        var sideBar = new FlxSprite(0, 50).makeGraphic(150, FlxG.height - 50, surfaceColor);
+        uiGroup.add(sideBar);
+
+        var addObjBtn = createMaterialButton(10, 60, "Add Object", function() {
+            startPlacement("object");
+        });
+        uiGroup.add(addObjBtn);
+
+        var addTriggerBtn = createMaterialButton(10, 100, "Add Trigger", function() {
+            startPlacement("trigger");
+        });
+        uiGroup.add(addTriggerBtn);
+    }
+
+    function buildPropertiesPanel() {
+        var panelBg = new FlxSprite(FlxG.width - 250, 50).makeGraphic(250, FlxG.height - 50, surfaceColor);
+        propertiesPanel.add(panelBg);
+
+        var title = new FlxText(FlxG.width - 240, 60, 230, "Properties", 14);
+        title.alignment = CENTER;
+        title.color = primaryColor;
+        propertiesPanel.add(title);
+        
+        propertiesPanel.visible = false;
+    }
+
+    function createMaterialButton(x:Float, y:Float, text:String, onClick:Void->Void, width:Int = 120, height:Int = 30, color:FlxColor = 0xFFBB86FC):FlxButton {
+        var btn = new FlxButton(x, y, text, onClick);
+        btn.makeGraphic(width, height, color);
+        btn.label.color = 0xFF000000;
+        btn.label.size = 12;
+        btn.label.offset.y = -(height / 2) + 8;
+        return btn;
+    }
+
+    // --- PLACEMENT SYSTEM ---
+
+    function startPlacement(type:String) {
+        placementMode = type;
+        ghostObject.visible = true;
+        ghostObject.color = type == "trigger" ? 0x00FF00 : 0xBB86FC;
+        
+        // Reset selection while placing
+        selectedObject = null;
+        refreshPropertiesPanel();
+    }
+
+    function spawnEditorObject(type:String, x:Float, y:Float) {
+        var obj = new WorldObject(x, y, 10, "editor_" + type + "_" + Std.random(9999));
+        var col = type == "trigger" ? 0x8800FF00 : 0xFFBB86FC;
+        obj.makeGraphic(32, 32, col);
+        
+        roomManager.add(obj);
+        editorObjects.push(obj);
+        spritePaths.set(obj, "");
+
+        if (type == "trigger") {
+            triggerValues.set(obj, ["exitTrigger"]);
+        }
+
+        selectObject(obj);
+    }
+
+    // --- SELECTION & UI GENERATION ---
+
+    function selectObject(obj:WorldObject) {
+        selectedObject = obj;
+        refreshPropertiesPanel();
+    }
+
+    function createPropInput(labelStr:String, defaultVal:String, yPos:Float, onChange:String->Void) {
+        var label = new FlxText(FlxG.width - 240, yPos, 230, labelStr, 10);
+        label.color = primaryColor;
+        subValueGroup.add(label);
+
+        #if flixel_addons
+        var input = new FlxInputText(FlxG.width - 240, yPos + 15, 230, defaultVal, 10);
+        input.callback = function(text:String, action:String) { onChange(text); };
+        subValueGroup.add(input);
+        #else
+        var txt = new FlxText(FlxG.width - 240, yPos + 15, 230, defaultVal, 10);
+        subValueGroup.add(txt);
+        #end
+    }
+
+    function createPropToggle(labelStr:String, state:Bool, yPos:Float, onToggle:Bool->Void) {
+        var label = new FlxText(FlxG.width - 240, yPos + 5, 180, labelStr, 10);
+        subValueGroup.add(label);
+
+        var btnColor = state ? secondaryColor : 0xFF444444;
+        var btn = createMaterialButton(FlxG.width - 60, yPos, state ? "ON" : "OFF", null, 40, 20, btnColor);
+        
+        btn.onUp.callback = function() {
+            state = !state;
+            btn.text = state ? "ON" : "OFF";
+            btn.makeGraphic(40, 20, state ? secondaryColor : 0xFF444444);
+            onToggle(state);
+        };
+        subValueGroup.add(btn);
+    }
+
+    function refreshPropertiesPanel() {
+        // Fully destroy old inputs to prevent ghost text fields
+        while (subValueGroup.members.length > 0) {
+            var m = subValueGroup.members.pop();
+            if (m != null) m.destroy();
+        }
+
+        if (selectedObject == null) {
+            propertiesPanel.visible = false;
+            return;
+        }
+
+        propertiesPanel.visible = true;
+        var startY = 90;
+
+        var posText = new FlxText(FlxG.width - 240, startY, 230, 'X: ${Math.round(selectedObject.x)} | Y: ${Math.round(selectedObject.y)}', 10);
+        subValueGroup.add(posText);
+        startY += 25;
+
+        createPropInput("XML Name (ID)", selectedObject.xmlName, startY, function(val:String) { selectedObject.xmlName = val; });
+        startY += 40;
+
+        // Dynamic Image Loader
+        var curPath = spritePaths.exists(selectedObject) ? spritePaths.get(selectedObject) : "";
+        createPropInput("Sprite Image Path", curPath, startY, function(val:String) {
+            spritePaths.set(selectedObject, val);
+            if (val != "") selectedObject.loadEntity("", val);
+        });
+        startY += 40;
+
+        createPropInput("Z-Index", Std.string(selectedObject.z), startY, function(val:String) {
+            var parsed = Std.parseInt(val);
+            if (parsed != null) selectedObject.z = parsed;
+        });
+        startY += 40;
+
+        createPropToggle("Solid Collision", selectedObject.solidCollision, startY, function(val:Bool) {
+            selectedObject.solidCollision = val;
+            selectedObject.allowCollisions = val ? flixel.FlxObject.ANY : flixel.FlxObject.NONE;
+        });
+        startY += 40;
+
+        if (triggerValues.exists(selectedObject)) {
+            var sep = new FlxSprite(FlxG.width - 240, startY).makeGraphic(230, 1, 0xFF444444);
+            subValueGroup.add(sep);
+            startY += 10;
+
+            var label = new FlxText(FlxG.width - 240, startY, 230, "Trigger Sub-Values:", 10);
+            label.color = primaryColor;
+            subValueGroup.add(label);
+            startY += 20;
+
+            var values = triggerValues.get(selectedObject);
+            for (i in 0...values.length) {
+                #if flixel_addons
+                var valInput = new FlxInputText(FlxG.width - 240, startY + (i * 25), 190, values[i], 10);
+                valInput.callback = function(text:String, action:String) { values[i] = text; };
+                subValueGroup.add(valInput);
+                #else
+                var valText = new FlxText(FlxG.width - 240, startY + (i * 25), 190, values[i], 10);
+                subValueGroup.add(valText);
+                #end
+
+                var delBtn = createMaterialButton(FlxG.width - 40, startY + (i * 25), "X", function() {
+                    values.splice(i, 1);
+                    refreshPropertiesPanel();
+                }, 20, 16, errorColor);
+                subValueGroup.add(delBtn);
+            }
+
+            var addSubValBtn = createMaterialButton(FlxG.width - 240, startY + (values.length * 25) + 10, "+ Add Value", function() {
+                values.push("new_value");
+                refreshPropertiesPanel();
+            }, 230, 20, secondaryColor);
+            subValueGroup.add(addSubValBtn);
+        }
+    }
+
+    // --- NATIVE FILE LOADING ---
+
+    function openFileDialog() {
+        fileDialog = new FileReference();
+        fileDialog.addEventListener(Event.SELECT, onFileSelected);
+        fileDialog.browse([new FileFilter("Room Data", "*.xml;*.ldtk;*.json")]);
+    }
+
+    function onFileSelected(e:Event) {
+        fileDialog.addEventListener(Event.COMPLETE, onFileLoaded);
+        fileDialog.load();
+    }
+
+    function onFileLoaded(e:Event) {
+        var data = fileDialog.data.toString();
+        
+        // Purge old state
+        editorObjects = [];
+        triggerValues.clear();
+        spritePaths.clear();
+        selectedObject = null;
+        refreshPropertiesPanel();
+
+        try {
+            if (StringTools.endsWith(fileDialog.name, ".xml")) {
+                roomManager.loadRoomFromString(data);
+            } else if (StringTools.endsWith(fileDialog.name, ".ldtk") || StringTools.endsWith(fileDialog.name, ".json")) {
+                #if flixel_addons
+                var lvl = ldtkInput.text != "" ? ldtkInput.text : "Level_0";
+                #else
+                var lvl = "Level_0";
+                #end
+                roomManager.loadLDtkLevel(data, lvl);
+            }
+            postLoadSetup();
+        } catch(err:Dynamic) {
+            FlxG.log.error("Failed to parse loaded file: " + err);
+        }
+    }
+
+    function postLoadSetup() {
+        // Remove spawned player and party members from the editor view
+        if (roomManager.activePlayer != null) {
+            roomManager.remove(roomManager.activePlayer);
+            roomManager.entities.remove(roomManager.activePlayer.xmlName);
+            roomManager.characters.remove(roomManager.activePlayer.xmlName);
+            roomManager.activePlayer.destroy();
+            roomManager.activePlayer = null;
+        }
+        
+        if (roomManager.partyMembers != null) {
+            for (member in roomManager.partyMembers) {
+                roomManager.remove(member);
+                member.destroy();
+            }
+            roomManager.partyMembers = [];
+        }
+
+        // Bind loaded environment objects
+        for (key => obj in roomManager.entities) {
+            editorObjects.push(obj);
+            if (StringTools.startsWith(obj.xmlName, "trigger_") || StringTools.startsWith(obj.xmlName, "event_")) {
+                triggerValues.set(obj, []);
+            }
+        }
+        for (key => char in roomManager.characters) {
+            if (!editorObjects.contains(cast char)) editorObjects.push(cast char);
+        }
+    }
+
+    // --- LOGIC & INPUT ---
+
+    function isMouseOverUI():Bool {
+        var mx = FlxG.mouse.screenX;
+        var my = FlxG.mouse.screenY;
+        if (my <= 50) return true; // Top Bar
+        if (mx <= 150) return true; // Sidebar
+        if (propertiesPanel.visible && mx >= FlxG.width - 250) return true; // Prop panel
+        return false;
+    }
+
+    override public function update(elapsed:Float) {
+        super.update(elapsed);
+        
+        // Panning (Camera)
+        var panSpeed = 300 * FlxG.elapsed;
+        if (FlxG.keys.pressed.W || FlxG.keys.pressed.UP) camGame.scroll.y -= panSpeed;
+        if (FlxG.keys.pressed.S || FlxG.keys.pressed.DOWN) camGame.scroll.y += panSpeed;
+        if (FlxG.keys.pressed.A || FlxG.keys.pressed.LEFT) camGame.scroll.x -= panSpeed;
+        if (FlxG.keys.pressed.D || FlxG.keys.pressed.RIGHT) camGame.scroll.x += panSpeed;
+
+        var mWorldPos = FlxG.mouse.getWorldPosition(camGame);
+
+        // Ghost Placement Mode Logic
+        if (placementMode != null) {
+            ghostObject.x = mWorldPos.x - ghostObject.width / 2;
+            ghostObject.y = mWorldPos.y - ghostObject.height / 2;
+
+            if (FlxG.mouse.justPressed && !isMouseOverUI()) {
+                spawnEditorObject(placementMode, ghostObject.x, ghostObject.y);
+                placementMode = null;
+                ghostObject.visible = false;
+            }
+            // Block standard selection while placing
+            return;
+        }
+
+        // Select & Drag Logic
+        if (!isMouseOverUI()) {
+            if (FlxG.mouse.justPressed) {
+                var clickedSomething = false;
+                var i = editorObjects.length - 1;
+                while (i >= 0) {
+                    var obj = editorObjects[i];
+                    if (FlxG.mouse.overlaps(obj, camGame)) {
+                        selectObject(obj);
+                        clickedSomething = true;
+                        break;
+                    }
+                    i--;
+                }
+                
+                if (!clickedSomething) {
+                    selectedObject = null;
+                    refreshPropertiesPanel();
+                }
+            }
+
+            if (FlxG.mouse.pressed && selectedObject != null) {
+                selectedObject.x = mWorldPos.x - selectedObject.width / 2;
+                selectedObject.y = mWorldPos.y - selectedObject.height / 2;
+                
+                if (propertiesPanel.visible && subValueGroup.members.length > 0) {
+                    var posTextObj:FlxText = cast subValueGroup.members[0];
+                    if (posTextObj != null) posTextObj.text = 'X: ${Math.round(selectedObject.x)} | Y: ${Math.round(selectedObject.y)}';
+                }
+            }
+        }
+    }
+}

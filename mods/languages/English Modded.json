@@ -1,0 +1,106 @@
+{
+  "name": "English Modded",
+  "translator": "Official",
+  "captions": {
+    "system.settings.game.language": {
+      "select": "Select Language",
+      "more": "More...",
+      "unofficial": "unofficial translations"
+    },
+    "system.menu.translator.credit": "Official Translation",
+
+    "system.settings.game.controls.move_up": "Move Up",
+    "system.settings.game.controls.move_down": "Move Down",
+    "system.settings.game.controls.move_left": "Move Left",
+    "system.settings.game.controls.move_right": "Move Right",
+    "system.settings.game.controls.accept": "Accept",
+    "system.settings.game.controls.cancel": "Cancel",
+    "system.settings.game.controls.run": "Run",
+    "system.settings.game.controls.menu": "Menu",
+    
+    "system.settings.game.graphics.fpscap": "FPS Cap",
+    "system.settings.game.graphics.renderscale": "Render Scale",
+    "system.settings.game.graphics.uiopacity": "UI Opacity",
+
+    "system.settings.game.gameplay.autosave": "Auto-Save",
+    "system.settings.game.gameplay.difficulty": "Difficuly",
+
+    "system.settings.ui.language": "Language",
+    "system.settings.ui.gameplay": "Gameplay",
+    "system.settings.ui.graphics": "Graphics",
+    "system.settings.ui.controls": "Controls",
+    "system.settings.ui.back": "Back",
+
+    "system.settings.language.select": "Select Language",
+    "system.settings.language.more": "More...",
+    "system.settings.language.unofficial": "Unofficial Translations",
+
+    "system.menu.pause.text": "Lily Engine 0.1.0 Alpha",
+    "system.menu.inventory": "Inventory",
+    "system.menu.objectives": "Objectives",
+    "system.menu.objectives.empty": "No Objectives",
+    "system.menu.settings": "Settings",
+    "system.menu.load": "Load",
+    "system.menu.save": "Save",
+    "system.menu.newgame": "New Game",
+    "system.menu.debugroom": "Debug Room",
+    "system.menu.website.translator": "Itch.io Page",
+    "system.menu.quit": "Quit",
+    "system.menu.loadgame": "Load Game",
+    "system.menu.savegame": "Save Game",
+    "system.menu.file": "File",
+    "system.menu.tip": "[Z] Select/[X] Cancel",
+    "system.menu.items": "Items",
+    "system.menu.obtained": "Obtained",
+
+    "system.game.item.jar_paint_red": "Red Paint Jar",
+    "system.game.item.jar_paint_green": "Green Paint Jar",
+    "system.game.item.jar_paint_blue": "Blue Paint Jar",
+    "system.game.item.jar_paint_yellow": "Yellow Paint Jar",
+    "system.game.item.jar_paint_purple": "Purple Paint Jar",
+    "system.game.item.jar_paint_orange": "Orange Paint Jar",
+    "system.game.item.jar_paint_brown": "Brown Paint Jar",
+    "system.game.item.jar_paint_white": "White Paint Jar",
+    "system.game.item.jar_paint_black": "Black Paint Jar",
+    "system.game.item.jar_paint_pink": "Pink Paint Jar",
+    "system.game.item.jar_paint_grey": "Grey Paint Jar",
+    "system.game.item.jar_paint_silver": "Silver Paint Jar",
+    "system.game.item.jar_paint_gold": "Gold Paint Jar",
+    "system.game.item.jar_paint_diamond": "Diamond Paint Jar",
+
+    "objectives.name.welcomegame": "HScript Iris Improved Test",
+    "objectives.desc.welcomegame": "Learn the basic controls.",
+    "objectives.name.findkey": "Find the Rusty Key",
+    "objectives.desc.findkey": "Search the room for the key to the cellar.",
+    "objectives.name.welcomemove": "Move",
+    "objectives.desc.welcomemove": "Use WASD to move around.",
+    "objectives.name.welcomejump": "Jump",  
+    "objectives.desc.welcomejump": "Press Space to jump.",
+
+    "objectives.name.sitPC": "Sit Both PC",
+    "objectives.desc.sitPC": "Sit Both PC to Complete",
+    "objectives.name.sitPC.sitUP": "Up",
+    "objectives.desc.sitPC.sitUP": "sit the chair that placed upper in the room",
+    "objectives.name.sitPC.sitDOWN": "Down",
+    "objectives.desc.sitPC.sitDOWN": "sit the chair that placed down in the room"
+  },
+  "storyCaptions": {
+    "bathroom": {
+      "dialogs.intro": "Okay, this is a test. Is the logic engine working?",
+      "dialogs.selection.variables": "[Logic: Has Item & Not Tired]",
+      "dialogs.selection.weather": "[Logic: Raining or Snowing]",
+      "dialogs.selection.chat": "Just chat",
+      "dialogs.selection.leave": "Let's get out of here.",
+      "dialogs.variables.success": "Variables read correctly! I have the item and I'm not tired.",
+      "dialogs.return": "Returning you to the main menu...",
+      "dialogs.weather": "Weather conditions met!",
+      "dialogs.chat.1": "I am just a test dummy.",
+      "dialogs.chat.2": "I know, I'm just making sure everything works.",
+      "dialogs.leave": "See ya."
+    },
+    "test_room": {
+      "dummy_look": "It's a bright blue cube. I shouldn't stare too long.",
+      "secret_note": "A hidden message!"
+    }
+  }
+}

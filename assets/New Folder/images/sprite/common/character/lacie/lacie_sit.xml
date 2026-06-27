@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="lacie_sit.png">
+    <SubTexture name="sit_down0000" x="208" y="8" width="32" height="48"/>
+    <SubTexture name="sit_up0000" x="78" y="8" width="32" height="48"/>
+    <SubTexture name="sit_right0000" x="138" y="8" width="32" height="48"/>
+    <SubTexture name="sit_left0000" x="18" y="8" width="32" height="48"/>
+</TextureAtlas>

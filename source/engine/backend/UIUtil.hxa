@@ -1,0 +1,26 @@
+package engine.backend;
+
+class UIUtil {
+	public static function playNavSound():Void {
+		FlxG.sound.play(LilyAssets.sound("sfx/ui_navigation"));
+	}
+
+	public static function playCancelSound() {
+		FlxG.sound.play(LilyAssets.sound("sfx/ui_navigation2"));
+	}
+
+	public static function playConfirmSound():Void {
+		FlxG.sound.play(LilyAssets.sound("sfx/ui_start"));
+	}
+
+	public static function playErrorSound():Void {
+		FlxG.sound.play(LilyAssets.sound("sfx/ui_bad"));
+	}
+
+	public static function createText(X:Float, Y:Float, Width:Float, Text:String, Size:Int = 24, Align:FlxTextAlign = CENTER):FlxText {
+		var txt = new FlxText(X, Y, Width, Text, Size);
+		txt.font = LilyAssets.font("AlegreyaSC-Regular");
+		txt.alignment = Align;
+		return txt;
+	}
+}

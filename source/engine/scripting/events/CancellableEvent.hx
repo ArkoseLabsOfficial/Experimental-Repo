@@ -23,7 +23,9 @@ class CancellableEvent implements IFlxDestroyable {
 	}
 
 	@:dox(hide)
-	public function cancel(c:Bool = true) {preventDefault(c);}
+	public function cancel(c:Bool = true) {
+		preventDefault(c);
+	}
 
 	/**
 	 * Creates a new cancellable event.
@@ -46,7 +48,7 @@ class CancellableEvent implements IFlxDestroyable {
 	public function toString():String {
 		var fields = Reflect.fields(this);
 		var claName = Type.getClassName(Type.getClass(this)).split(".");
-		var rep = '[${claName[claName.length-1]}${cancelled ? " (Cancelled)" : ""}]';
+		var rep = '[${claName[claName.length - 1]}${cancelled ? " (Cancelled)" : ""}]';
 		return rep;
 	}
 

@@ -1,7 +1,6 @@
 #if !macro
 
 /* Source Code */
-import engine.backend.*;
 import macros.*;
 #if FEATURE_TOUCH_CONTROLS
 import mobile.*;
@@ -11,16 +10,24 @@ import engine.scripting.*;
 import engine.scripting.events.*;
 import engine.states.*;
 import engine.substates.*;
+import engine.ui.*;
 
 /* Objective */
 import engine.backend.Objective.ObjectiveData;
+
+/* BACKEND */
+import engine.backend.game.*;
+import engine.backend.parser.*;
+import engine.backend.save.*;
+import engine.backend.ui.*;
+import engine.backend.*;
 
 /* UI */
 import engine.ui.*;
 import engine.ui.LacieUIExperimental.MenuFrameNode;
 import engine.ui.LacieUIExperimental.MenuVisualEntry;
 import engine.ui.LacieUIExperimental.SimpleVerticalMenu;
-import engine.ui.LacieUIExperimental.SpecialNinePatch;
+import engine.ui.SpecialNinePatch;
 
 
 /* Scripted Classes */
@@ -37,6 +44,7 @@ import io.FileSystem;
 import io.LilyAssets;
 
 /* Flixel */
+import flixel.util.FlxCollision;
 import flixel.FlxBasic;
 import flixel.FlxCamera;
 import flixel.FlxObject;
@@ -65,6 +73,7 @@ import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxDestroyUtil;
 import flixel.text.FlxText;
 import flixel.system.FlxAssets;
+import flixel.util.FlxSave;
 import flixel.graphics.frames.FlxImageFrame;
 
 /* Haxe */
@@ -75,6 +84,7 @@ import haxe.Json;
 import lime.system.System;
 
 /* OpenFL */
+import openfl.geom.ColorTransform;
 import openfl.events.Event;
 import openfl.net.FileFilter;
 import openfl.net.FileReference;

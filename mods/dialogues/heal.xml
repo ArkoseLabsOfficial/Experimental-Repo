@@ -1,0 +1,11 @@
+<!DOCTYPE lily-engine-dialog>
+<dialogues>
+    <dialog id="start">
+        <entry text="Volkan:
+Ben Volkan Konak
+
+Mertcan:
+Yorumlara Yaz
+" closeTheBox="true" />
+    </dialog>
+</dialogues>

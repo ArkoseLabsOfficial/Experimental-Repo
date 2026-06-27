@@ -1,0 +1,453 @@
+package engine.substates;
+
+import flixel.group.FlxSpriteGroup;
+
+interface IMenuEntryContainer {
+    var controlFrame(get, null):Frame;
+    var menu(get, set):IMenuEntryList;
+    var onClose(get, set):Void->Void;
+    
+    function clearFrame():Void; // Renamed from clear()
+    function addToFrame(child:FlxSpriteGroup):Void;
+}
+
+interface IMenuEntryList {
+    var container(get, set):IMenuEntryContainer;
+    var parent(get, set):IMenuEntryList;
+    var selection(get, set):Int;
+    var entries(get, null):Array<IMenuEntry>;
+    var onBack(get, set):Void->Void;
+
+    function drawContent():FlxSpriteGroup;
+    function update(elapsed:Float):Void;
+    function back():Void;
+    function root():Void;
+    function handleInput():Void;
+    function highlightSelection():Void;
+    function resetSelection():Void;
+}
+
+
+interface IMenuEntry {
+    var parent(get, set):IMenuEntryList;
+    
+    function accept():Void;
+    function left():Void;
+    function right():Void;
+    function cancel():Void;
+    function update(elapsed:Float):Void;
+    function drawEntry():FlxSpriteGroup;
+}
+
+
+class Frame extends FlxSpriteGroup {
+    public var containerGroup:FlxSpriteGroup;
+    public var minimumWidth:Float = 0;
+    public var minimumHeight:Float = 0;
+
+    public var contentMarginLeft:Int = 18;
+    public var contentMarginTop:Int = 12;
+    public var contentMarginRight:Int = 18;
+    public var contentMarginBottom:Int = 12;
+
+    public function new(X:Float = 0, Y:Float = 0) {
+        super(X, Y);
+        containerGroup = new FlxSpriteGroup();
+        add(containerGroup);
+    }
+
+    public function addToFrame(child:FlxSpriteGroup):Void {
+        // Apply margins for layout
+        child.x = this.x + contentMarginLeft;
+        child.y = this.y + contentMarginTop;
+        containerGroup.add(child);
+    }
+
+    public function clearFrame():Void {
+        containerGroup.clear();
+    }
+}
+
+
+class SimpleMenuEntry implements IMenuEntry {
+    public var parent(get, set):IMenuEntryList;
+    
+    private var _caption:String;
+    private var _action:Void->Void;
+    private var _parent:IMenuEntryList;
+
+    public function new(caption:String, action:Void->Void, parent:IMenuEntryList) {
+        this._caption = caption;
+        this._action = action;
+        this._parent = parent;
+    }
+
+    public function get_parent():IMenuEntryList return _parent;
+    public function set_parent(value:IMenuEntryList):IMenuEntryList return _parent = value;
+
+    public function drawEntry():FlxSpriteGroup {
+        var group = new FlxSpriteGroup();
+        var text = new FlxText(0, 0, 0, _caption, 16);
+        group.add(text);
+        return group;
+    }
+
+    public function accept():Void {
+        if (_action != null) _action();
+    }
+
+    public function left():Void {}
+    public function right():Void {}
+    
+    public function cancel():Void {
+        if (_parent != null) _parent.back();
+    }
+
+    public function update(elapsed:Float):Void {}
+}
+
+
+class SimpleVerticalMenu implements IMenuEntryList {
+    public var container(get, set):IMenuEntryContainer;
+    public var parent(get, set):IMenuEntryList;
+    public var selection(get, set):Int;
+    public var entries(get, null):Array<IMenuEntry>;
+    public var onBack(get, set):Void->Void;
+
+    private var _container:IMenuEntryContainer;
+    private var _parent:IMenuEntryList;
+    private var _selection:Int = 0;
+    private var _entries:Array<IMenuEntry>;
+    private var _onBack:Void->Void;
+    
+    private var _selectBgs:Array<FlxSprite>;
+
+    public function new() {
+        _entries = new Array<IMenuEntry>();
+        _selectBgs = new Array<FlxSprite>();
+    }
+
+    public function get_container():IMenuEntryContainer return _container;
+    public function set_container(value:IMenuEntryContainer):IMenuEntryContainer return _container = value;
+    public function get_parent():IMenuEntryList return _parent;
+    public function set_parent(value:IMenuEntryList):IMenuEntryList return _parent = value;
+    public function get_selection():Int return _selection;
+    public function set_selection(value:Int):Int return _selection = value;
+    public function get_entries():Array<IMenuEntry> return _entries;
+    public function get_onBack():Void->Void return _onBack;
+    public function set_onBack(value:Void->Void):Void->Void return _onBack = value;
+
+    public function drawContent():FlxSpriteGroup {
+        var group = new FlxSpriteGroup();
+        _selectBgs = [];
+        
+        var yOffset:Float = 0;
+        var spacing:Float = 24;
+
+        for (i in 0..._entries.length) {
+            var entryGroup = _entries[i].drawEntry();
+            entryGroup.y = yOffset;
+            
+            // Generate as WHITE, but start with 0 alpha
+            var bg = new FlxSprite(0, yOffset).makeGraphic(200, Std.int(spacing), FlxColor.WHITE);
+            bg.alpha = 0; 
+            
+            _selectBgs.push(bg);
+            group.add(bg);
+            group.add(entryGroup);
+            
+            yOffset += spacing;
+        }
+        return group;
+    }
+
+    public function update(elapsed:Float):Void {
+        for (entry in _entries) {
+            entry.update(elapsed);
+        }
+    }
+
+    public function handleInput():Void {
+        if (Controls.UP_P) {
+            _selection--;
+            if (_selection < 0) _selection = _entries.length - 1;
+            highlightSelection();
+        } 
+        else if (Controls.DOWN_P) {
+            _selection++;
+            if (_selection >= _entries.length) _selection = 0;
+            highlightSelection();
+        } 
+        else if (Controls.ACCEPT) {
+            if (_selection >= 0 && _selection < _entries.length) {
+                _entries[_selection].accept();
+            }
+        } 
+        else if (Controls.CANCEL) {
+            back();
+        }
+    }
+
+    public function highlightSelection():Void {
+        for (i in 0..._selectBgs.length) {
+            _selectBgs[i].alpha = 0; // Turn off visibility entirely
+        }
+        if (_selection > -1 && _selection < _selectBgs.length) {
+            _selectBgs[_selection].alpha = 0.2; // Show active highlight
+        }
+    }
+
+    public function root():Void {
+        if (_container != null) {
+            _container.clearFrame(); // Use renamed method
+            _container.addToFrame(drawContent());
+            _container.menu = this;
+            resetSelection();
+        }
+    }
+
+    public function back():Void {
+        if (_onBack != null) {
+            _onBack();
+        } else if (_parent != null) {
+            _parent.root();
+        }
+    }
+
+    public function resetSelection():Void {
+        _selection = 0;
+        highlightSelection();
+    }
+}
+
+
+
+
+
+
+class TitleMenuList extends SimpleVerticalMenu {
+    public function new(container:IMenuEntryContainer) {
+        super();
+        this.container = container;
+        buildEntries();
+    }
+
+    private function buildEntries():Void {
+        _entries.push(new SimpleMenuEntry("Start Game", startGame, this));
+        _entries.push(new SimpleMenuEntry("Options", openOptions, this));
+        _entries.push(new SimpleMenuEntry("Quit", quitGame, this));
+    }
+
+    private function startGame():Void {
+        trace("Starting game...");
+        // FlxG.switchState(new BaseRoom());
+    }
+
+    private function openOptions():Void {
+        trace("Opening options...");
+        // Handle options navigation
+    }
+
+    private function quitGame():Void {
+        Sys.exit(0);
+    }
+}
+
+
+class TitledMenuFrame extends Frame {
+    private static inline var PatchTexture:String = "img/ui/frame_menu_2";
+    private static inline var BgMaskTexture:String = "img/ui/frame_menu_2_mask";
+    // Assuming "res://assets/sprite/common/white.png" maps to "sprite/common/white.png"
+    private static inline var BgTexture:String = "sprite/common/white"; 
+    private static inline var DividerTextureStr:String = "img/ui/divider_sm";
+
+    public var titleText(get, set):String;
+    public var titleVisible(get, set):Bool;
+    public var dividerTexture:String = DividerTextureStr;
+
+    private var _titleText:String = "Title";
+    private var _titleVisible:Bool = true;
+
+    private var nTitleGroup:FlxSpriteGroup;
+    private var nTitleLabel:FlxText;
+    private var nDivider:FlxSprite;
+    private var backgroundPatch:SpecialNinePatch;
+
+    private var targetWidth:Float;
+    private var targetHeight:Float;
+
+    public function new(X:Float = 0, Y:Float = 0, Width:Float = 400, Height:Float = 500) {
+        super(X, Y);
+        
+        targetWidth = Width;
+        targetHeight = Height;
+
+        contentMarginLeft = 25;
+        contentMarginTop = 15;
+        contentMarginRight = 25;
+        contentMarginBottom = 15;
+
+        buildFrame();
+    }
+
+    private function buildFrame():Void {
+        // 1. Background NinePatch
+        backgroundPatch = new SpecialNinePatch(0, 0);
+        backgroundPatch.texture = PatchTexture;
+        backgroundPatch.bgTexture = BgTexture; 
+        backgroundPatch.bgMaskTexture = BgMaskTexture;
+        
+        backgroundPatch.patchMarginLeft = 50;
+        backgroundPatch.patchMarginTop = 50;
+        backgroundPatch.patchMarginRight = 50;
+        backgroundPatch.patchMarginBottom = 50;
+        backgroundPatch.scaleFactor = 0.25;
+        
+        // UIUtil.MenuBgColor equivalent (#11080D)
+        backgroundPatch.bgModulate = FlxColor.fromString("#11080D"); 
+        backgroundPatch.setSizeEx(targetWidth, targetHeight);
+        
+        // Insert behind the container group
+        insert(0, backgroundPatch);
+
+        // 2. Title Section
+        nTitleGroup = new FlxSpriteGroup(0, 10); // 10 margin top
+        
+        nTitleLabel = new FlxText(0, 0, targetWidth, _titleText, 24);
+        nTitleLabel.alignment = CENTER;
+        // nTitleLabel.font = LilyAssets.font("default_title.ttf"); // Uncomment if you have the font setup
+        
+        nDivider = new FlxSprite();
+        var divGraph = LilyAssets.image(dividerTexture);
+        if (divGraph != null) {
+            nDivider.loadGraphic(divGraph);
+            // Replicate Godot's Shrink Center / Expand
+            nDivider.setGraphicSize(Std.int(nDivider.width / 3));
+            nDivider.updateHitbox();
+        } else {
+            // Fallback placeholder if asset is missing
+            nDivider.makeGraphic(Std.int(targetWidth * 0.6), 2, FlxColor.WHITE);
+        }
+
+        // Align divider horizontally and vertically (-5 separation)
+        nDivider.x = (targetWidth - nDivider.width) / 2;
+        nDivider.y = nTitleLabel.y + nTitleLabel.height - 5; 
+
+        nTitleGroup.add(nTitleLabel);
+        nTitleGroup.add(nDivider);
+        
+        add(nTitleGroup);
+        
+        updateMargins();
+    }
+
+    private function get_titleText():String return _titleText;
+    private function set_titleText(value:String):String {
+        _titleText = value;
+        if (nTitleLabel != null) {
+            nTitleLabel.text = value;
+        }
+        return value;
+    }
+
+    private function get_titleVisible():Bool return _titleVisible;
+    private function set_titleVisible(value:Bool):Bool {
+        _titleVisible = value;
+        if (nTitleGroup != null) {
+            nTitleGroup.visible = value;
+        }
+        updateMargins();
+        return value;
+    }
+
+    private function updateMargins():Void {
+        var extraTop = _titleVisible ? 25 : 0;
+        
+        // Shift the Frame's main content container downwards to make room for the title
+        containerGroup.x = this.x + contentMarginLeft;
+        containerGroup.y = this.y + contentMarginTop + extraTop;
+    }
+}
+
+
+
+
+class SettingsMenuList extends SimpleVerticalMenu {
+    public function new(container:IMenuEntryContainer) {
+        super();
+        this.container = container;
+        
+        _entries.push(new SimpleMenuEntry("Audio", () -> trace("Audio Selected"), this));
+        _entries.push(new SimpleMenuEntry("Graphics", () -> trace("Graphics Selected"), this));
+        _entries.push(new SimpleMenuEntry("Controls", () -> trace("Controls Selected"), this));
+        _entries.push(new SimpleMenuEntry("Back", back, this));
+    }
+}
+
+// 2. Define the SubState that holds the Titled Frame
+class SimpleTestMenu extends FlxSubState implements IMenuEntryContainer {
+    
+    // IMenuEntryContainer interface fields
+    public var controlFrame(get, null):Frame;
+    public var menu(get, set):IMenuEntryList;
+    public var onClose(get, set):Void->Void;
+
+    private var _frame:TitledMenuFrame;
+    private var _menu:IMenuEntryList;
+    private var _onClose:Void->Void;
+
+    public function new() {
+        super();
+    }
+
+    public function get_controlFrame():Frame return _frame;
+    public function get_menu():IMenuEntryList return _menu;
+    public function set_menu(value:IMenuEntryList):IMenuEntryList return _menu = value;
+    public function get_onClose():Void->Void return _onClose;
+    public function set_onClose(value:Void->Void):Void->Void return _onClose = value;
+
+    override public function create():Void {
+        super.create();
+
+        // Instantiate the TitledMenuFrame
+        // Centered horizontally, 50px from top. Width 300, Height 400.
+        var fw:Float = 300;
+        var fh:Float = 400;
+        _frame = new TitledMenuFrame(300, 50, fw, fh);
+        
+        // Configure the Title
+        _frame.titleText = "System Settings";
+        _frame.titleVisible = true;
+        
+        add(_frame);
+
+        // Bind the menu logic to the frame
+        _menu = new SettingsMenuList(this);
+        
+        // Define what happens when "Back" is pressed on the root menu
+        _menu.onBack = function() {
+            close();
+            if (_onClose != null) _onClose();
+        };
+
+        _menu.root(); // Injects the menu graphics into the frame's containerGroup
+    }
+
+    override public function update(elapsed:Float):Void {
+        super.update(elapsed);
+        
+        // Route input polling to the active menu list
+        if (_menu != null) {
+            _menu.update(elapsed);
+            _menu.handleInput();
+        }
+    }
+
+    public function clearFrame():Void {
+        _frame.clearFrame();
+    }
+
+    public function addToFrame(child:flixel.group.FlxSpriteGroup):Void {
+        _frame.addToFrame(child);
+    }
+}

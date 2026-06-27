@@ -17,6 +17,7 @@ class LilyAssets
     public static var CANCEL:String = "sfx/ui_navigation2";
     public static var CONFIRM:String = "sfx/ui_start";
     public static var NAVIGATE:String = "sfx/ui_navigation";
+    public static var ERROR:String = "sfx/ui_bad";
 
     public static final IMAGE_EXT:String = "png";
     public static final SOUND_EXTS:Array<String> = ['ogg', 'opus', 'mp3', 'flac', 'wav'];

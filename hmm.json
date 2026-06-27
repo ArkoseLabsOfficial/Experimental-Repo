@@ -37,8 +37,8 @@
       "name": "hxcpp",
       "type": "git",
       "dir": null,
-      "ref": null,
-      "url": "https://github.com/AlafandyPorting/hxcpp-0.7.3"
+      "ref": "main",
+      "url": "https://github.com/kittycathy233/hxcpp"
     },
     {
       "name": "hscript-iris",
@@ -53,6 +53,13 @@
       "dir": null,
       "ref": null,
       "url": "https://github.com/ArkoseLabsOfficial/mobile-controls-dev"
+    },
+    {
+      "name": "hxdiscord_rpc",
+      "type": "git",
+      "dir": null,
+      "ref": "main",
+      "url": "https://github.com/MAJigsaw77/hxdiscord_rpc"
     }
   ]
 }

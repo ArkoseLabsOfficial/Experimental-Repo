@@ -115,4 +115,9 @@
 
 	<haxedef name="lime_use_old_deltatime" />
 	<haxedef name="lime_disable_motion_sensors" />
+
+	<icon path="placeholders/icon.png" size='16'/>
+	<icon path="placeholders/icon.png" size='32'/>
+	<icon path="placeholders/icon.png" size='64'/>
+	<icon path="placeholders/icon.png" />
 </project>

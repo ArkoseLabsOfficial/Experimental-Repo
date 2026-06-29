@@ -12,7 +12,7 @@ import openfl.display.Bitmap;
 import sys.FileSystem as SysFileSystem;
 import sys.io.File as SysFile;
 #end
-#if cpp
+#if scriptable
 import cpp.cppia.Host;
 import cpp.cppia.Module;
 #end
@@ -77,7 +77,7 @@ class Main extends Sprite {
 	 * A cppia loader.
 	**/
 	public static function loadAllMods() {
-		#if (!cppia && cpp)
+		#if (!cppia && scriptable)
         var modDir = "mods/";
         if (!FileSystem.exists(modDir)) return;
 

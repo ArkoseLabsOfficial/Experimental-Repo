@@ -1,5 +1,5 @@
 <!DOCTYPE lily-engine-character>
-<character sprite="sprite/common/character/lacie/lacie" flipX="false">
+<character sprite="characters/lacie/lacie" flipX="false">
 	<anim name="idleUP" anim="walk_up0" fps="1" loop="false"/>
     <anim name="idleLEFT" anim="walk_left0" fps="1" loop="false"/>
     <anim name="idleRIGHT" anim="walk_right0" fps="1" loop="false"/>
@@ -15,17 +15,17 @@
 	<anim name="runRIGHT" anim="run_right" fps="16" loop="true"/>
 	<anim name="runDOWN" anim="run_down" fps="16" loop="true"/>
 
-	<anim name="pushUP" anim="push_up" sprite="sprite/common/character/lacie/lacie_push" fps="8" loop="true"/>
-	<anim name="pushLEFT" anim="push_left" sprite="sprite/common/character/lacie/lacie_push" fps="8" loop="true"/>
-	<anim name="pushRIGHT" anim="push_right" sprite="sprite/common/character/lacie/lacie_push" fps="8" loop="true"/>
-	<anim name="pushDOWN" anim="push_down" sprite="sprite/common/character/lacie/lacie_push" fps="8" loop="true"/>
+	<anim name="pushUP" anim="push_up" sprite="characters/lacie/lacie_push" fps="8" loop="true"/>
+	<anim name="pushLEFT" anim="push_left" sprite="characters/lacie/lacie_push" fps="8" loop="true"/>
+	<anim name="pushRIGHT" anim="push_right" sprite="characters/lacie/lacie_push" fps="8" loop="true"/>
+	<anim name="pushDOWN" anim="push_down" sprite="characters/lacie/lacie_push" fps="8" loop="true"/>
 
-	<anim name="sitUP" anim="sit_up" sprite="sprite/common/character/lacie/lacie_sit" fps="1" loop="false"/>
-	<anim name="sitLEFT" anim="sit_left" sprite="sprite/common/character/lacie/lacie_sit" fps="1" loop="false"/>
-	<anim name="sitRIGHT" anim="sit_right" sprite="sprite/common/character/lacie/lacie_sit" fps="1" loop="false"/>
-	<anim name="sitDOWN" anim="sit_down" sprite="sprite/common/character/lacie/lacie_sit" fps="1" loop="false"/>
+	<anim name="sitUP" anim="sit_up" sprite="characters/lacie/lacie_sit" fps="1" loop="false"/>
+	<anim name="sitLEFT" anim="sit_left" sprite="characters/lacie/lacie_sit" fps="1" loop="false"/>
+	<anim name="sitRIGHT" anim="sit_right" sprite="characters/lacie/lacie_sit" fps="1" loop="false"/>
+	<anim name="sitDOWN" anim="sit_down" sprite="characters/lacie/lacie_sit" fps="1" loop="false"/>
 
 	<anim name="sleep" anim="liedown_sleep" sprite="sprite/ch1/cutscene/lacie_liedown" fps="1" loop="false"/>
 	<anim name="wakeup" anim="liedown_wakeup" sprite="sprite/ch1/cutscene/lacie_liedown_2" fps="1" loop="false"/>
-	<anim name="aweking" anim="waking" sprite="sprite/common/character/lacie/lacie_collapse" camX="-3" camY="-10" y="20" fps="3" loop="false"/>
+	<anim name="aweking" anim="waking" sprite="characters/lacie/lacie_collapse" camX="-3" camY="-10" y="20" fps="3" loop="false"/>
 </character>

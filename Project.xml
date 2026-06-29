@@ -64,7 +64,7 @@
 	<haxelib name="flixel-addons" />
     <haxelib name="flixel-ui" />
 	<haxelib name="hscript-iris" if="FEATURE_HSCRIPT"/>
-	<haxelib name="mobile-dev" />
+	<haxelib name="mobile-controls" />
 	<haxedef name="openflPos" />
 	<haxedef name="hscriptPos" />
 	<assets path="mobile" embed="false" />

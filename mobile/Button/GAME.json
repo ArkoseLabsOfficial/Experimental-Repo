@@ -3,38 +3,46 @@
     {
       "name": "MENU",
       "id": "MENU",
-      "graphic": "button_circle",
-      "subgraphic": "icon_menu",
+      "texture": "button_circle",
       "position": [1730, 0],
       "scale": 1.5,
-      "color": null
+      "color": null,
+      "subgraphic": {
+        "texture": "icon_menu"
+      }
     },
     {
       "name": "ACCEPT",
       "id": "ACCEPT",
-      "graphic": "button_circle",
-      "subgraphic": "icon_button_a",
+      "texture": "button_circle",
       "position": [1730, 890],
       "scale": 1.5,
-      "color": null
+      "color": null,
+      "subgraphic": {
+        "texture": "icon_button_a"
+      }
     },
     {
       "name": "CANCEL",
       "id": "CANCEL",
-      "graphic": "button_circle",
-      "subgraphic": "icon_button_b",
+      "texture": "button_circle",
       "position": [1550, 890],
       "scale": 1.5,
-      "color": null
+      "color": null,
+      "subgraphic": {
+        "texture": "icon_button_b"
+      }
     },
     {
       "name": "RUN",
       "id": "RUN",
-      "graphic": "button_circle",
-      "subgraphic": "icon_sprint",
+      "texture": "button_circle",
       "position": [1370, 890],
       "scale": 1.5,
-      "color": null
+      "color": null,
+      "subgraphic": {
+        "texture": "icon_sprint"
+      }
     }
   ]
 }

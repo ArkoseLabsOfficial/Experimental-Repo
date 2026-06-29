@@ -1,0 +1,95 @@
+<!DOCTYPE lacie-engine-room>
+<room name="bathroom" folder="rooms/ch1/bathroom" script="rooms/ch1/bathroom/shaderScripts/bloomShader" script="rooms/ch1/bathroom/shaderScripts/secretDialog">
+    <sprite name="furniture_counter" x="-600" y="-200" sprite="furniture_counter" scroll="0" visible="false" alpha="1" "interactable"="true" "dialog"="bathroom/bathroom_counter" />
+
+    <player startX="0" startY="0" visible="false"/> <!-- adds player into the room, cutscene only stages should have cutscenePlayer only but cutscene plus gameplay rooms should have both -->
+    <cutscenePlayer name="animLacie" script="scripts/bathroom/bathroomCutscene1" script="scripts/bathroom/bathroomCutscene2" startX="0" startY="0" visible="true"/> <!-- adds cutscene player if it's needed and run the spespified hscript improved/SScript scripts -->
+    <npc name="hiroStanding" sprite"sprite/common/character/hiro/hiro" startX="0" startY="0" visible="true" interactable="true" dialog="outside/hiroHi"/>
+    <followerCharacter name="hiro" sprite="sprite/common/character/hiro/hiro" following="lacie" />
+</room>
+
+
+<!DOCTYPE lacie-engine-dialog>
+<dialogues room="bathroom">
+    <!-- Simple Interaction -->
+    <dialog id="bathroom_counter">
+        <entry
+            leftChar="lacie_neutral" 
+            name="Lacie" 
+            text="bathroomdialog_lacie1" 
+            hasSelection="false"
+        />
+        <entry
+            leftChar="lacie_suprised" 
+            rightChar="unkownPeople" 
+            name="Lacie" 
+            text="bathroomdialog_lacie2" 
+            hasSelection="false"
+            closeTheBox="true"
+        />
+    </dialog>
+
+    <!-- Branching Selection Example -->
+    <dialog id="mirror_interaction">
+        <entry
+              leftChar="lacie_neutral" 
+              rightChar="none"
+              name="Lacie" 
+              text="bathroomdialog_lacietalk"
+        />
+        <entry
+            leftChar="lacie_surprised" 
+            rightChar="hiro_worried" 
+            name="Lacie" 
+            text="bathroomdialog_mirror_q" 
+            hasSelection="true"
+            selectionType="customSelectionBarAndLength">
+            
+            <selections>
+                <item id="washed" text="selection_wash_face" selectionConfirmed="outcome_wash" />
+                <item id="leaved" text="selection_leave" selectionConfirmed="outcome_leave" />
+                <item id="checkedHiroBefore" text="selection_check_hiro" selectionConfirmed="outcome_hiro" />
+            </selections>
+        </entry>
+
+        <!-- Response for 'selection_check_hiro' -->
+        <entry 
+            dialogID="outcome_hiro"
+            leftCharacter="lacie_neutral" 
+            rightCharacter="hiro_happy" 
+            charName="Hiro" 
+            text="bathroomdialog_hiro_res" 
+            hasSelection="false" />
+    </dialog>
+
+    <dialog id="outcome_wash">
+        <entry 
+            dialogID="outcome_wash"
+            leftCharacter="lacie_wet" 
+            rightCharacter="none" 
+            charName="Lacie" 
+            text="bathroomdialog_wash_res" 
+            hasSelection="false" />
+    </dialog>
+
+    <dialog id="outcome_leave">
+        <entry
+            leftCharacter="lacie_neutral" 
+            rightCharacter="none" 
+            charName="Lacie" 
+            text="bathroomdialog_leave_res" 
+            hasSelection="false"
+            closeTheBox="true"
+        />
+    </dialog>
+</dialogues>
+
+
+
+
+
+
+
+dialog uses assets/dialog/dialogPath
+sprite uses assets/spritePath
+script uses assets/scriptPath

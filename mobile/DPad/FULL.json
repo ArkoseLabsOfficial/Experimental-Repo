@@ -3,9 +3,9 @@
     {
       "name": "dpad1",
       "id": ["UP", "DOWN", "LEFT", "RIGHT"],
-      "graphic": "dpad",
-      "clickposition": [[0, -125], [0, 125], [-125, 0], [125, 0]],
-      "clickbound": [[150, 150], [150, 150], [150, 150], [150, 150]],
+      "texture": "dpad",
+      "offset": [[0, -125], [0, 125], [-125, 0], [125, 0]],
+      "hitbox": [[150, 150], [150, 150], [150, 150], [150, 150]],
       "showbounds": false,
       "position": [0, 700],
       "scale": 1.5,

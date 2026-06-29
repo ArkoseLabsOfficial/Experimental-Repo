@@ -4,14 +4,16 @@
       "name": "joycon1",
       "radius": 80,
       "id": ["UP", "DOWN", "LEFT", "RIGHT"],
-      "graphic": "joystick_hexagon_pad_a",
-      "subgraphic": "joystick_hexagon_nub_a",
-      "clickposition": [[0, -150], [0, 150], [-150, 0], [150, 0]],
-      "clickbound": [[400, 200], [400, 200], [200, 400], [200, 400]],
+      "texture": "joystick_hexagon_pad_a",
+      "offset": [[0, -150], [0, 150], [-150, 0], [150, 0]],
+      "hitbox": [[400, 200], [400, 200], [200, 400], [200, 400]],
       "position": [0, 700],
       "showbounds": false,
       "scale": 1.5,
-      "color": null
+      "color": null,
+      "subgraphic": {
+        "texture": "joystick_hexagon_nub_a"
+      }
     }
   ]
 }
